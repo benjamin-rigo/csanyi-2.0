@@ -1,0 +1,22 @@
+# Hangösvény (csányi 2.0) – gyerek oldal
+
+Galéria és képnézet. React 19 + Vite + HeroUI v3 + Tailwind 4. Backend még nincs: minden adat JSON fájlokból jön.
+
+## Futtatás
+
+```
+npm install
+npm run dev
+```
+
+## Hol mi van
+
+- `public/data/gallery.json` – kategóriák és képek (hangmezők pontjai a kép saját pixelkoordinátáiban)
+- `public/data/config.json` – kapcsolat, linkek, a képnézet hang- és időzítési beállításai
+- `src/content/hu.json` – minden felületi szöveg
+- `src/styles/tokens.css` – színek, térközök, méretek; a HeroUI változói is ide vannak kötve
+- `public/sounds`, `public/media` – ideiglenes hangok és képek
+
+## Deploy
+
+Vercel: a `vercel.json` gondoskodik róla, hogy a `/kep/...` címek frissítéskor is működjenek.

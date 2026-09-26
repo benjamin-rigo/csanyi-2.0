@@ -1,0 +1,77 @@
+/*
+ * Hangösvény design tokenek.
+ * Minden szín, térköz, méret és lekerekítés innen jön; a komponensek csak ezeket használják.
+ * A HeroUI változóit is ezekre képezzük le, így a HeroUI komponensek ugyanazt a rendszert követik.
+ */
+:root {
+  /* Színek */
+  --hs-bg: #ededee;
+  --hs-surface: #ffffff;
+  --hs-default: #ececed;
+  --hs-default-hover: #dddddf;
+  --hs-fg: #18181b;
+  --hs-muted: #5f5f67;
+  --hs-border: #e4e4e7;
+  --hs-accent: #18181b;
+  --hs-accent-fg: #fafafa;
+  --hs-viewer-bg: #0b0b0c;
+  --hs-viewer-fg: #fafafa;
+  --hs-viewer-button-bg: rgb(255 255 255 / 0.16);
+  --hs-caption-bg: rgb(9 9 11 / 0.82);
+
+  /* Térköz: csak a konvencionális skála */
+  --space-0-5: 2px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Lekerekítés */
+  --radius-pill: 999px;
+  --radius-content: 12px;
+
+  /* Méretek */
+  --control-sm: 36px;
+  --control-md: 44px;
+  --control-lg: 52px;
+  --control-xl: 60px;
+  --border-strong: 2px;
+  --kid-page-x: var(--space-16);
+  --kid-page-x-narrow: var(--space-4);
+  --content-max: 1180px;
+  --card-image-h: 240px;
+
+  /* Betű (a végleges párosítás még nyitott) */
+  --font-sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --text-sm: 14px;
+  --text-md: 15px;
+  --text-body: 17px;
+  --text-lg: 18px;
+  --text-card-title: 19px;
+  --text-h1: 36px;
+  --text-h1-narrow: 28px;
+  --leading-body: 1.5;
+
+  /* Fókusz: a HeroUI beépített fókuszjelzése, egy helyen cserélhető */
+  --hs-focus: oklch(0.6204 0.195 253.83);
+
+  /* HeroUI leképezés */
+  --background: var(--hs-bg);
+  --foreground: var(--hs-fg);
+  --surface: var(--hs-surface);
+  --surface-foreground: var(--hs-fg);
+  --muted: var(--hs-muted);
+  --default: var(--hs-default);
+  --default-foreground: var(--hs-fg);
+  --default-hover: var(--hs-default-hover);
+  --accent: var(--hs-accent);
+  --accent-foreground: var(--hs-accent-fg);
+  --focus: var(--hs-focus);
+  --border: var(--hs-border);
+}

@@ -1,0 +1,19 @@
+{
+  "contactEmail": "[KAPCSOLATI E-MAIL]",
+  "links": {
+    "help": "#",
+    "teachers": "#",
+    "accessibility": "#",
+    "privacy": "#",
+    "terms": "#"
+  },
+  "viewer": {
+    "startCue": { "src": "/sounds/indito-jel.mp3", "volume": 0.6 },
+    "backgroundFadeInMs": 2500,
+    "backgroundFadeOutMs": 600,
+    "backgroundDuckLevel": 0.35,
+    "fieldFadeMs": 120,
+    "reminderDelayMs": 15000,
+    "reminderMax": 2
+  }
+}

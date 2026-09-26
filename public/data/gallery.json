@@ -1,0 +1,106 @@
+{
+  "categories": [
+    { "id": "all", "label": "Összes kép", "icon": null },
+    { "id": "famous", "label": "Híres képek", "icon": "image" },
+    { "id": "animals", "label": "Állatos képek", "icon": "paw" },
+    { "id": "landscapes", "label": "Tájképek", "icon": "leaf" }
+  ],
+  "projects": [
+    {
+      "id": "a-macskanak-negy-a-laba",
+      "title": "A macskának négy a lába",
+      "author": "Reich Károly",
+      "shortDescription": "Egy macska áll a háztetőn, alatta két madár, lent virágos kert.",
+      "categories": ["famous", "animals"],
+      "image": { "src": "/media/macska-reich.jpg", "width": 445, "height": 638 },
+      "background": { "src": "/sounds/esti-tuckok.mp3", "volume": 0.4 },
+      "fields": [
+        {
+          "id": "macska",
+          "name": "Macska",
+          "description": "Egy nagy cica áll a tetőn, akkora, mint a ház. Kedvesen néz rád, és dorombol.",
+          "sound": { "src": "/sounds/dorombolas.mp3", "volume": 1 },
+          "points": [[88,100],[110,70],[148,35],[160,68],[178,68],[195,55],[205,100],[215,135],[335,140],[335,40],[350,25],[368,45],[372,200],[360,262],[290,262],[290,205],[215,205],[200,262],[135,262],[165,195],[150,165],[115,160],[88,130]]
+        },
+        {
+          "id": "madarak",
+          "name": "Madarak",
+          "description": "Két pöttyös madár ül a piros tetőn, csőrük összeér, és vidáman csiripelnek.",
+          "sound": { "src": "/sounds/csicserges.mp3", "volume": 0.9 },
+          "points": [[143,296],[240,272],[305,268],[330,305],[386,318],[386,348],[320,350],[312,376],[198,376],[190,330],[143,332]]
+        },
+        {
+          "id": "haz",
+          "name": "Ház",
+          "description": "Kék ház piros tetővel és zöld ajtóval. Az ajtó nyikorogva kinyílik.",
+          "sound": { "src": "/sounds/nyikorgo-ajto.mp3", "volume": 0.9 },
+          "points": [[82,470],[82,388],[65,380],[110,262],[155,380],[350,388],[350,470]]
+        },
+        {
+          "id": "viragok",
+          "name": "Virágok",
+          "description": "Tarka virágos kert a ház előtt. A virágok között méhek zümmögnek.",
+          "sound": { "src": "/sounds/mehzummoges.mp3", "volume": 0.8 },
+          "points": [[45,590],[45,475],[160,470],[350,470],[355,395],[400,395],[405,590]]
+        }
+      ]
+    },
+    {
+      "id": "tengerpart",
+      "title": "Tengerpart",
+      "author": "Kiss Anna",
+      "shortDescription": "Homokos part, hullámok, a távolban egy vitorlás.",
+      "categories": ["landscapes"],
+      "image": { "src": "/media/tengerpart.svg", "width": 800, "height": 600 },
+      "background": { "src": "/sounds/tenger.mp3", "volume": 0.4 },
+      "fields": [
+        {
+          "id": "hullamok",
+          "name": "Hullámok",
+          "description": "Kék hullámok gördülnek a part felé, és halkan morajlanak.",
+          "sound": { "src": "/sounds/hullam.mp3", "volume": 0.9 },
+          "points": [[0,340],[800,340],[800,464],[0,464]]
+        },
+        {
+          "id": "siralyok",
+          "name": "Sirályok",
+          "description": "Két sirály repül az ég alján, és vijjogva hívják egymást.",
+          "sound": { "src": "/sounds/siraly.mp3", "volume": 0.8 },
+          "points": [[480,120],[620,120],[620,220],[480,220]]
+        }
+      ]
+    },
+    {
+      "id": "erdo-reggel",
+      "title": "Erdő reggel",
+      "author": "Nagy Péter",
+      "shortDescription": "Fenyőerdő madarakkal, a fák között patak csobog.",
+      "categories": ["landscapes", "animals"],
+      "image": { "src": "/media/erdo-reggel.svg", "width": 800, "height": 600 },
+      "background": { "src": "/sounds/erdo.mp3", "volume": 0.4 },
+      "fields": [
+        {
+          "id": "fenyok",
+          "name": "Fenyők",
+          "description": "Három magas fenyőfa áll egymás mellett. A szél zúgva fúj az ágaik között.",
+          "sound": { "src": "/sounds/szel-a-fak-kozt.mp3", "volume": 0.9 },
+          "points": [[80,460],[180,240],[240,380],[380,180],[520,420],[600,260],[720,460]]
+        },
+        {
+          "id": "patak",
+          "name": "Patak",
+          "description": "Kanyargós kis patak folyik a fű között, és csobog.",
+          "sound": { "src": "/sounds/patak.mp3", "volume": 0.9 },
+          "points": [[0,500],[800,500],[800,570],[0,570]]
+        },
+        {
+          "id": "madar",
+          "name": "Madár",
+          "description": "Egy piros kismadár ül a fa tetején, és reggeli dalt énekel.",
+          "sound": { "src": "/sounds/csicserges.mp3", "volume": 0.9 },
+          "points": [[610,140],[690,140],[690,200],[610,200]]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "app": {
+    "name": "Hangösvény",
+    "loading": "Betöltés…",
+    "loadError": "Nem sikerült betölteni a képeket. Próbáld újra később."
+  },
+  "nav": {
+    "label": "Fő navigáció",
+    "help": "Súgó",
+    "teachers": "Pedagógusoknak"
+  },
+  "gallery": {
+    "documentTitle": "Galéria · Hangösvény",
+    "title": "Üdvözöllek a Hangösvény galériájában!",
+    "intro": "Ezen az oldalon képek hangjait fedezheted fel. Válassz egy kategóriát, hogy milyen képet szeretnél felfedezni.",
+    "categoriesLabel": "Kategóriák",
+    "count": "{count} kép",
+    "categoryAnnounce": "{category}, {count} kép",
+    "listLabel": "Képek",
+    "authorPrefix": "{author} alkotása.",
+    "fieldCount": "{count} hangmező",
+    "empty": "Ebben a kategóriában még nincs kép."
+  },
+  "footer": {
+    "teacherContact": "Pedagógus vagy? Hozzáférésért írj nekünk: {email}",
+    "legalLabel": "Jogi információk",
+    "accessibility": "Akadálymentesség",
+    "privacy": "Adatvédelem",
+    "terms": "ÁSZF"
+  },
+  "viewer": {
+    "documentTitle": "{title} · Hangösvény",
+    "back": "Vissza",
+    "welcome": "Szuper, megnyitottad {title} című képet! Tartsd az ujjad a képen, és keresd meg a hangokat. Kilépni {exit} tudsz.",
+    "welcomeCaption": "Tartsd az ujjad a képen, és keresd meg a hangokat.",
+    "exit": {
+      "ios": "két ujjal egy Z betűt rajzolva",
+      "android": "a vissza mozdulattal",
+      "desktop": "az Esc billentyűvel"
+    },
+    "reminder": "Keresd meg az ujjaddal a hangokat.",
+    "notFound": "Ezt a képet nem találjuk.",
+    "backToGallery": "Vissza a galériába"
+  }
+}

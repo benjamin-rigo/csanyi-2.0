@@ -1,0 +1,411 @@
+@import "tailwindcss";
+@import "@heroui/styles";
+@import "./styles/tokens.css";
+
+/*
+ * Az alkalmazás saját stílusai. Csak tokeneket használ (styles/tokens.css).
+ * Fókusz: a HeroUI beépített gyűrűje (--focus). Ahol nem HeroUI elem van
+ * (kártya link, hangmező), ugyanazt a gyűrűt rajzoljuk ugyanazokból a változókból.
+ */
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--hs-bg);
+  color: var(--hs-fg);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* A HeroUI másodlagos gomb: átlátszó háttér, 2px fekete keret (döntésnapló) */
+.button.button--outline {
+  background: transparent;
+  border: var(--border-strong) solid var(--hs-fg);
+  color: var(--hs-fg);
+}
+
+/* ---------- Oldalváz ---------- */
+
+.kid-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.site-header,
+.kid-main,
+.site-footer {
+  width: 100%;
+  max-width: calc(var(--content-max) + 2 * var(--kid-page-x));
+  margin-inline: auto;
+  padding-inline: var(--kid-page-x);
+  box-sizing: border-box;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-6);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  color: var(--hs-fg);
+  text-decoration: none;
+  border-radius: var(--radius-pill);
+  padding-inline-end: var(--space-2);
+}
+
+.logo-mark {
+  display: inline-grid;
+  place-items: center;
+  width: var(--control-md);
+  height: var(--control-md);
+  border-radius: var(--radius-pill);
+  background: var(--hs-accent);
+  color: var(--hs-accent-fg);
+}
+
+.site-nav {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.kid-main {
+  flex: 1;
+  padding-block: var(--space-8) var(--space-16);
+}
+
+.gallery-intro {
+  max-width: 720px;
+  margin-bottom: var(--space-10);
+}
+
+.gallery-intro h1 {
+  font-size: var(--text-h1);
+  line-height: 1.15;
+  font-weight: 700;
+  margin: 0 0 var(--space-4);
+}
+
+.gallery-intro p {
+  margin: 0;
+  font-size: var(--text-lg);
+  color: var(--hs-muted);
+}
+
+.gallery-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+  flex-wrap: wrap;
+}
+
+.category-group {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.category.toggle-button {
+  min-height: var(--control-md);
+  padding-inline: var(--space-5);
+  border-radius: var(--radius-pill);
+  gap: var(--space-2);
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.category.toggle-button[data-selected="true"] {
+  background: var(--hs-accent);
+  color: var(--hs-accent-fg);
+}
+
+.count {
+  color: var(--hs-muted);
+  font-size: var(--text-md);
+}
+
+/* ---------- Kártyák ---------- */
+
+.gcard-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-6);
+}
+
+.gcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--hs-surface);
+  border-radius: var(--radius-content);
+  overflow: hidden;
+}
+
+.gcard:hover {
+  background: var(--hs-default);
+}
+
+.gcard:has(.gcard-link:focus-visible) {
+  box-shadow:
+    0 0 0 var(--ring-offset-width) var(--background),
+    0 0 0 calc(2px + var(--ring-offset-width)) var(--focus);
+}
+
+.gcard-image {
+  height: var(--card-image-h);
+  background: var(--hs-default);
+}
+
+.gcard-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gcard-body {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.gcard-title {
+  margin: 0;
+  font-size: var(--text-card-title);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.gcard-link {
+  color: inherit;
+  text-decoration: none;
+  outline: none;
+}
+
+/* Az egész kártya kattintható, de csak egy link van (egy tabulátor lépés). */
+.gcard-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.gcard-desc {
+  margin: 0;
+  font-size: var(--text-md);
+}
+
+.gcard-meta {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--hs-muted);
+}
+
+.empty {
+  color: var(--hs-muted);
+}
+
+/* ---------- Lábléc ---------- */
+
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding-block: var(--space-6) var(--space-8);
+  border-top: 1px solid var(--hs-border);
+  font-size: var(--text-sm);
+  color: var(--hs-muted);
+}
+
+.legal {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.legal a {
+  color: var(--hs-fg);
+  border-radius: var(--space-1);
+}
+
+.legal a:focus-visible,
+.logo:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 var(--ring-offset-width) var(--background),
+    0 0 0 calc(2px + var(--ring-offset-width)) var(--focus);
+}
+
+/* ---------- Képnézet ---------- */
+
+.viewer {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--hs-viewer-bg);
+  color: var(--hs-viewer-fg);
+  --background: var(--hs-viewer-bg);
+}
+
+.viewer-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+}
+
+.viewer-title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.button.button--outline.btn-on-dark {
+  border-color: var(--hs-viewer-fg);
+  color: var(--hs-viewer-fg);
+  background: var(--hs-viewer-button-bg);
+  gap: var(--space-2);
+}
+
+.scene {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 0 var(--space-6) var(--space-6);
+  min-height: 0;
+}
+
+.scene-frame {
+  position: relative;
+  --scene-h: calc(100dvh - var(--control-md) - 2 * var(--space-4) - var(--space-6));
+  width: min(100%, calc(var(--scene-h) * var(--ratio)));
+  aspect-ratio: var(--ratio);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.scene-frame img,
+.scene-frame svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.scene-frame img {
+  border-radius: var(--radius-content);
+  object-fit: fill;
+}
+
+.field {
+  fill: transparent;
+  stroke: transparent;
+  outline: none;
+}
+
+.field:focus-visible {
+  stroke: var(--focus);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.caption {
+  position: absolute;
+  left: 50%;
+  bottom: var(--space-4);
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 2 * var(--space-4));
+  box-sizing: border-box;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-content);
+  background: var(--hs-caption-bg);
+  color: var(--hs-viewer-fg);
+  font-size: var(--text-md);
+  pointer-events: none;
+}
+
+.viewer-missing {
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.status-page {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  color: var(--hs-muted);
+}
+
+/* ---------- Keskeny kijelző ---------- */
+
+@media (max-width: 720px) {
+  .site-header,
+  .kid-main,
+  .site-footer {
+    padding-inline: var(--kid-page-x-narrow);
+  }
+
+  .site-header {
+    flex-wrap: wrap;
+  }
+
+  .gallery-intro h1 {
+    font-size: var(--text-h1-narrow);
+  }
+
+  .gcard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .viewer-header,
+  .scene {
+    padding-inline: var(--space-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
