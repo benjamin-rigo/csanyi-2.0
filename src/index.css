@@ -857,11 +857,28 @@ body {
 .modal-dialog {
   width: min(var(--modal-w), calc(100vw - 2 * var(--space-4)));
   max-width: none;
+  /* A képernyőnél nem magasabb: a fejléc és a lábléc a helyén marad, a törzs görög. */
+  max-height: calc(100dvh - 2 * var(--space-6));
+  display: flex;
+  flex-direction: column;
   padding: 0;
   gap: 0;
   border-radius: var(--radius-content);
   background: var(--hs-surface);
   box-shadow: none;
+}
+
+.modal-dialog > form {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-dialog .modal-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .modal-header {
