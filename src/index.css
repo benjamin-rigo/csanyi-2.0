@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@fontsource-variable/inter";
 @import "@heroui/styles";
 @import "./styles/tokens.css";
 
@@ -99,13 +100,13 @@ body {
 }
 
 .gallery-intro {
-  max-width: 720px;
+  max-width: var(--intro-max);
   margin-bottom: var(--space-10);
 }
 
 .gallery-intro h1 {
   font-size: var(--text-h1);
-  line-height: 1.15;
+  line-height: var(--leading-tight);
   font-weight: 700;
   margin: 0 0 var(--space-4);
 }
@@ -158,7 +159,7 @@ body {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-min-w), 1fr));
   gap: var(--space-6);
 }
 
@@ -178,7 +179,7 @@ body {
 .gcard:has(.gcard-link:focus-visible) {
   box-shadow:
     0 0 0 var(--ring-offset-width) var(--background),
-    0 0 0 calc(2px + var(--ring-offset-width)) var(--focus);
+    0 0 0 calc(var(--focus-ring-width) + var(--ring-offset-width)) var(--focus);
 }
 
 .gcard-image {
@@ -206,7 +207,7 @@ body {
   margin: 0;
   font-size: var(--text-card-title);
   font-weight: 700;
-  line-height: 1.3;
+  line-height: var(--leading-snug);
 }
 
 .gcard-link {
@@ -246,7 +247,7 @@ body {
   gap: var(--space-4);
   flex-wrap: wrap;
   padding-block: var(--space-6) var(--space-8);
-  border-top: 1px solid var(--hs-border);
+  border-top: var(--border-thin) solid var(--hs-border);
   font-size: var(--text-sm);
   color: var(--hs-muted);
 }
@@ -259,7 +260,7 @@ body {
 
 .legal a {
   color: var(--hs-fg);
-  border-radius: var(--space-1);
+  border-radius: var(--radius-pill);
 }
 
 .legal a:focus-visible,
@@ -267,7 +268,7 @@ body {
   outline: none;
   box-shadow:
     0 0 0 var(--ring-offset-width) var(--background),
-    0 0 0 calc(2px + var(--ring-offset-width)) var(--focus);
+    0 0 0 calc(var(--focus-ring-width) + var(--ring-offset-width)) var(--focus);
 }
 
 /* ---------- Képnézet ---------- */
@@ -342,7 +343,7 @@ body {
 
 .field:focus-visible {
   stroke: var(--focus);
-  stroke-width: 3;
+  stroke-width: var(--field-focus-stroke);
   vector-effect: non-scaling-stroke;
 }
 
@@ -380,6 +381,7 @@ body {
 
 /* ---------- Keskeny kijelző ---------- */
 
+/* Médialekérdezésben nem lehet változó: ez a --intro-max értéke. */
 @media (max-width: 720px) {
   .site-header,
   .kid-main,

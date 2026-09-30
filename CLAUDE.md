@@ -38,7 +38,7 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 - Gombok: a fő gomb tömör fekete, nézetenként egy. A másodlagos háttér nélküli, 2 px fekete kerettel (HeroUI `outline` + felülírás az `index.css`-ben). A ghost gomb keret nélküli. Magasság 36 / 44 / 52 / 60, vízszintes margó 16 / 20 / 24 / 32.
 - Fókusz: a HeroUI beépített fókuszgyűrűje (`--focus`). Nem HeroUI elemen ugyanezt a gyűrűt rajzold ugyanezekből a változókból.
 - Ami átmenetileg nem használható, az letiltva látszik a helyén (50% átlátszóság, `aria-disabled`, mellette rövid ok), nem tűnik el.
-- Betű: egyelőre Inter; a végleges párosítás nyitott.
+- Betű: egyelőre Inter, saját tárhelyről (`@fontsource-variable/inter`, nem Google Fonts); a végleges párosítás nyitott.
 
 ## Akadálymentesség
 
@@ -52,7 +52,7 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 src/
   pages/Gallery.tsx      galéria (1)
   pages/Viewer.tsx       képnézet (2–4)
-  components/            SiteHeader, SiteFooter, Icon
+  components/            SiteHeader (benne a SiteFooter is), Icon
   lib/                   data, i18n, audio, device
   content/hu.json        felületi szövegek
   styles/tokens.css      design tokenek
@@ -64,7 +64,8 @@ docs/design/             a képernyők tervei
 ## Állapot
 
 - Kész: gyerek oldal (galéria + képnézet), adatfájlból. Build rendben, axe 0 hiba.
-- Következő: GitHub Pages, tablet teszt felolvasóval (iPad VoiceOver, Android TalkBack), utána a pedagógus oldal (6–14) Supabase-szel.
+- Élő teszt: https://benjamin-rigo.github.io/csanyi-2.0/ (minden main pushra frissül).
+- Következő: tablet teszt felolvasóval (iPad VoiceOver, Android TalkBack), utána a pedagógus oldal (6–14) Supabase-szel.
 - A `@heroui/styles` most minden komponens stílusát betölti; később csak a használtakat importáljuk.
 - A nyitott témák listája a napló végén.
 
