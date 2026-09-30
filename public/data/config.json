@@ -31,6 +31,9 @@
     "autosaveDelayMs": 700,
     "brushDefault": 24,
     "brushMin": 4,
-    "brushMax": 80
+    "brushMax": 80,
+    "zoomMin": 1,
+    "zoomMax": 6,
+    "zoomStep": 1.25
   }
 }

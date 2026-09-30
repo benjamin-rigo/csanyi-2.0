@@ -200,7 +200,9 @@
         "settings": "Háttérhang beállításai",
         "remove": "Eltávolítás",
         "help": "A kép megnyitásakor lassan beúszik, és végig szól. Ha egy hangmező megszólal, kicsit lehalkul, hogy a hangmező hangja érthető legyen.",
-        "pickerTarget": "Háttérhang"
+        "pickerTarget": "Háttérhang",
+        "detailTitle": "Háttérhang",
+        "removeLong": "Háttérhang eltávolítása"
       },
       "fields": {
         "title": "Hangmezők",
@@ -222,7 +224,9 @@
         "addSound": "Hang hozzáadása",
         "volume": "Hangerő",
         "shapeHint": "Fesd ki a képen az ecsettel, hol van ez a hangmező.",
-        "pickerTarget": "{name} hangmező"
+        "pickerTarget": "{name} hangmező",
+        "detailTitle": "Hangmező",
+        "deleteField": "Hangmező törlése"
       },
       "voice": {
         "title": "Leíró hang",
@@ -268,6 +272,14 @@
           "nameRequired": "Adj nevet a hangnak.",
           "generic": "Nem sikerült feltölteni a hangot. Próbáld újra."
         }
+      },
+      "panelBack": "Hangok",
+      "panelBackLabel": "Vissza a hangokhoz",
+      "zoom": {
+        "out": "Kicsinyítés",
+        "in": "Nagyítás",
+        "fit": "Igazítás a kép méretéhez, most {n}%",
+        "hint": "Nagyítás: Ctrl vagy Cmd + görgő. Mozgatás: görgetés vagy szóköz + húzás."
       }
     },
     "profile": {

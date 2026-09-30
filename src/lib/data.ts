@@ -47,7 +47,7 @@ export interface Config {
   links: Record<'help' | 'teachers' | 'accessibility' | 'privacy' | 'terms', string>;
   auth: { passwordMinLength: number };
   upload: { imageMaxMb: number; soundMaxMb: number };
-  editor: { autosaveDelayMs: number; brushDefault: number; brushMin: number; brushMax: number };
+  editor: { autosaveDelayMs: number; brushDefault: number; brushMin: number; brushMax: number; zoomMin: number; zoomMax: number; zoomStep: number };
   viewer: {
     startCue: Sound;
     backgroundFadeInMs: number;

@@ -1128,8 +1128,17 @@ body {
 
 .canvas-hint {
   margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: var(--space-4);
   font-size: var(--text-sm);
   color: var(--hs-muted);
+  text-align: center;
+}
+
+.canvas-hint-zoom {
+  font-size: var(--text-caption);
 }
 
 .draw-area {
@@ -1141,8 +1150,24 @@ body {
   justify-content: center;
 }
 
+.draw-viewport {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius-content);
+}
+
+.draw-viewport.is-panning,
+.draw-viewport.is-panning .draw-frame {
+  cursor: grab;
+}
+
 .draw-frame {
   position: relative;
+  transform-origin: 0 0;
   height: 100%;
   max-width: 100%;
   aspect-ratio: var(--ratio);
@@ -1243,6 +1268,39 @@ body {
   opacity: 0.5;
 }
 
+.zoom-level.button {
+  min-width: var(--control-lg);
+  padding-inline: var(--space-2);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-sm);
+}
+
+.panel-back.button {
+  align-self: flex-start;
+  margin-inline-start: calc(-1 * var(--space-3));
+  gap: var(--space-2);
+  color: var(--hs-muted);
+}
+
+.panel-detail-title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-h2);
+  font-weight: 700;
+}
+
+.panel-detail-title:focus {
+  outline: none;
+}
+
+/* Romboló művelet a részletek alján, elválasztva */
+.panel-danger-zone {
+  padding-top: var(--space-6);
+  border-top: var(--border-thin) solid var(--hs-border);
+}
+
 .panel-sections {
   display: flex;
   flex-direction: column;
@@ -1254,14 +1312,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-}
-
-.panel-detail {
-  gap: var(--space-6);
-  padding-top: var(--space-8);
-  border-top: var(--border-thin) solid var(--hs-border);
-  margin-inline: calc(-1 * var(--space-6));
-  padding-inline: var(--space-6);
 }
 
 .panel-section-head {

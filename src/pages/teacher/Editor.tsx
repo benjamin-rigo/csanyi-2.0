@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { Button, Label, Modal, Slider, Tabs, ToggleButton } from '@heroui/react';
-import { DrawingCanvas, type Tool } from '../../components/editor/DrawingCanvas';
+import { DrawingCanvas, FIT, zoomAt, type Tool, type View } from '../../components/editor/DrawingCanvas';
 import { SoundPicker } from '../../components/editor/SoundPicker';
 import { SoundsPanel, type Selection } from '../../components/editor/SoundsPanel';
 import { stopPreview } from '../../components/editor/SoundCard';
@@ -34,6 +34,7 @@ export function Editor({ config }: { config: Config }) {
   const [selection, setSelection] = useState<Selection>(null);
   const [tool, setTool] = useState<Tool>('brush');
   const [size, setSize] = useState(config.editor.brushDefault);
+  const [view, setView] = useState<View>(FIT);
   const [picker, setPicker] = useState<'background' | string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<EditorField | null>(null);
   const [history, setHistory] = useState<{ done: Stroke[]; undone: Stroke[] }>({ done: [], undone: [] });
@@ -144,11 +145,24 @@ export function Editor({ config }: { config: Config }) {
     await track(deleteField(field.id)).catch(() => undefined);
   }
 
+  // Gombos nagyítás a rajzterület közepe körül.
+  function zoomBy(factor: number) {
+    const frame = document.querySelector('.draw-frame')?.getBoundingClientRect();
+    const area = document.querySelector('.draw-viewport')?.getBoundingClientRect();
+    if (!frame || !area) return;
+    const zoom = Math.min(config.editor.zoomMax, Math.max(config.editor.zoomMin, view.zoom * factor));
+    setView(zoomAt(view, frame, area.left + area.width / 2, area.top + area.height / 2, zoom));
+  }
+
   if (state !== 'ready' || !project || !userId) {
     return (
       <main className="status-page" aria-busy={state === 'loading'}>
         <p role={state === 'loading' ? undefined : 'alert'}>
-          {state === 'missing' ? t('teacher.editor.notFound') : state === 'error' ? t('teacher.editor.loadError') : t('teacher.editor.loading')}
+          {state === 'missing'
+            ? t('teacher.editor.notFound')
+            : state === 'error'
+              ? t('teacher.editor.loadError')
+              : t('teacher.editor.loading')}
         </p>
         {state !== 'loading' && (
           <Link to="/projektjeim" className="text-link">
@@ -159,7 +173,7 @@ export function Editor({ config }: { config: Config }) {
     );
   }
 
-  const selectedField = selection?.kind === 'field' ? project.fields.find((f) => f.id === selection.id) ?? null : null;
+  const selectedField = selection?.kind === 'field' ? (project.fields.find((f) => f.id === selection.id) ?? null) : null;
   const pickerTarget =
     picker === 'background'
       ? t('teacher.editor.background.pickerTarget')
@@ -228,6 +242,35 @@ export function Editor({ config }: { config: Config }) {
               </Slider.Track>
             </Slider>
             <span className="toolbar-sep" aria-hidden="true" />
+            <Button
+              isIconOnly
+              variant="ghost"
+              aria-label={t('teacher.editor.zoom.out')}
+              isDisabled={view.zoom <= config.editor.zoomMin}
+              onPress={() => zoomBy(1 / config.editor.zoomStep)}
+            >
+              <Icon name="minus" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="zoom-level"
+              aria-label={t('teacher.editor.zoom.fit', { n: Math.round(view.zoom * 100) })}
+              aria-describedby="zoom-hint"
+              onPress={() => setView(FIT)}
+            >
+              {Math.round(view.zoom * 100)}%
+            </Button>
+            <Button
+              isIconOnly
+              variant="ghost"
+              aria-label={t('teacher.editor.zoom.in')}
+              isDisabled={view.zoom >= config.editor.zoomMax}
+              onPress={() => zoomBy(config.editor.zoomStep)}
+            >
+              <Icon name="plus" />
+            </Button>
+            <span className="toolbar-sep" aria-hidden="true" />
             <Button isIconOnly variant="ghost" aria-label={t('teacher.editor.undo')} isDisabled={!history.done.length} onPress={undo}>
               <Icon name="undo" />
             </Button>
@@ -239,6 +282,9 @@ export function Editor({ config }: { config: Config }) {
             {selectedField
               ? t('teacher.editor.canvasHintSelected', { name: selectedField.name.trim() || t('teacher.editor.fields.untitled') })
               : t('teacher.editor.canvasHintNew')}
+            <span id="zoom-hint" className="canvas-hint-zoom">
+              {t('teacher.editor.zoom.hint')}
+            </span>
           </p>
           <div className="draw-area">
             <DrawingCanvas
@@ -250,6 +296,10 @@ export function Editor({ config }: { config: Config }) {
               tool={tool}
               size={size}
               onStroke={(fid, polygons) => void onStroke(fid, polygons)}
+              onSelectField={(fid) => setSelection({ kind: 'field', id: fid })}
+              view={view}
+              onView={setView}
+              zoomLimits={{ min: config.editor.zoomMin, max: config.editor.zoomMax }}
             />
           </div>
         </main>
@@ -286,7 +336,9 @@ export function Editor({ config }: { config: Config }) {
                 onPickSound={setPicker}
                 onBackgroundVolume={(v) => {
                   setProject((p) => p && { ...p, backgroundVolume: v });
-                  schedule('background-volume', () => updateProject(project.id, { background_volume: projectRef.current!.backgroundVolume }));
+                  schedule('background-volume', () =>
+                    updateProject(project.id, { background_volume: projectRef.current!.backgroundVolume }),
+                  );
                 }}
                 onRemoveBackground={() => {
                   setProject((p) => p && { ...p, background: null });
