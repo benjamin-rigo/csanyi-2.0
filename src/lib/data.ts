@@ -114,7 +114,8 @@ function load<T>(url: string): Promise<T> {
   if (!cache.has(url)) {
     cache.set(
       url,
-      fetch(url).then((res) => {
+      // A GitHub Pages 10 percig gyorsítótáraz; így egy frissítés után sem maradunk régi beállításokkal.
+      fetch(url, { cache: 'no-cache' }).then((res) => {
         if (!res.ok) throw new Error(`${url}: ${res.status}`);
         return res.json();
       }),
