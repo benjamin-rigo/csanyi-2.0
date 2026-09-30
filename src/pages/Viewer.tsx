@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { Button } from '@heroui/react';
 import { useSharedProject, type Config, type Gallery, type Point, type Project, type Sound } from '../lib/data';
@@ -55,10 +55,9 @@ function Scene({ project, config }: { project: Project; config: Config }) {
   const [active, setActive] = useState<string | null>(null);
   const [touched, setTouched] = useState(false);
   const [reminder, setReminder] = useState('');
-  const [spoken, setSpoken] = useState('');
   const v = config.viewer;
-  // Kísérlet (?mod=kozvetlen): a VoiceOver átengedi az érintést a képnek, a leírást élő bejelentés mondja el.
-  const direct = new URLSearchParams(location.search).get('mod') === 'kozvetlen';
+  // Kísérlet (?mod=kitoltes): néma elem az üres részen, hogy a VoiceOver ne ugorjon a legközelebbi hangmezőre.
+  const filler = new URLSearchParams(location.search).get('mod') === 'kitoltes';
   // Kép nélküli (félkész, linkkel megosztott) projektnél is legyen képarány.
   const imgW = project.image.width ?? 4;
   const imgH = project.image.height ?? 3;
@@ -81,17 +80,24 @@ function Scene({ project, config }: { project: Project; config: Config }) {
     };
   }, [project.background, v]);
 
-  const exitText = t(`viewer.exit.${detectPlatform()}`);
-  const welcome = t('viewer.welcome', { title: project.title, exit: exitText });
+  const platform = detectPlatform();
+  const welcome = t('viewer.welcome', {
+    title: project.title,
+    exit: t(`viewer.exit.${platform}`),
+    tip: platform === 'desktop' ? '' : t('viewer.screenReaderTip'),
+  });
+
+  // Az üdvözlés azonnal kap fókuszt, mielőtt a felolvasó mást kezdene mondani.
+  useLayoutEffect(() => {
+    openedAt.current = performance.now();
+    welcomeRef.current?.focus();
+  }, [project.id]);
 
   // Megnyitás: cím, hangok előtöltése, a felolvasó egyszer felolvassa az üdvözlést.
   useEffect(() => {
     document.title = t('viewer.documentTitle', { title: project.title });
     preload([v.startCue, project.background, ...project.fields.map((f) => f.sound)].filter((s): s is Sound => s !== null));
-    openedAt.current = performance.now();
-    const id = window.setTimeout(() => welcomeRef.current?.focus(), v.welcomeFocusDelayMs);
-    return () => window.clearTimeout(id);
-  }, [project, v.startCue, v.welcomeFocusDelayMs]);
+  }, [project, v.startCue]);
 
   // A hangmező fókuszkerete csak billentyűzettel látszik; érintésnél és felolvasóval zavaró.
   useEffect(() => {
@@ -136,15 +142,10 @@ function Scene({ project, config }: { project: Project; config: Config }) {
         foundRef.current = true;
         setReminder('');
       }
-      if (direct && field && field.id !== activeRef.current) {
-        // Ugyanaz a szöveg újra: előbb ürítjük, hogy a felolvasó ismét bemondja.
-        setSpoken('');
-        requestAnimationFrame(() => setSpoken(field.description));
-      }
       activeRef.current = field?.id ?? null;
       audioRef.current?.setField(field?.id ?? null, field?.sound ?? null);
     },
-    [direct, project.fields],
+    [project.fields],
   );
 
   // iPaden a VoiceOver megnyitás után a koppintás helyén lévő hangmezőre ugorhat; ilyenkor vissza az üdvözléshez.
@@ -187,6 +188,8 @@ function Scene({ project, config }: { project: Project; config: Config }) {
       const x = ((clientX - r.left) / r.width) * imgW;
       const y = ((clientY - r.top) / r.height) * imgH;
       const hit = project.fields.find((f) => inPolygon(x, y, f.points));
+      // Érintés és egér csak kikapcsolt felolvasónál jut ide, ezért a felvett leírás nem beszél a felolvasóra.
+      if (hit?.descriptionSound && hit.id !== activeRef.current) audioRef.current?.speak(hit.id, hit.descriptionSound);
       activate(hit?.id ?? null);
     },
     [activate, imgH, imgW, project.fields],
@@ -254,8 +257,6 @@ function Scene({ project, config }: { project: Project; config: Config }) {
           ref={frameRef}
           className="scene-frame"
           style={{ '--ratio': `${imgW} / ${imgH}` } as React.CSSProperties}
-          role={direct ? 'application' : undefined}
-          aria-label={direct ? t('viewer.welcomeCaption') : undefined}
           onPointerDown={(e) => {
             if (e.pointerType === 'mouse') {
               setTouched(true);
@@ -269,21 +270,21 @@ function Scene({ project, config }: { project: Project; config: Config }) {
           <svg
             viewBox={`0 0 ${imgW} ${imgH}`}
             role="none"
-            aria-hidden={direct || undefined}
             focusable="false"
             onBlur={(e) => {
               if (!e.currentTarget.contains(e.relatedTarget as Node | null)) activate(null);
             }}
           >
+            {filler && <rect className="field-filler" x={0} y={0} width={imgW} height={imgH} role="img" aria-label={'\u00a0'} />}
             {project.fields.map((f) => (
               <polygon
                 key={f.id}
                 points={f.points.map((p) => p.join(',')).join(' ')}
-                role={direct ? undefined : 'img'}
-                aria-label={direct ? undefined : f.description}
-                tabIndex={direct ? undefined : 0}
+                role="img"
+                aria-label={f.description}
+                tabIndex={0}
                 className={`field${f.id === active ? ' is-active' : ''}`}
-                onFocus={direct ? undefined : (e) => onFieldFocus(f.id, e)}
+                onFocus={(e) => onFieldFocus(f.id, e)}
               />
             ))}
           </svg>
@@ -298,11 +299,6 @@ function Scene({ project, config }: { project: Project; config: Config }) {
       <p className="sr-only" aria-live="polite">
         {reminder}
       </p>
-      {direct && (
-        <p className="sr-only" aria-live="assertive">
-          {spoken}
-        </p>
-      )}
     </div>
   );
 }

@@ -18,7 +18,6 @@
     "fieldFadeMs": 120,
     "reminderDelayMs": 15000,
     "reminderMax": 2,
-    "welcomeFocusDelayMs": 300,
     "welcomeSettleMs": 1500
   },
   "auth": {

@@ -357,7 +357,8 @@ body {
   object-fit: fill;
 }
 
-.field {
+.field,
+.field-filler {
   fill: transparent;
   stroke: transparent;
   outline: none;

@@ -31,7 +31,7 @@
   "viewer": {
     "documentTitle": "{title} · Hangösvény",
     "back": "Vissza",
-    "welcome": "Szuper, megnyitottad {title} című képet! Tartsd az ujjad a képen, és keresd meg a hangokat. Kilépni {exit} tudsz.",
+    "welcome": "Szuper, megnyitottad {title} című képet! {tip}Tartsd az ujjad a képen, és keresd meg a hangokat. Kilépni {exit} tudsz.",
     "welcomeCaption": "Tartsd az ujjad a képen, és keresd meg a hangokat.",
     "exit": {
       "ios": "két ujjal egy Z betűt rajzolva",
@@ -40,7 +40,8 @@
     },
     "reminder": "Keresd meg az ujjaddal a hangokat.",
     "notFound": "Ezt a képet nem találjuk.",
-    "backToGallery": "Vissza a galériába"
+    "backToGallery": "Vissza a galériába",
+    "screenReaderTip": "A legjobb élményhez kapcsold ki a felolvasót, amíg felfedezed a képet. "
   },
   "auth": {
     "backToGallery": "Galéria",

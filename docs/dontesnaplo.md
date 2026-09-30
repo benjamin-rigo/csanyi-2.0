@@ -52,11 +52,12 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 - Galéria kártya: a teljes kép levágás nélkül, alatta cím, rövid leírás, kisebben alkotó és hangmezők száma. Az egész kártya egy link a kép nézetre, más művelet nincs rajta (nincs előhallgatás). Felolvasóval: „[Cím], link”, szünet, „[Alkotó] alkotása. [Rövid leírás]”. Nincs „Legutóbb megnyitott”, nincs keresés.
 - Táblagépen felolvasóval húzással lép elemről elemre, asztali gépen Tabbal.
 - A kép felfedezése teljes képernyőn történik; a hangkép és a belemerülés a lényeg.
-- A simogatás minden esetben megmarad. A felolvasó bekapcsolva marad, nem kérjük a kikapcsolását.
-- Megnyitáskor a gyerek saját felolvasója egyszer ezt mondja: „Szuper, megnyitottad [Cím] című képet! Tartsd az ujjad a képen, és keresd meg a hangokat. Kilépni [eszköztől függő mozdulat] tudsz.” (iPad: két ujjal Z; Android: vissza mozdulat; gép: Esc). Nincs átugrás gomb: ha a gyerek hozzáér a képernyőhöz, a felolvasó magától elhallgat. Látó gyereknek ugyanez rövid feliratként, ami az első érintéskor eltűnik.
+- A simogatás minden esetben megmarad. Weben a VoiceOver érintéskezelése nem írható felül (a hangmezőkre ugrik, az üres részen saját hangot ad), ezért érintős eszközön az üdvözlés azt javasolja, hogy a felfedezés idejére kapcsolja ki a felolvasót. Kikapcsolt felolvasónál a hangmező felvett leíró hangja szól.
+- Megnyitáskor a gyerek saját felolvasója egyszer ezt mondja: „Szuper, megnyitottad [Cím] című képet! [Érintős eszközön: A legjobb élményhez kapcsold ki a felolvasót, amíg felfedezed a képet.] Tartsd az ujjad a képen, és keresd meg a hangokat. Kilépni [eszköztől függő mozdulat] tudsz.” (iPad: két ujjal Z; Android: vissza mozdulat; gép: Esc). Nincs átugrás gomb: ha a gyerek hozzáér a képernyőhöz, a felolvasó magától elhallgat. Látó gyereknek ugyanez rövid feliratként, ami az első érintéskor eltűnik.
 - A háttérhang nem magától indul: a gyerek első érintésére (vagy első billentyűjére) szól az indító hangjel („pitty, pitty, pitty”), és lassan beúszik a háttérhang. Így gomb nélkül is teljesül a WCAG 1.4.2, és az üdvözlés csendben hangzik el. A hangjel nem beszéd, ez rendben van a „nincs saját app hang” szabállyal.
 - Háttérhang: kötelező. Végig szól, hangmező megszólalásakor kicsit lehalkul, kilépéskor elhalkul. Nincs szünet- vagy némító gomb.
 - Csak a hangmezők aktívak. Az üres rész nem aktív elem: nem fókuszálható, a felolvasó nem mond rá semmit; ott csak a háttérhang szól. Tesztelni kell, hogy a képet tartalmazó elem ne kapjon fókuszt és címkét simogatáskor.
+- Leíró hang: a pedagógus minden hangmezőhöz feltölthet vagy felvehet egy hangos leírást. Érintésre vagy egérrel szól (felolvasóval ilyenkor az érintés nem jut el az oldalig, így nem beszélnek egymásra); végigszól akkor is, ha az ujj lecsúszik a hangmezőről, másik hangmezőn elhallgat. Saját gépi beszéd nincs.
 - Hangmező érintésre a felolvasó rögtön a teljes leírást mondja (pl. „Egy nagy cica áll a tetőn, akkora, mint a ház. Kedvesen néz rád, és dorombol.”), a hangmező hangja közben alatta szól. Nincs név- vagy szerepelőtag. Látó gyereknek felirat: név + leírás.
 - Emlékeztető: ha kb. 15 mp-ig nem talál hangmezőt, a felolvasó: „Keresd meg az ujjaddal a hangokat.” Legfeljebb kétszer, az első megtalált hangmező után soha. Felolvasó nélkül ugyanez feliratként.
 - Kilépés: a megszokott vissza mozdulat (VoiceOver kétujjas Z, Android vissza, Escape), mert a kép megnyitása valódi oldalváltás; plusz „Vissza” gomb az oldal első elemeként, a galériába visz.
@@ -69,7 +70,9 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 - Megosztás (link is) csak teljes adatokkal: lecserélve, csak a galériába kerüléshez kell minden.
 - „Háttérhang szünet” gomb a kép nézetben: nem kell; helyette a háttérhang az első érintésre indul.
 - Kategóriaváltáskor a fókusz a listára ugrik: lecserélve, a fókusz a kategórián marad.
-- Felolvasós kérdés és a felolvasó kikapcsoltatása: kiesett, mert a felolvasó bekapcsolva marad.
+- Felolvasós kérdés és a felolvasó kikapcsoltatása: kiesett, mert a felolvasó bekapcsolva marad. Részben felülírva: az üdvözlés javasolja a kikapcsolást a felfedezés idejére (kérdés nincs).
+- „A felolvasó bekapcsolva marad, nem kérjük a kikapcsolását”: felülírva, lásd fent.
+- Közvetlen érintés (`role="application"`): iPadOS-en (Safari, Chrome) nem működik, a VoiceOver nem engedi át az érintést a weboldalnak.
 - Saját hangos útmutató átugrással, saját menü és gesztusok: kiesett, a felolvasó saját működése váltja ki.
 - Gyerek bevezetés (lépésenkénti bemutató, gyakorló kép, tanári tipp): nem kell.
 - Külön leírás oldal (Intro): kiesett, a rövid leírás a galéria kártyáján van.
@@ -94,6 +97,7 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 - Építés: a gyerek oldal (galéria + kép nézet) frontendje kész, backend nélkül, adatfájlból (Code/csanyi-2.0). React + Vite + HeroUI v3 + Tailwind 4. Build rendben, axe 0 hiba (galéria, kép nézet), keskeny képernyőn egy oszlop. Következő: GitHub Pages deploy, majd táblagépes teszt.
 
 ## Nyitott témák (sorrendben)
+0. Töltelék kísérlet (`?mod=kitoltes`): néma elem az üres részen, hogy a VoiceOver ne ugorjon a hangmezőkre. Kilépés kikapcsolt felolvasónál (a kétujjas Z csak VoiceOverrel működik). Kötelező-e a leíró hang a galériához.
 1. A felolvasós simogatás tesztje táblagépen (iPad, Android): kétujjas Z kilépés, az üres rész valóban néma marad-e, a teljes leírás és a hangmező hangja együtt jól hallható-e, az emlékeztető nem zavaró-e.
 2. WCAG a pedagógus oldalon: „Pontok” rajzolóeszköz húzás nélkül (2.5.7); a kiválasztott állapot és a mezőhatárok kontrasztja (1.4.11).
 3. Billentyűzetes fókusz: élőben újranézni a prototípuson.

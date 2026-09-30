@@ -103,6 +103,7 @@ export interface SceneAudioOptions {
 export class SceneAudio {
   private bg: Voice | null = null;
   private field: { id: string; voice: Promise<Voice> } | null = null;
+  private speech: { id: string; voice: Promise<Voice>; ended: boolean } | null = null;
   private started = false;
   private disposed = false;
   private opts: SceneAudioOptions;
@@ -156,9 +157,30 @@ export class SceneAudio {
     this.duck(true);
   }
 
+  /**
+   * Hangmező felvett leírása. Végigszól akkor is, ha az ujj közben lecsúszik a hangmezőről;
+   * másik hangmezőn az előző elhallgat, ugyanazon a hangmezőn nem indul újra, amíg szól.
+   */
+  speak(id: string, sound: Sound): void {
+    if (this.disposed || (this.speech?.id === id && !this.speech.ended)) return;
+    if (this.speech) {
+      const fadeMs = this.opts.fieldFadeMs;
+      void this.speech.voice.then((v) => stop(v, fadeMs));
+    }
+    if (!this.started) void this.start();
+    const speech = { id, voice: play(sound, { loop: false, fadeMs: 10, startGain: sound.volume }), ended: false };
+    void speech.voice.then((v) => (v.src.onended = () => (speech.ended = true)));
+    this.speech = speech;
+  }
+
   /** Kilépés: minden elhalkul. */
   dispose(): void {
     this.disposed = true;
+    if (this.speech) {
+      const fadeMs = this.opts.fadeOutMs;
+      void this.speech.voice.then((v) => stop(v, fadeMs));
+    }
+    this.speech = null;
     if (this.field) {
       const fadeMs = this.opts.fadeOutMs;
       void this.field.voice.then((v) => stop(v, fadeMs));

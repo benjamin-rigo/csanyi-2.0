@@ -14,6 +14,8 @@ export interface SoundField {
   description: string;
   /** null: még nincs hang (linkkel megosztott, félkész projektben lehet) */
   sound: Sound | null;
+  /** Felvett leírás: kikapcsolt felolvasónál ez szól érintésre. */
+  descriptionSound: Sound | null;
   points: Point[];
 }
 
@@ -51,8 +53,6 @@ export interface Config {
     fieldFadeMs: number;
     reminderDelayMs: number;
     reminderMax: number;
-    /** Az üdvözlő cím fókuszálása megnyitás után (az oldal előbb álljon össze). */
-    welcomeFocusDelayMs: number;
     /** Ennyi ideig a hangmezőre ugró fókuszt visszatesszük az üdvözlésre. */
     welcomeSettleMs: number;
   };
@@ -84,7 +84,7 @@ function resolveProject(p: Project): Project {
     ...p,
     image: { ...p.image, src: p.image.src && assetUrl(p.image.src) },
     background: soundOrNull(p.background),
-    fields: p.fields.map((f) => ({ ...f, sound: soundOrNull(f.sound) })),
+    fields: p.fields.map((f) => ({ ...f, sound: soundOrNull(f.sound), descriptionSound: soundOrNull(f.descriptionSound ?? null) })),
   };
 }
 
