@@ -287,6 +287,9 @@ function Scene({ project, config }: { project: Project; config: Config }) {
                 role="img"
                 aria-label={filler}
                 aria-roledescription={filler}
+                // Fókuszálható, de nincs a Tab sorrendben: amikor a VoiceOver rálép, a hangmező elhallgat.
+                tabIndex={-1}
+                onFocus={() => activate(null)}
               />
             )}
             {project.fields.map((f) => (
