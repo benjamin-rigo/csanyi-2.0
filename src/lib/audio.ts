@@ -124,7 +124,9 @@ export class SceneAudio {
     const cueMs = (cue.src.buffer?.duration ?? 0) * 1000;
     window.setTimeout(async () => {
       if (this.disposed) return;
-      this.bg = await play(this.opts.background, { loop: true, fadeMs: this.opts.fadeInMs });
+      const bg = await play(this.opts.background, { loop: true, fadeMs: this.opts.fadeInMs });
+      if (this.disposed) return stop(bg, this.opts.fadeOutMs);
+      this.bg = bg;
       if (this.field) this.duck(true);
     }, cueMs);
   }
@@ -136,12 +138,13 @@ export class SceneAudio {
   }
 
   /** Hangmező szólal meg (vagy null: egyik sem). */
-  async setField(id: string | null, sound: Sound | null): Promise<void> {
+  setField(id: string | null, sound: Sound | null): void {
     if (this.field?.id === id) return;
+    // Az állapotot azonnal frissítjük, a leállítás a hang betöltése után jön: így gyors simításnál sem ragad be hang.
     if (this.field) {
-      const prev = this.field.voice;
+      const fadeMs = this.opts.fieldFadeMs;
+      void this.field.voice.then((v) => stop(v, fadeMs));
       this.field = null;
-      stop(await prev, this.opts.fieldFadeMs);
     }
     if (!id || !sound || this.disposed) {
       this.duck(false);
@@ -153,9 +156,12 @@ export class SceneAudio {
   }
 
   /** Kilépés: minden elhalkul. */
-  async dispose(): Promise<void> {
+  dispose(): void {
     this.disposed = true;
-    if (this.field) stop(await this.field.voice, this.opts.fadeOutMs);
+    if (this.field) {
+      const fadeMs = this.opts.fadeOutMs;
+      void this.field.voice.then((v) => stop(v, fadeMs));
+    }
     this.field = null;
     stop(this.bg, this.opts.fadeOutMs);
     this.bg = null;

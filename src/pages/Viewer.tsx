@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { Button } from '@heroui/react';
 import type { Config, Gallery, Point, Project } from '../lib/data';
@@ -45,18 +45,23 @@ function Scene({ project, config }: { project: Project; config: Config }) {
   const [reminder, setReminder] = useState('');
   const v = config.viewer;
 
-  const audio = useMemo(
-    () =>
-      new SceneAudio({
-        background: project.background,
-        startCue: v.startCue,
-        fadeInMs: v.backgroundFadeInMs,
-        fadeOutMs: v.backgroundFadeOutMs,
-        duckLevel: v.backgroundDuckLevel,
-        fieldFadeMs: v.fieldFadeMs,
-      }),
-    [project, v],
-  );
+  // Az effektben jön létre, hogy leválasztás után (StrictMode, új kép) mindig friss, nem leállított példány legyen.
+  const audioRef = useRef<SceneAudio | null>(null);
+  useEffect(() => {
+    const audio = new SceneAudio({
+      background: project.background,
+      startCue: v.startCue,
+      fadeInMs: v.backgroundFadeInMs,
+      fadeOutMs: v.backgroundFadeOutMs,
+      duckLevel: v.backgroundDuckLevel,
+      fieldFadeMs: v.fieldFadeMs,
+    });
+    audioRef.current = audio;
+    return () => {
+      audio.dispose();
+      audioRef.current = null;
+    };
+  }, [project.background, v]);
 
   const exitText = t(`viewer.exit.${detectPlatform()}`);
   const welcome = t('viewer.welcome', { title: project.title, exit: exitText });
@@ -66,27 +71,28 @@ function Scene({ project, config }: { project: Project; config: Config }) {
     document.title = t('viewer.documentTitle', { title: project.title });
     preload([v.startCue, project.background, ...project.fields.map((f) => f.sound)]);
     const id = window.setTimeout(() => welcomeRef.current?.focus(), 50);
-    return () => {
-      window.clearTimeout(id);
-      void audio.dispose();
-    };
-  }, [audio, project, v.startCue]);
+    return () => window.clearTimeout(id);
+  }, [project, v.startCue]);
 
   // Emlékeztető, ha a gyerek nem talál hangmezőt. Az első találat után soha többé.
   useEffect(() => {
     let count = 0;
     let timer = 0;
+    let show = 0;
     const schedule = () => {
       timer = window.setTimeout(() => {
         if (foundRef.current) return;
         count += 1;
         setReminder('');
-        window.setTimeout(() => setReminder(t('viewer.reminder')), 50);
+        show = window.setTimeout(() => setReminder(t('viewer.reminder')), 50);
         if (count < v.reminderMax) schedule();
       }, v.reminderDelayMs);
     };
     schedule();
-    return () => window.clearTimeout(timer);
+    return () => {
+      window.clearTimeout(timer);
+      window.clearTimeout(show);
+    };
   }, [v.reminderDelayMs, v.reminderMax]);
 
   const activate = useCallback(
@@ -97,9 +103,9 @@ function Scene({ project, config }: { project: Project; config: Config }) {
         foundRef.current = true;
         setReminder('');
       }
-      void audio.setField(field?.id ?? null, field?.sound ?? null);
+      audioRef.current?.setField(field?.id ?? null, field?.sound ?? null);
     },
-    [audio, project.fields],
+    [project.fields],
   );
 
   const exit = useCallback(() => {
@@ -116,11 +122,11 @@ function Scene({ project, config }: { project: Project; config: Config }) {
         exit();
         return;
       }
-      void audio.start();
+      void audioRef.current?.start();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [audio, exit]);
+  }, [exit]);
 
   const hitTest = useCallback(
     (clientX: number, clientY: number) => {
@@ -141,7 +147,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
     if (!frame) return;
     const onStart = (e: TouchEvent) => {
       setTouched(true);
-      void audio.start();
+      void audioRef.current?.start();
       const p = e.touches[0];
       hitTest(p.clientX, p.clientY);
     };
@@ -161,7 +167,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
       frame.removeEventListener('touchend', onEnd);
       frame.removeEventListener('touchcancel', onEnd);
     };
-  }, [activate, audio, hitTest]);
+  }, [activate, hitTest]);
 
   const activeField = project.fields.find((f) => f.id === active);
   const showWelcomeCaption = !touched && !activeField;
@@ -199,7 +205,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
           onPointerDown={(e) => {
             if (e.pointerType === 'mouse') {
               setTouched(true);
-              void audio.start();
+              void audioRef.current?.start();
             }
           }}
           onPointerMove={(e) => e.pointerType === 'mouse' && hitTest(e.clientX, e.clientY)}

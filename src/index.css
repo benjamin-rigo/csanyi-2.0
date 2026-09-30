@@ -183,13 +183,15 @@ body {
 
 .gcard-image {
   height: var(--card-image-h);
-  background: var(--hs-default);
+  padding: var(--space-4) var(--space-4) 0;
+  box-sizing: border-box;
 }
 
+/* A teljes kép látszik, levágás nélkül (döntésnapló). */
 .gcard-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
 
