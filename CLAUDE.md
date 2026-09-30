@@ -68,9 +68,12 @@ docs/design/             a képernyők tervei
 
 ## Állapot
 
-- Kész: gyerek oldal (galéria + képnézet) Supabase-ből; belépési képernyők (6, 6b, 6c, 7). Build rendben, axe 0 hiba.
-- Élő teszt: https://benjamin-rigo.github.io/csanyi-2.0/ (minden main pushra frissül).
-- Következő: Projektjeim (8), Szerkesztő (11, 11b, 11c, 12), Megosztás (13), Első lépések (9a, 9b), Profil (14).
+- Kész: gyerek oldal (galéria + képnézet) Supabase-ből; belépési képernyők (6, 6b, 6c, 7); Projektjeim (8), Új projekt (10); Szerkesztő Hangok füle (11, 11b, 12 saját feltöltéssel, leíró hang felvétele, nagyítás, lefúrós panel). Build rendben, axe 0 hiba (a react-aria saját bejelentő elemén kívül).
+- Élő teszt: https://benjamin-rigo.github.io/csanyi-2.0/ (minden main pushra frissül). Új migrációt a Supabase SQL Editorban kell lefuttatni (a GitHub-integráció nem teszi meg); előtte PGlite-tal helyben kipróbálható.
+- A hangmező alakja `multipolygon` (több rész, lyukak, páros-páratlan kitöltés); a régi `polygon` is érvényes.
+- Lágy szél: `fields.edge_softness`; a képnézet `edgeGain` szerint több hangmezőt szólaltat egyszerre (`SceneAudio.setFields`).
+- Kísérlet folyamatban: töltelék az üres részen (`?mod=kitoltes`, `kitoltes2`, `kitoltes3`), lásd a napló nyitott témáit.
+- Következő: Projekt fül (11c), Megosztás (13); később Pontok eszköz (2.5.7), Freesound könyvtár, Első lépések (9a, 9b), Profil (14).
 - Meghívás: Supabase → Authentication → Users → Invite user. A beépített levélküldés csak teszthez jó; élesben ingyenes SMTP kell (nyitott).
 - A `@heroui/styles` most minden komponens stílusát betölti; később csak a használtakat importáljuk.
 - A nyitott témák listája a napló végén.
