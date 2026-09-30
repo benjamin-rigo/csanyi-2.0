@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { ToggleButton, ToggleButtonGroup } from '@heroui/react';
 import type { Key } from 'react-aria-components';
@@ -8,12 +8,19 @@ import { unlock } from '../lib/audio';
 import { Icon } from '../components/Icon';
 import { SiteFooter, SiteHeader } from '../components/SiteHeader';
 
+/** A legutóbb megnyitott kép: visszatéréskor a fókusz ennek a kártyájára kerül, nem az oldal elejére. */
+let lastOpened: string | null = null;
+
 export function Gallery({ gallery, config }: { gallery: GalleryData; config: Config }) {
   const [category, setCategory] = useState<string>(ALL_CATEGORY);
   const [announcement, setAnnouncement] = useState('');
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
+  // Megnyitáskor a felolvasó az üdvözlő címmel kezd, nem a logóval.
   useEffect(() => {
     document.title = t('gallery.documentTitle');
+    const card = lastOpened && document.querySelector<HTMLElement>(`[data-project="${lastOpened}"] .gcard-link`);
+    (card || titleRef.current)?.focus();
   }, []);
 
   const projects = useMemo(
@@ -35,7 +42,9 @@ export function Gallery({ gallery, config }: { gallery: GalleryData; config: Con
       <SiteHeader config={config} />
       <main className="kid-main">
         <div className="gallery-intro">
-          <h1>{t('gallery.title')}</h1>
+          <h1 ref={titleRef} tabIndex={-1}>
+            {t('gallery.title')}
+          </h1>
           <p>{t('gallery.intro')}</p>
         </div>
 
@@ -82,7 +91,7 @@ export function Gallery({ gallery, config }: { gallery: GalleryData; config: Con
 function ProjectCard({ project }: { project: Project }) {
   const descId = `desc-${project.id}`;
   return (
-    <li className="gcard">
+    <li className="gcard" data-project={project.id}>
       <div className="gcard-image">
         <img src={project.image.src ?? undefined} alt="" width={project.image.width ?? undefined} height={project.image.height ?? undefined} loading="lazy" />
       </div>
@@ -93,7 +102,10 @@ function ProjectCard({ project }: { project: Project }) {
             className="gcard-link"
             aria-describedby={descId}
             // Felolvasóval a kép nézetben már nincs koppintás: a hangot itt oldjuk fel.
-            onClick={() => void unlock()}
+            onClick={() => {
+              lastOpened = project.id;
+              void unlock();
+            }}
           >
             {project.title}
           </Link>

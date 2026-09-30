@@ -17,7 +17,9 @@
     "backgroundDuckLevel": 0.35,
     "fieldFadeMs": 120,
     "reminderDelayMs": 15000,
-    "reminderMax": 2
+    "reminderMax": 2,
+    "welcomeFocusDelayMs": 300,
+    "welcomeSettleMs": 1500
   },
   "auth": {
     "passwordMinLength": 8

@@ -34,6 +34,11 @@ body {
   border: 0;
 }
 
+/* Programból fókuszált címek (felolvasónak): nincs fókuszgyűrű, mert nem kattinthatók */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
 /* A HeroUI másodlagos gomb: átlátszó háttér, 2px fekete keret (döntésnapló) */
 .button.button--outline {
   background: transparent;

@@ -51,6 +51,10 @@ export interface Config {
     fieldFadeMs: number;
     reminderDelayMs: number;
     reminderMax: number;
+    /** Az üdvözlő cím fókuszálása megnyitás után (az oldal előbb álljon össze). */
+    welcomeFocusDelayMs: number;
+    /** Ennyi ideig a hangmezőre ugró fókuszt visszatesszük az üdvözlésre. */
+    welcomeSettleMs: number;
   };
 }
 

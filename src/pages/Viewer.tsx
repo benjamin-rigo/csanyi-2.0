@@ -47,7 +47,8 @@ export function Viewer({ gallery, config }: { gallery: Gallery; config: Config }
 function Scene({ project, config }: { project: Project; config: Config }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const welcomeRef = useRef<HTMLParagraphElement>(null);
+  const welcomeRef = useRef<HTMLHeadingElement>(null);
+  const openedAt = useRef(0);
   const frameRef = useRef<HTMLDivElement>(null);
   const foundRef = useRef(false);
   const [active, setActive] = useState<string | null>(null);
@@ -83,9 +84,12 @@ function Scene({ project, config }: { project: Project; config: Config }) {
   useEffect(() => {
     document.title = t('viewer.documentTitle', { title: project.title });
     preload([v.startCue, project.background, ...project.fields.map((f) => f.sound)].filter((s): s is Sound => s !== null));
-    const id = window.setTimeout(() => welcomeRef.current?.focus(), 50);
+    openedAt.current = performance.now();
+    const id = window.setTimeout(() => welcomeRef.current?.focus(), v.welcomeFocusDelayMs);
     return () => window.clearTimeout(id);
-  }, [project, v.startCue]);
+  }, [project, v.startCue, v.welcomeFocusDelayMs]);
+
+
 
   // Emlékeztető, ha a gyerek nem talál hangmezőt. Az első találat után soha többé.
   useEffect(() => {
@@ -119,6 +123,18 @@ function Scene({ project, config }: { project: Project; config: Config }) {
       audioRef.current?.setField(field?.id ?? null, field?.sound ?? null);
     },
     [project.fields],
+  );
+
+  // iPaden a VoiceOver megnyitás után a koppintás helyén lévő hangmezőre ugorhat; ilyenkor vissza az üdvözléshez.
+  const onFieldFocus = useCallback(
+    (fieldId: string, e: React.FocusEvent) => {
+      if (e.timeStamp - openedAt.current < v.welcomeSettleMs) {
+        welcomeRef.current?.focus();
+        return;
+      }
+      activate(fieldId);
+    },
+    [activate, v.welcomeSettleMs],
   );
 
   const exit = useCallback(() => {
@@ -203,12 +219,13 @@ function Scene({ project, config }: { project: Project; config: Config }) {
           <Icon name="back" />
           {t('viewer.back')}
         </Button>
-        <h1 className="viewer-title">{project.title}</h1>
+        {/* A felolvasó a teljes üdvözlést hallja (benne a cím), a látó gyerek a címet látja. */}
+        <h1 ref={welcomeRef} tabIndex={-1} className="viewer-title">
+          <span className="sr-only">{welcome}</span>
+          <span aria-hidden="true">{project.title}</span>
+        </h1>
       </header>
 
-      <p ref={welcomeRef} tabIndex={-1} className="sr-only welcome">
-        {welcome}
-      </p>
 
       <div className="scene">
         <div
@@ -241,7 +258,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
                 aria-label={f.description}
                 tabIndex={0}
                 className={`field${f.id === active ? ' is-active' : ''}`}
-                onFocus={() => activate(f.id)}
+                onFocus={(e) => onFieldFocus(f.id, e)}
               />
             ))}
           </svg>
