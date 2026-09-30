@@ -363,7 +363,7 @@ body {
   outline: none;
 }
 
-.field:focus-visible {
+[data-input="keyboard"] .field:focus-visible {
   stroke: var(--focus);
   stroke-width: var(--field-focus-stroke);
   vector-effect: non-scaling-stroke;

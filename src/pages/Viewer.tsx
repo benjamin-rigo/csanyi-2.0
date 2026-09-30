@@ -51,10 +51,14 @@ function Scene({ project, config }: { project: Project; config: Config }) {
   const openedAt = useRef(0);
   const frameRef = useRef<HTMLDivElement>(null);
   const foundRef = useRef(false);
+  const activeRef = useRef<string | null>(null);
   const [active, setActive] = useState<string | null>(null);
   const [touched, setTouched] = useState(false);
   const [reminder, setReminder] = useState('');
+  const [spoken, setSpoken] = useState('');
   const v = config.viewer;
+  // Kísérlet (?mod=kozvetlen): a VoiceOver átengedi az érintést a képnek, a leírást élő bejelentés mondja el.
+  const direct = new URLSearchParams(location.search).get('mod') === 'kozvetlen';
   // Kép nélküli (félkész, linkkel megosztott) projektnél is legyen képarány.
   const imgW = project.image.width ?? 4;
   const imgH = project.image.height ?? 3;
@@ -89,7 +93,19 @@ function Scene({ project, config }: { project: Project; config: Config }) {
     return () => window.clearTimeout(id);
   }, [project, v.startCue, v.welcomeFocusDelayMs]);
 
-
+  // A hangmező fókuszkerete csak billentyűzettel látszik; érintésnél és felolvasóval zavaró.
+  useEffect(() => {
+    const root = document.documentElement;
+    const onKey = () => (root.dataset.input = 'keyboard');
+    const onPointer = () => delete root.dataset.input;
+    window.addEventListener('keydown', onKey, true);
+    window.addEventListener('pointerdown', onPointer, true);
+    return () => {
+      window.removeEventListener('keydown', onKey, true);
+      window.removeEventListener('pointerdown', onPointer, true);
+      delete root.dataset.input;
+    };
+  }, []);
 
   // Emlékeztető, ha a gyerek nem talál hangmezőt. Az első találat után soha többé.
   useEffect(() => {
@@ -120,9 +136,15 @@ function Scene({ project, config }: { project: Project; config: Config }) {
         foundRef.current = true;
         setReminder('');
       }
+      if (direct && field && field.id !== activeRef.current) {
+        // Ugyanaz a szöveg újra: előbb ürítjük, hogy a felolvasó ismét bemondja.
+        setSpoken('');
+        requestAnimationFrame(() => setSpoken(field.description));
+      }
+      activeRef.current = field?.id ?? null;
       audioRef.current?.setField(field?.id ?? null, field?.sound ?? null);
     },
-    [project.fields],
+    [direct, project.fields],
   );
 
   // iPaden a VoiceOver megnyitás után a koppintás helyén lévő hangmezőre ugorhat; ilyenkor vissza az üdvözléshez.
@@ -213,8 +235,9 @@ function Scene({ project, config }: { project: Project; config: Config }) {
   ) : null;
 
   return (
-    <main className="viewer">
-      <header className="viewer-header">
+    // Nincs main és header tájékozódási pont: a felolvasó különben „központi jellegzetes hely”-et mond.
+    <div className="viewer">
+      <div className="viewer-header">
         <Button variant="outline" className="btn-on-dark" onPress={exit}>
           <Icon name="back" />
           {t('viewer.back')}
@@ -224,14 +247,15 @@ function Scene({ project, config }: { project: Project; config: Config }) {
           <span className="sr-only">{welcome}</span>
           <span aria-hidden="true">{project.title}</span>
         </h1>
-      </header>
-
+      </div>
 
       <div className="scene">
         <div
           ref={frameRef}
           className="scene-frame"
           style={{ '--ratio': `${imgW} / ${imgH}` } as React.CSSProperties}
+          role={direct ? 'application' : undefined}
+          aria-label={direct ? t('viewer.welcomeCaption') : undefined}
           onPointerDown={(e) => {
             if (e.pointerType === 'mouse') {
               setTouched(true);
@@ -245,6 +269,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
           <svg
             viewBox={`0 0 ${imgW} ${imgH}`}
             role="none"
+            aria-hidden={direct || undefined}
             focusable="false"
             onBlur={(e) => {
               if (!e.currentTarget.contains(e.relatedTarget as Node | null)) activate(null);
@@ -254,11 +279,11 @@ function Scene({ project, config }: { project: Project; config: Config }) {
               <polygon
                 key={f.id}
                 points={f.points.map((p) => p.join(',')).join(' ')}
-                role="img"
-                aria-label={f.description}
-                tabIndex={0}
+                role={direct ? undefined : 'img'}
+                aria-label={direct ? undefined : f.description}
+                tabIndex={direct ? undefined : 0}
                 className={`field${f.id === active ? ' is-active' : ''}`}
-                onFocus={(e) => onFieldFocus(f.id, e)}
+                onFocus={direct ? undefined : (e) => onFieldFocus(f.id, e)}
               />
             ))}
           </svg>
@@ -273,6 +298,11 @@ function Scene({ project, config }: { project: Project; config: Config }) {
       <p className="sr-only" aria-live="polite">
         {reminder}
       </p>
-    </main>
+      {direct && (
+        <p className="sr-only" aria-live="assertive">
+          {spoken}
+        </p>
+      )}
+    </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { ToggleButton, ToggleButtonGroup } from '@heroui/react';
 import type { Key } from 'react-aria-components';
 import { ALL_CATEGORY, type Config, type Gallery as GalleryData, type Project } from '../lib/data';
@@ -90,6 +90,8 @@ export function Gallery({ gallery, config }: { gallery: GalleryData; config: Con
 
 function ProjectCard({ project }: { project: Project }) {
   const descId = `desc-${project.id}`;
+  // A kísérleti mód (?mod=...) a kép nézetbe is átmegy.
+  const { search } = useLocation();
   return (
     <li className="gcard" data-project={project.id}>
       <div className="gcard-image">
@@ -98,7 +100,7 @@ function ProjectCard({ project }: { project: Project }) {
       <div className="gcard-body">
         <h2 className="gcard-title">
           <Link
-            to={`/kep/${project.id}`}
+            to={`/kep/${project.id}${search}`}
             className="gcard-link"
             aria-describedby={descId}
             // Felolvasóval a kép nézetben már nincs koppintás: a hangot itt oldjuk fel.
