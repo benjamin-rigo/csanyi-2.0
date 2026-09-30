@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, type ReactNode } from 'react';
+import { StrictMode, useEffect, useRef, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router';
 import './index.css';
@@ -47,7 +47,11 @@ function RequireAuth({ children }: { children: ReactNode }) {
 /** A meghívó levél linkje a főoldalra jön; innen a Fiók beállítására, a jelszó-visszaállítóé az Új jelszóra. */
 function AuthLinkRedirect() {
   const navigate = useNavigate();
+  // Csak induláskor: a navigate minden oldalváltáskor új függvény, és különben visszadobna ide.
+  const done = useRef(false);
   useEffect(() => {
+    if (done.current) return;
+    done.current = true;
     if (authLinkType === 'invite') navigate('/fiok-beallitasa', { replace: true });
     else if (authLinkType === 'recovery') navigate('/uj-jelszo', { replace: true });
   }, [navigate]);
