@@ -22,7 +22,7 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 - React 19, Vite, TypeScript, react-router 7.
 - **HeroUI v3** (`@heroui/react`, `@heroui/styles`, React Aria alapon) és Tailwind 4. Ahol van HeroUI komponens, azt használd, saját komponens csak ha nincs.
 - Backend: **Supabase** (ingyenes csomag), még nincs bekötve. A gyerek oldal most a `public/data/*.json` fájlokból olvas; a `src/lib/data.ts` felülete maradjon ugyanaz, amikor Supabase-re váltunk.
-- Deploy: Vercel (`vercel.json` kezeli a kliensoldali útvonalakat).
+- Deploy: egyelőre **GitHub Pages** (`.github/workflows/deploy.yml`), Vercel most nem. Az alapcímet (`/<repó neve>/`) a workflow adja át `BASE_PATH`-ként; ezért minden fájlra `assetUrl()`-lel (`src/lib/data.ts`) hivatkozz, az adatfájlokban az utak relatívak, a router `basename`-et kap. Közvetlen útvonalakhoz a build `dist/404.html`-t is készít.
 
 ## Semmi nincs beégetve
 
@@ -64,7 +64,7 @@ docs/design/             a képernyők tervei
 ## Állapot
 
 - Kész: gyerek oldal (galéria + képnézet), adatfájlból. Build rendben, axe 0 hiba.
-- Következő: GitHub + Vercel, tablet teszt felolvasóval (iPad VoiceOver, Android TalkBack), utána a pedagógus oldal (6–14) Supabase-szel.
+- Következő: GitHub Pages, tablet teszt felolvasóval (iPad VoiceOver, Android TalkBack), utána a pedagógus oldal (6–14) Supabase-szel.
 - A `@heroui/styles` most minden komponens stílusát betölti; később csak a használtakat importáljuk.
 - A nyitott témák listája a napló végén.
 

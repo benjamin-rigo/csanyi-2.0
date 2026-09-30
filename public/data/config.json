@@ -8,7 +8,7 @@
     "terms": "#"
   },
   "viewer": {
-    "startCue": { "src": "/sounds/indito-jel.mp3", "volume": 0.6 },
+    "startCue": { "src": "sounds/indito-jel.mp3", "volume": 0.6 },
     "backgroundFadeInMs": 2500,
     "backgroundFadeOutMs": 600,
     "backgroundDuckLevel": 0.35,

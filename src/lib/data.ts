@@ -54,6 +54,31 @@ export interface Config {
 /** Az „Összes kép” kategória azonosítója: ez nem szűr. */
 export const ALL_CATEGORY = 'all';
 
+/** A telepítési alapcímhez igazított URL (pl. GitHub Pages: /csanyi-2.0/). Az adatfájlokban az utak relatívak. */
+export function assetUrl(path: string): string {
+  return import.meta.env.BASE_URL + path.replace(/^\//, '');
+}
+
+function withBase(sound: Sound): Sound {
+  return { ...sound, src: assetUrl(sound.src) };
+}
+
+function resolveGallery(g: Gallery): Gallery {
+  return {
+    ...g,
+    projects: g.projects.map((p) => ({
+      ...p,
+      image: { ...p.image, src: assetUrl(p.image.src) },
+      background: withBase(p.background),
+      fields: p.fields.map((f) => ({ ...f, sound: withBase(f.sound) })),
+    })),
+  };
+}
+
+function resolveConfig(c: Config): Config {
+  return { ...c, viewer: { ...c.viewer, startCue: withBase(c.viewer.startCue) } };
+}
+
 const cache = new Map<string, Promise<unknown>>();
 
 function load<T>(url: string): Promise<T> {
@@ -76,8 +101,10 @@ export function useData(): State<{ gallery: Gallery; config: Config }> {
   const [state, setState] = useState<State<{ gallery: Gallery; config: Config }>>({ status: 'loading' });
   useEffect(() => {
     let alive = true;
-    Promise.all([load<Gallery>('/data/gallery.json'), load<Config>('/data/config.json')])
-      .then(([gallery, config]) => alive && setState({ status: 'ready', data: { gallery, config } }))
+    Promise.all([load<Gallery>(assetUrl('data/gallery.json')), load<Config>(assetUrl('data/config.json'))])
+      .then(([gallery, config]) =>
+        alive && setState({ status: 'ready', data: { gallery: resolveGallery(gallery), config: resolveConfig(config) } }),
+      )
       .catch(() => alive && setState({ status: 'error' }));
     return () => {
       alive = false;

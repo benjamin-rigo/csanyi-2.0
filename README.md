@@ -19,4 +19,4 @@ npm run dev
 
 ## Deploy
 
-Vercel: a `vercel.json` gondoskodik róla, hogy a `/kep/...` címek frissítéskor is működjenek.
+GitHub Pages, a `.github/workflows/deploy.yml` workflow-val: minden `main` pushra buildel és kitesz. A repó nevét alapcímként adja át (`BASE_PATH`), a build a `404.html`-be is bemásolja az appot, így a `/kep/...` címek frissítéskor is működnek. Egyszeri beállítás: a repó Settings → Pages → Source: **GitHub Actions**. Ingyenes fiókkal a Pages csak nyilvános repóval működik.

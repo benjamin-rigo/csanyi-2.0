@@ -10,7 +10,7 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 - Stack: Supabase; HeroUI v3 mindkét oldalon, fehér alapon fekete.
 - Supabase ingyenes csomag: időnkénti ping, hogy ne álljon le (később).
 - Csak ingyenes megoldások (fizetős API, havidíj nem).
-- Kód helye: új mappa a gép Code mappájában (csanyi-2.0, GitHub: benjamin-rigo/csanyi-2.0), innen Vercelre a teszthez. Semmi nincs a kódba égetve: szövegek, adatok és tokenek külön fájlban.
+- Kód helye: új mappa a gép Code mappájában (csanyi-2.0, GitHub: benjamin-rigo/csanyi-2.0), innen egyelőre GitHub Pagesre a teszthez (Vercel most nem). Semmi nincs a kódba égetve: szövegek, adatok és tokenek külön fájlban.
 
 ## Vizuális rendszer (tokenek)
 - Szellős oldalak, hangsúlyos gombok, szigorú konzisztencia. Semmi nincs beégetve: minden érték tokenből jön.
@@ -91,7 +91,7 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 ## Állapot
 - A váz 18 képernyővel a fenti tokenekkel (a leírás oldal kikerült).
 - WCAG 2.2 AA ellenőrzés lefutott (axe-core 4.13 + kézi). Automatikusan 0 valódi hiba. Elfogadva: háttérhang első érintésre, fókusz a kategórián marad. Most nem kell: kiválasztott állapot fekete kerete, mezők alsó vonala. Fejlesztési feladat: keskeny képernyőn egy oszlop (1.4.10).
-- Építés: a gyerek oldal (galéria + kép nézet) frontendje kész, backend nélkül, adatfájlból (Code/csanyi-2.0). React + Vite + HeroUI v3 + Tailwind 4. Build rendben, axe 0 hiba (galéria, kép nézet), keskeny képernyőn egy oszlop. Következő: Vercel deploy, majd táblagépes teszt.
+- Építés: a gyerek oldal (galéria + kép nézet) frontendje kész, backend nélkül, adatfájlból (Code/csanyi-2.0). React + Vite + HeroUI v3 + Tailwind 4. Build rendben, axe 0 hiba (galéria, kép nézet), keskeny képernyőn egy oszlop. Következő: GitHub Pages deploy, majd táblagépes teszt.
 
 ## Nyitott témák (sorrendben)
 1. A felolvasós simogatás tesztje táblagépen (iPad, Android): kétujjas Z kilépés, az üres rész valóban néma marad-e, a teljes leírás és a hangmező hangja együtt jól hallható-e, az emlékeztető nem zavaró-e.
