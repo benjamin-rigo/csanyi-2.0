@@ -1292,9 +1292,23 @@ body {
   font-size: var(--text-sm);
 }
 
-.panel-sticky {
+/* A panel fülsora és alatta a visszagomb görgetéskor is fent marad (fontos navigáció). */
+.editor-panel {
+  --panel-tabs-h: calc(var(--space-6) + var(--control-sm) + 2 * var(--space-1) + var(--space-2));
+}
+
+.editor-panel .segmented > .tabs__list-container {
   position: sticky;
   top: calc(-1 * var(--space-6));
+  z-index: 2;
+  margin: calc(-1 * var(--space-6)) calc(-1 * var(--space-6)) 0;
+  padding: var(--space-6) var(--space-6) var(--space-2);
+  background: var(--hs-surface);
+}
+
+.panel-sticky {
+  position: sticky;
+  top: calc(var(--panel-tabs-h) - var(--space-6));
   z-index: 1;
   margin: calc(-1 * var(--space-2)) calc(-1 * var(--space-6)) 0;
   padding: var(--space-2) var(--space-6);
