@@ -183,7 +183,7 @@
       "undo": "Visszavonás",
       "redo": "Újra",
       "canvasHintNew": "Fess a képre: új hangmező jön létre.",
-      "canvasHintSelected": "Fesd ki, hol van a(z) {name} a képen.",
+      "canvasHintSelected": "Fesd ki a képen, hol van a kijelölt hangmező.",
       "panelLabel": "Beállítások",
       "tabsLabel": "Szerkesztő panel",
       "tabs": {

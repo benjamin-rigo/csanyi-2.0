@@ -62,7 +62,8 @@ export function traceMask(ctx: CanvasRenderingContext2D, scale: number): Point[]
         const out = next.get(v);
         v = out!.pop()!;
       } while (v !== start);
-      const simple = simplifyLoop(loop, 0.8);
+      // A pixelhatár lépcsős: előbb kiegyenesítjük, aztán a sarkokat lekerekítjük.
+      const simple = chaikin(simplifyLoop(loop, 1.2), 2);
       if (simple.length >= 3 && Math.abs(area(simple)) >= 4) {
         loops.push(simple.map(([x, y]) => [round(x / scale), round(y / scale)]));
       }
@@ -119,4 +120,19 @@ function simplifyLoop(loop: Point[], eps: number): Point[] {
   const a = simplify(loop.slice(0, far + 1), eps);
   const b = simplify([...loop.slice(far), loop[0]], eps);
   return [...a.slice(0, -1), ...b.slice(0, -1)];
+}
+
+/** Chaikin-féle sarokvágás zárt körvonalon: minden lépés lágyabb, lekerekített alakot ad. */
+function chaikin(loop: Point[], iterations: number): Point[] {
+  let pts = loop;
+  for (let n = 0; n < iterations; n++) {
+    const next: Point[] = [];
+    for (let i = 0; i < pts.length; i++) {
+      const [ax, ay] = pts[i];
+      const [bx, by] = pts[(i + 1) % pts.length];
+      next.push([0.75 * ax + 0.25 * bx, 0.75 * ay + 0.25 * by], [0.25 * ax + 0.75 * bx, 0.25 * ay + 0.75 * by]);
+    }
+    pts = next;
+  }
+  return pts;
 }

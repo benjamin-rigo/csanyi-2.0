@@ -280,7 +280,7 @@ export function Editor({ config }: { config: Config }) {
           </div>
           <p className="canvas-hint">
             {selectedField
-              ? t('teacher.editor.canvasHintSelected', { name: selectedField.name.trim() || t('teacher.editor.fields.untitled') })
+              ? t('teacher.editor.canvasHintSelected')
               : t('teacher.editor.canvasHintNew')}
             <span id="zoom-hint" className="canvas-hint-zoom">
               {t('teacher.editor.zoom.hint')}
