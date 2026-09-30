@@ -103,11 +103,14 @@ export function SoundsPanel({
     }
   }, [selectionKey]);
 
+  // Görgetéskor is a panel tetején marad, hogy ne kelljen visszagörgetni a visszalépéshez.
   const back = (
-    <Button variant="ghost" size="sm" className="panel-back" aria-label={t('teacher.editor.panelBackLabel')} onPress={() => onSelect(null)}>
-      <Icon name="back" size={16} />
-      {t('teacher.editor.panelBack')}
-    </Button>
+    <div className="panel-sticky">
+      <Button variant="ghost" size="sm" className="panel-back" aria-label={t('teacher.editor.panelBackLabel')} onPress={() => onSelect(null)}>
+        <Icon name="back" size={16} />
+        {t('teacher.editor.panelBack')}
+      </Button>
+    </div>
   );
 
   if (selection?.kind === 'background' && bg) {

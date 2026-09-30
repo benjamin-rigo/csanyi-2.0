@@ -1292,6 +1292,16 @@ body {
   font-size: var(--text-sm);
 }
 
+.panel-sticky {
+  position: sticky;
+  top: calc(-1 * var(--space-6));
+  z-index: 1;
+  margin: calc(-1 * var(--space-2)) calc(-1 * var(--space-6)) 0;
+  padding: var(--space-2) var(--space-6);
+  background: var(--hs-surface);
+  border-bottom: var(--border-thin) solid var(--hs-border);
+}
+
 .panel-back.button {
   align-self: flex-start;
   margin-inline-start: calc(-1 * var(--space-3));
