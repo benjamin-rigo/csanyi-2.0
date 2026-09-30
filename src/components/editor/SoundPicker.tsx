@@ -5,16 +5,18 @@ import { AUDIO_TYPES, uploadSound, type EditorSound } from '../../lib/editor';
 import { t } from '../../lib/i18n';
 import { FormError } from '../AuthFields';
 import { Icon } from '../Icon';
+import { LibraryTab } from './LibraryTab';
 import { PlayButton, stopPreview } from './SoundCard';
 
 type DropEvent = Parameters<NonNullable<DropZoneProps['onDrop']>>[0];
 type Errors = { file?: string; name?: string; form?: string };
 
-/** Hang kiválasztása (12): egyelőre saját feltöltés; a Freesound könyvtár később. */
+/** Hang kiválasztása (12): Freesound könyvtár (CC0) vagy saját feltöltés. */
 export function SoundPicker({
   isOpen,
   onOpenChange,
   target,
+  initialQuery,
   userId,
   maxMb,
   onPick,
@@ -22,6 +24,8 @@ export function SoundPicker({
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   target: string;
+  /** A keresés ezzel indul (a hangmező neve). */
+  initialQuery: string;
   userId: string;
   maxMb: number;
   onPick: (sound: EditorSound) => void;
@@ -30,6 +34,7 @@ export function SoundPicker({
   const [name, setName] = useState('');
   const [errors, setErrors] = useState<Errors>({});
   const [pending, setPending] = useState(false);
+  const [tab, setTab] = useState<'library' | 'own'>('library');
 
   useEffect(() => () => void (picked && URL.revokeObjectURL(picked.url)), [picked]);
 
@@ -55,6 +60,7 @@ export function SoundPicker({
   function close(open: boolean) {
     stopPreview();
     if (!open) {
+      setTab('library');
       setPicked(null);
       setName('');
       setErrors({});
@@ -103,10 +109,10 @@ export function SoundPicker({
             </Modal.Header>
             <Form onSubmit={submit} validationBehavior="aria">
               <Modal.Body className="modal-body">
-                <Tabs defaultSelectedKey="own" className="segmented">
+                <Tabs selectedKey={tab} onSelectionChange={(k) => setTab(k as 'library' | 'own')} className="segmented">
                   <Tabs.ListContainer>
                     <Tabs.List aria-label={t('teacher.editor.picker.tabsLabel')}>
-                      <Tabs.Tab id="library" isDisabled aria-describedby="library-soon">
+                      <Tabs.Tab id="library">
                         {t('teacher.editor.picker.library')}
                         <Tabs.Indicator />
                       </Tabs.Tab>
@@ -116,10 +122,16 @@ export function SoundPicker({
                       </Tabs.Tab>
                     </Tabs.List>
                   </Tabs.ListContainer>
-                  <p id="library-soon" className="soon-note">
-                    {t('teacher.editor.picker.librarySoon')}
-                  </p>
-                  <Tabs.Panel id="library">{null}</Tabs.Panel>
+                  <Tabs.Panel id="library">
+                    <LibraryTab
+                      initialQuery={initialQuery}
+                      userId={userId}
+                      onPick={(sound) => {
+                        onPick(sound);
+                        close(false);
+                      }}
+                    />
+                  </Tabs.Panel>
                   <Tabs.Panel id="own" className="picker-panel">
                     <div className="dropzone-field">
                       <DropZone
@@ -175,9 +187,11 @@ export function SoundPicker({
                 <Button variant="outline" slot="close">
                   {t('teacher.editor.picker.cancel')}
                 </Button>
-                <Button type="submit" isPending={pending}>
-                  {t('teacher.editor.picker.choose')}
-                </Button>
+                {tab === 'own' && (
+                  <Button type="submit" isPending={pending}>
+                    {t('teacher.editor.picker.choose')}
+                  </Button>
+                )}
               </Modal.Footer>
             </Form>
           </Modal.Dialog>

@@ -400,6 +400,7 @@ export function Editor({ config }: { config: Config }) {
         isOpen={picker !== null}
         onOpenChange={(open) => !open && setPicker(null)}
         target={pickerTarget}
+        initialQuery={picker && picker !== 'background' ? (project.fields.find((f) => f.id === picker)?.name.trim() ?? '') : ''}
         userId={userId}
         maxMb={config.upload.soundMaxMb}
         onPick={onPickSound}

@@ -163,15 +163,22 @@ const EXT: Record<string, string> = {
 
 export const AUDIO_TYPES = Object.keys(EXT);
 
+type SoundMeta = { source: 'upload' | 'library'; license: string | null; attribution: string | null };
+
 /** Hang feltöltése a saját mappába és a hangok közé. */
-export async function uploadSound(userId: string, blob: Blob, title: string): Promise<EditorSound> {
+export async function uploadSound(
+  userId: string,
+  blob: Blob,
+  title: string,
+  meta: SoundMeta = { source: 'upload', license: null, attribution: null },
+): Promise<EditorSound> {
   const type = blob.type.split(';')[0];
   const ext = EXT[type] ?? 'bin';
   const [path, duration] = await Promise.all([uploadFile('sounds', userId, blob, ext), durationMs(blob)]);
   const { data } = await check(
     supabase
       .from('sounds')
-      .insert({ owner_id: userId, title, path, source: 'upload', duration_ms: duration })
+      .insert({ owner_id: userId, title, path, duration_ms: duration, ...meta })
       .select(SOUND)
       .single(),
   );
@@ -244,4 +251,36 @@ export function useAutosave(delayMs: number) {
   }, [flush]);
 
   return { status, schedule, track };
+}
+
+export interface LibraryResult {
+  id: number;
+  name: string;
+  durationMs: number;
+  username: string;
+  preview: string;
+}
+
+/** Keresés a Freesound CC0 hangjai között (Supabase függvényen át, a kulcs ott marad). */
+export async function searchLibrary(query: string, page: number): Promise<{ count: number; next: boolean; results: LibraryResult[] }> {
+  const { data, error } = await supabase.functions.invoke('freesound', { body: { query, page } });
+  if (error) throw error;
+  return data;
+}
+
+/** A Freesound fájlnevekből olvasható cím: kiterjesztés, aláhúzás és kötőjel nélkül. */
+export function libraryTitle(name: string): string {
+  return name.replace(/\.[a-z0-9]{2,4}$/i, '').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+/** A kiválasztott könyvtári hangot a saját tárhelyünkre másoljuk, így a projekt nem függ a Freesoundtól. */
+export async function importLibrarySound(userId: string, result: LibraryResult): Promise<EditorSound> {
+  const res = await fetch(result.preview);
+  if (!res.ok) throw new Error(`Freesound: ${res.status}`);
+  const blob = await res.blob();
+  return uploadSound(userId, new Blob([blob], { type: 'audio/mpeg' }), libraryTitle(result.name), {
+    source: 'library',
+    license: 'CC0',
+    attribution: `${result.username} · https://freesound.org/s/${result.id}/`,
+  });
 }

@@ -257,7 +257,6 @@
         "tabsLabel": "Hang forrása",
         "library": "Könyvtár",
         "own": "Saját feltöltés",
-        "librarySoon": "Hamarosan: szabadon felhasználható (CC0) hangok a Freesound könyvtárából.",
         "drop": "Húzd ide a hangfájlt",
         "or": " vagy",
         "browse": "Tallózás",
@@ -273,7 +272,19 @@
           "fileSize": "A hang legfeljebb {mb} MB lehet.",
           "nameRequired": "Adj nevet a hangnak.",
           "generic": "Nem sikerült feltölteni a hangot. Próbáld újra."
-        }
+        },
+        "searchLabel": "Keresés a hangkönyvtárban",
+        "searchHelp": "Angolul több találat van, például: cat, bird, door, rain.",
+        "resultsLabel": "Találatok",
+        "count": "{count} találat, csak szabadon felhasználható (CC0) hangok",
+        "noResults": "Nincs találat. Próbáld angolul vagy más szóval.",
+        "searching": "Keresés…",
+        "libraryError": "A hangkönyvtár most nem érhető el. Próbáld újra később, vagy tölts fel saját hangot.",
+        "select": "Kiválasztás",
+        "selectLabel": "{title} kiválasztása",
+        "playing": "szól",
+        "more": "Több találat",
+        "importError": "Nem sikerült átvenni a hangot. Próbáld újra."
       },
       "panelBack": "Hangok",
       "panelBackLabel": "Vissza a hangokhoz",

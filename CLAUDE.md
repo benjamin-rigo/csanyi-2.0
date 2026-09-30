@@ -72,6 +72,7 @@ docs/design/             a képernyők tervei
 - Élő teszt: https://benjamin-rigo.github.io/csanyi-2.0/ (minden main pushra frissül). Új migrációt a Supabase SQL Editorban kell lefuttatni (a GitHub-integráció nem teszi meg); előtte PGlite-tal helyben kipróbálható.
 - A hangmező alakja `multipolygon` (több rész, lyukak, páros-páratlan kitöltés); a régi `polygon` is érvényes.
 - Lágy szél: `fields.edge_softness`; a képnézet `edgeGain` szerint több hangmezőt szólaltat egyszerre (`SceneAudio.setFields`).
+- Freesound: `supabase/functions/freesound` (Edge Function, titok: `FREESOUND_API_KEY`), a Supabase felületén kell telepíteni; csak CC0, a kiválasztott hang a saját tárhelyre másolódik.
 - Kísérlet folyamatban: töltelék az üres részen (`?mod=kitoltes`, `kitoltes2`, `kitoltes3`), lásd a napló nyitott témáit.
 - Következő: Projekt fül (11c), Megosztás (13); később Pontok eszköz (2.5.7), Freesound könyvtár, Első lépések (9a, 9b), Profil (14).
 - Meghívás: Supabase → Authentication → Users → Invite user. A beépített levélküldés csak teszthez jó; élesben ingyenes SMTP kell (nyitott).
