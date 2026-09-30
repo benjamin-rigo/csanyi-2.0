@@ -66,17 +66,24 @@ docs/dontesnaplo.md      döntésnapló (fő példány)
 docs/design/             a képernyők tervei
 ```
 
-## Állapot
+## Állapot (2026-09-30 este)
 
-- Kész: gyerek oldal (galéria + képnézet) Supabase-ből; belépési képernyők (6, 6b, 6c, 7); Projektjeim (8), Új projekt (10); Szerkesztő Hangok füle (11, 11b, 12 saját feltöltéssel, leíró hang felvétele, nagyítás, lefúrós panel). Build rendben, axe 0 hiba (a react-aria saját bejelentő elemén kívül).
-- Élő teszt: https://benjamin-rigo.github.io/csanyi-2.0/ (minden main pushra frissül). Új migrációt a Supabase SQL Editorban kell lefuttatni (a GitHub-integráció nem teszi meg); előtte PGlite-tal helyben kipróbálható.
+- Kész: gyerek oldal (galéria + képnézet) Supabase-ből; belépés (6, 6b, 6c, 7); Projektjeim (8), Új projekt (10); Szerkesztő Hangok füle (11, 11b): ecset, radír, nagyítás, visszavonás (Cmd/Ctrl+Z), lefúrós panel rögzített fülsorral, a cím maga a szerkeszthető név; hangválasztó (12): Freesound CC0 automatikus fordítással és továbbtöltéssel, saját feltöltés; leíró hang felvétele; lágy szél. Build rendben, axe 0 hiba (a react-aria saját bejelentő elemén kívül).
+- Élő teszt: https://benjamin-rigo.github.io/csanyi-2.0/ (minden main pushra frissül). Élesben lefutott mind az öt migráció, a `freesound` függvény telepítve, a `FREESOUND_API_KEY` titok beállítva (ellenőrizve: „macska” → cat, 7530 találat).
+- Új migrációt a Supabase SQL Editorban kell lefuttatni (a GitHub-integráció nem teszi meg); előtte PGlite-tal helyben kipróbálható. Új függvényváltozatot a Supabase felületén kell újratelepíteni (Edge Functions → freesound → Code → Deploy).
 - A hangmező alakja `multipolygon` (több rész, lyukak, páros-páratlan kitöltés); a régi `polygon` is érvényes.
 - Lágy szél: `fields.edge_softness`; a képnézet `edgeGain` szerint több hangmezőt szólaltat egyszerre (`SceneAudio.setFields`).
-- Freesound: `supabase/functions/freesound` (Edge Function, titok: `FREESOUND_API_KEY`), a Supabase felületén kell telepíteni; csak CC0, a kiválasztott hang a saját tárhelyre másolódik.
-- Kísérlet folyamatban: töltelék az üres részen (`?mod=kitoltes`, `kitoltes2`, `kitoltes3`), lásd a napló nyitott témáit.
-- Következő: Projekt fül (11c), Megosztás (13); később Pontok eszköz (2.5.7), Freesound könyvtár, Első lépések (9a, 9b), Profil (14).
+- Freesound: `supabase/functions/freesound` (Edge Function, titok: `FREESOUND_API_KEY`); csak CC0, a keresőszót MyMemory fordítja angolra, a kiválasztott hang a saját tárhelyre másolódik.
+- Kísérlet folyamatban: töltelék az üres részen (`?mod=kitoltes`, `kitoltes2`, `kitoltes3`); iPaden a „kép” szó eltűnt-e még nem derült ki a szerep-változatokkal.
 - Meghívás: Supabase → Authentication → Users → Invite user. A beépített levélküldés csak teszthez jó; élesben ingyenes SMTP kell (nyitott).
-- A `@heroui/styles` most minden komponens stílusát betölti; később csak a használtakat importáljuk.
+- A `@heroui/styles` most minden komponens stílusát betölti; később csak a használtakat importáljuk. A JS csomag 500 kB fölött van (figyelmeztetés); a pedagógus oldal külön betöltésével csökkenthető.
+
+## Következő lépések
+
+1. A `freesound` függvény csak bejelentkezett pedagógust engedjen (most a nyilvános kulccsal is hívható, így a napi keret elhasználható). A függvényben a belépést ellenőrizni kell, utána újratelepíteni.
+2. Projekt fül (11c) és Megosztás (13), a Megosztás gomb bekapcsolása.
+3. Tesztelni iPaden: lágy szél felolvasó nélkül, leíró hang (gépen felvett m4a lejátszása), töltelék szerep-változatai felolvasóval.
+4. Később: Pontok rajzeszköz (WCAG 2.5.7), csippentéses nagyítás érintőképernyőn, visszavonás a festésen túl (törlés, hangcsere, szöveg), Első lépések (9a, 9b), Profil (14), SMTP a meghívókhoz.
 - A nyitott témák listája a napló végén.
 
 ## Parancsok

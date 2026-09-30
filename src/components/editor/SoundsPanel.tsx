@@ -1,4 +1,4 @@
-import { useEffect, useRef, type CSSProperties } from 'react';
+import { useEffect, useRef, type CSSProperties, type RefObject } from 'react';
 import { Button, Description, Input, Label, Slider, TextArea, TextField } from '@heroui/react';
 import type { EditorField, EditorProject, EditorSound } from '../../lib/editor';
 import { t } from '../../lib/i18n';
@@ -89,7 +89,7 @@ export function SoundsPanel({
   const field = selection?.kind === 'field' ? (project.fields.find((f) => f.id === selection.id) ?? null) : null;
   const fieldName = (f: EditorField) => f.name.trim() || t('teacher.editor.fields.untitled');
 
-  const detailHeading = useRef<HTMLHeadingElement>(null);
+  const detailHeading = useRef<HTMLElement>(null);
   const lastRow = useRef<string | null>(null);
   const selectionKey = selection ? (selection.kind === 'field' ? selection.id : 'background') : null;
 
@@ -106,7 +106,13 @@ export function SoundsPanel({
   // Görgetéskor is a panel tetején marad, hogy ne kelljen visszagörgetni a visszalépéshez.
   const back = (
     <div className="panel-sticky">
-      <Button variant="ghost" size="sm" className="panel-back" aria-label={t('teacher.editor.panelBackLabel')} onPress={() => onSelect(null)}>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="panel-back"
+        aria-label={t('teacher.editor.panelBackLabel')}
+        onPress={() => onSelect(null)}
+      >
         <Icon name="back" size={16} />
         {t('teacher.editor.panelBack')}
       </Button>
@@ -117,7 +123,7 @@ export function SoundsPanel({
     return (
       <section className="panel-sections" aria-labelledby="bg-detail">
         {back}
-        <h2 id="bg-detail" ref={detailHeading} tabIndex={-1} className="panel-detail-title">
+        <h2 id="bg-detail" ref={detailHeading as RefObject<HTMLHeadingElement>} tabIndex={-1} className="panel-detail-title">
           <span className="panel-row-icon" aria-hidden="true">
             <Icon name="music" size={16} />
           </span>
@@ -155,10 +161,22 @@ export function SoundsPanel({
     return (
       <section className="panel-sections" aria-labelledby="field-detail">
         {back}
-        <h2 id="field-detail" ref={detailHeading} tabIndex={-1} className="panel-detail-title">
-          <span className="field-swatch" style={{ '--c': fieldColorVar(index) } as CSSProperties} aria-hidden="true" />
+        {/* A cím maga a név: itt lehet átírni, nincs külön Név mező. */}
+        <h2 id="field-detail" className="sr-only">
           {t('teacher.editor.fields.detailTitle')}
         </h2>
+        <TextField value={field.name} onChange={(name) => onFieldChange(field.id, { name })} className="title-field">
+          <Label className="sr-only">{t('teacher.editor.fields.nameLabel')}</Label>
+          <div className="title-field-row">
+            <span className="field-swatch" style={{ '--c': fieldColorVar(index) } as CSSProperties} aria-hidden="true" />
+            <Input
+              ref={detailHeading as RefObject<HTMLInputElement>}
+              placeholder={t('teacher.editor.fields.untitled')}
+              className="title-input"
+            />
+          </div>
+          <Description>{t('teacher.editor.fields.nameHelp')}</Description>
+        </TextField>
         {field.polygons.length === 0 && <p className="panel-hint">{t('teacher.editor.fields.shapeHint')}</p>}
         <div className="panel-field">
           <span className="panel-label">{t('teacher.editor.fields.sound')}</span>
@@ -176,11 +194,6 @@ export function SoundsPanel({
           )}
         </div>
         <VolumeSlider id="field-volume" value={field.volume} onChange={(volume) => onFieldChange(field.id, { volume })} />
-        <TextField value={field.name} onChange={(name) => onFieldChange(field.id, { name })} className="auth-field">
-          <Label>{t('teacher.editor.fields.name')}</Label>
-          <Input />
-          <Description>{t('teacher.editor.fields.nameHelp')}</Description>
-        </TextField>
         <TextField value={field.description} onChange={(description) => onFieldChange(field.id, { description })} className="auth-field">
           <Label>{t('teacher.editor.fields.description')}</Label>
           <TextArea rows={3} />

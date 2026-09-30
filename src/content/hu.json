@@ -216,7 +216,6 @@
         "deleteConfirmText": "A(z) {name} hangmező a hangjával és a leírásával együtt törlődik.",
         "deleteConfirm": "Törlés",
         "cancel": "Mégse",
-        "name": "Név",
         "nameHelp": "A hangmezők listájában és a feliratban látszik. 1–2 szó.",
         "description": "Leírás",
         "descriptionHelp": "Ezt mondja el a felolvasó, amikor a gyerek ujja a hangmezőhöz ér. Egy-két rövid mondat, a legfontosabb szóval kezdve. Írd bele azt is, hol van a képen, például: „Fent, a tetőn…”",
@@ -228,7 +227,8 @@
         "detailTitle": "Hangmező",
         "deleteField": "Hangmező törlése",
         "softness": "Él lágysága",
-        "softnessHelp": "Minél lágyabb, annál fokozatosabban erősödik a hang, ahogy az ujj a hangmező széléről befelé halad. Felolvasóval ez nem számít."
+        "softnessHelp": "Minél lágyabb, annál fokozatosabban erősödik a hang, ahogy az ujj a hangmező széléről befelé halad. Felolvasóval ez nem számít.",
+        "nameLabel": "Hangmező neve"
       },
       "voice": {
         "title": "Leíró hang",

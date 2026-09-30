@@ -1336,6 +1336,41 @@ body {
   outline: none;
 }
 
+/* A hangmező neve címként: nagy betű, csak rámutatáskor és szerkesztéskor látszik mezőnek. */
+.title-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.title-field-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.title-field .input.title-input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--control-md);
+  margin-inline-start: calc(-1 * var(--space-2));
+  padding-inline: var(--space-2);
+  background: transparent;
+  font-size: var(--text-h2);
+  font-weight: 700;
+}
+
+.title-field .input.title-input:hover,
+.title-field .input.title-input:focus {
+  background: var(--hs-default);
+}
+
+.title-field .description {
+  font-size: var(--text-caption);
+  color: var(--hs-muted);
+  padding-inline-start: calc(var(--swatch) + var(--space-3));
+}
+
 /* Romboló művelet a részletek alján, elválasztva */
 .panel-danger-zone {
   padding-top: var(--space-6);

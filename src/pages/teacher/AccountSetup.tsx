@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import { Button, Checkbox, FieldError, Form, TextField, Description, Input, Label } from '@heroui/react';
 import { AuthLayout } from '../../components/AuthLayout';
@@ -12,17 +12,14 @@ import { supabase, useSession } from '../../lib/supabase';
 export function AccountSetup({ config }: { config: Config }) {
   const navigate = useNavigate();
   const session = useSession();
-  const [name, setName] = useState('');
+  // Amíg a pedagógus nem ír bele, a meghívóban megadott név látszik (ha van).
+  const [typedName, setName] = useState<string | null>(null);
+  const name = typedName ?? (session?.user.user_metadata as { name?: string } | undefined)?.name ?? '';
   const [password, setPassword] = useState('');
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; password?: string; terms?: string; form?: string }>({});
   const [pending, setPending] = useState(false);
   const min = config.auth.passwordMinLength;
-
-  useEffect(() => {
-    const meta = session?.user.user_metadata as { name?: string } | undefined;
-    if (meta?.name) setName((n) => n || meta.name!);
-  }, [session]);
 
   async function submit(e: FormEvent) {
     e.preventDefault();
