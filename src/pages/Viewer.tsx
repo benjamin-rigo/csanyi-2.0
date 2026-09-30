@@ -2,7 +2,7 @@ import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { Button } from '@heroui/react';
-import type { Config, Gallery, Point, Project } from '../lib/data';
+import { useSharedProject, type Config, type Gallery, type Point, type Project, type Sound } from '../lib/data';
 import { t } from '../lib/i18n';
 import { detectPlatform } from '../lib/device';
 import { preload, SceneAudio } from '../lib/audio';
@@ -20,7 +20,17 @@ function inPolygon(x: number, y: number, pts: Point[]): boolean {
 
 export function Viewer({ gallery, config }: { gallery: Gallery; config: Config }) {
   const { id } = useParams();
-  const project = gallery.projects.find((p) => p.id === id);
+  const inGallery = gallery.projects.find((p) => p.id === id);
+  // Ami nincs a galériában, az linkkel megosztott is lehet.
+  const shared = useSharedProject(id, Boolean(inGallery));
+  const project = inGallery ?? (shared.status === 'ready' ? shared.data : null);
+  if (!inGallery && shared.status === 'loading') {
+    return (
+      <main className="viewer viewer-missing" aria-busy="true">
+        <p>{t('app.loading')}</p>
+      </main>
+    );
+  }
   if (!project) {
     return (
       <main className="viewer viewer-missing">
@@ -44,6 +54,9 @@ function Scene({ project, config }: { project: Project; config: Config }) {
   const [touched, setTouched] = useState(false);
   const [reminder, setReminder] = useState('');
   const v = config.viewer;
+  // Kép nélküli (félkész, linkkel megosztott) projektnél is legyen képarány.
+  const imgW = project.image.width ?? 4;
+  const imgH = project.image.height ?? 3;
 
   // Az effektben jön létre, hogy leválasztás után (StrictMode, új kép) mindig friss, nem leállított példány legyen.
   const audioRef = useRef<SceneAudio | null>(null);
@@ -69,7 +82,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
   // Megnyitás: cím, hangok előtöltése, a felolvasó egyszer felolvassa az üdvözlést.
   useEffect(() => {
     document.title = t('viewer.documentTitle', { title: project.title });
-    preload([v.startCue, project.background, ...project.fields.map((f) => f.sound)]);
+    preload([v.startCue, project.background, ...project.fields.map((f) => f.sound)].filter((s): s is Sound => s !== null));
     const id = window.setTimeout(() => welcomeRef.current?.focus(), 50);
     return () => window.clearTimeout(id);
   }, [project, v.startCue]);
@@ -133,12 +146,12 @@ function Scene({ project, config }: { project: Project; config: Config }) {
       const frame = frameRef.current;
       if (!frame) return;
       const r = frame.getBoundingClientRect();
-      const x = ((clientX - r.left) / r.width) * project.image.width;
-      const y = ((clientY - r.top) / r.height) * project.image.height;
+      const x = ((clientX - r.left) / r.width) * imgW;
+      const y = ((clientY - r.top) / r.height) * imgH;
       const hit = project.fields.find((f) => inPolygon(x, y, f.points));
       activate(hit?.id ?? null);
     },
-    [activate, project],
+    [activate, imgH, imgW, project.fields],
   );
 
   // Érintés felolvasó nélkül: simogatás. (Felolvasóval a hangmezők fókusza indítja a hangot.)
@@ -201,7 +214,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
         <div
           ref={frameRef}
           className="scene-frame"
-          style={{ '--ratio': `${project.image.width} / ${project.image.height}` } as React.CSSProperties}
+          style={{ '--ratio': `${imgW} / ${imgH}` } as React.CSSProperties}
           onPointerDown={(e) => {
             if (e.pointerType === 'mouse') {
               setTouched(true);
@@ -211,9 +224,9 @@ function Scene({ project, config }: { project: Project; config: Config }) {
           onPointerMove={(e) => e.pointerType === 'mouse' && hitTest(e.clientX, e.clientY)}
           onPointerLeave={(e) => e.pointerType === 'mouse' && activate(null)}
         >
-          <img src={project.image.src} alt="" aria-hidden="true" draggable={false} />
+          {project.image.src && <img src={project.image.src} alt="" aria-hidden="true" draggable={false} />}
           <svg
-            viewBox={`0 0 ${project.image.width} ${project.image.height}`}
+            viewBox={`0 0 ${imgW} ${imgH}`}
             role="none"
             focusable="false"
             onBlur={(e) => {

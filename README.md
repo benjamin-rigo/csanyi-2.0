@@ -1,6 +1,6 @@
-# Hangösvény (csányi 2.0) – gyerek oldal
+# Hangösvény (csányi 2.0)
 
-Galéria és képnézet. React 19 + Vite + HeroUI v3 + Tailwind 4. Backend még nincs: minden adat JSON fájlokból jön.
+Gyerek oldal (galéria, képnézet) és pedagógus oldal. React 19 + Vite + HeroUI v3 + Tailwind 4, backend: Supabase.
 
 ## Futtatás
 
@@ -11,7 +11,7 @@ npm run dev
 
 ## Hol mi van
 
-- `public/data/gallery.json` – kategóriák és képek (hangmezők pontjai a kép saját pixelkoordinátáiban)
+- `supabase/migrations/` – adatbázis séma és kezdő adatok (Supabase)
 - `public/data/config.json` – kapcsolat, linkek, a képnézet hang- és időzítési beállításai
 - `src/content/hu.json` – minden felületi szöveg
 - `src/styles/tokens.css` – színek, térközök, méretek; a HeroUI változói is ide vannak kötve

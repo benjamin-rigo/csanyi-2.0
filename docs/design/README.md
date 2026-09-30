@@ -13,8 +13,8 @@ Ha a terv és a `docs/dontesnaplo.md` eltér, a döntésnapló az érvényes.
 | 2 · Kép megnyitva | `KepMegnyitas.png` · `html/KepMegnyitas.html` | 1180×820 | kész (src/pages) |
 | 3 · Felfedezés | `Kep.png` · `html/Kep.html` | 1180×820 | kész (src/pages) |
 | 4 · Asztali gép, billentyűzettel | `KepAsztali.png` · `html/KepAsztali.html` | 1440×900 | kész (src/pages) |
-| 6 · Belépés | `Belepes.png` · `html/Belepes.html` | 1440×900 | még nincs |
-| 7 · Fiók beállítása (meghívó után) | `Fiok.png` · `html/Fiok.html` | 1440×900 | még nincs |
+| 6 · Belépés | `Belepes.png` · `html/Belepes.html` | 1440×900 | kész (src/pages/teacher) |
+| 7 · Fiók beállítása (meghívó után) | `Fiok.png` · `html/Fiok.html` | 1440×900 | kész (src/pages/teacher) |
 | 8 · Projektjeim | `Projektjeim.png` · `html/Projektjeim.html` | 1440×900 | még nincs |
 | 9a · Első lépések: minta a szerkesztőben | `OnboardingMinta.png` · `html/OnboardingMinta.html` | 1440×900 | még nincs |
 | 9b · Első lépések: most te | `Onboarding.png` · `html/Onboarding.html` | 1440×900 | még nincs |
@@ -24,8 +24,8 @@ Ha a terv és a `docs/dontesnaplo.md` eltér, a döntésnapló az érvényes.
 | 12 · Hang kiválasztása | `Hangvalaszto.png` · `html/Hangvalaszto.html` | 1440×900 | még nincs |
 | 13 · Megosztás | `Megosztas.png` · `html/Megosztas.html` | 1440×900 | még nincs |
 | 14 · Profil | `Profil.png` · `html/Profil.html` | 1440×900 | még nincs |
-| 6b · Elfelejtett jelszó (link elküldve) | `ElfelejtettJelszo.png` · `html/ElfelejtettJelszo.html` | 1440×900 | még nincs |
-| 6c · Új jelszó (a levélben kapott linkről) | `UjJelszo.png` · `html/UjJelszo.html` | 1440×900 | még nincs |
+| 6b · Elfelejtett jelszó (link elküldve) | `ElfelejtettJelszo.png` · `html/ElfelejtettJelszo.html` | 1440×900 | kész (src/pages/teacher) |
+| 6c · Új jelszó (a levélben kapott linkről) | `UjJelszo.png` · `html/UjJelszo.html` | 1440×900 | kész (src/pages/teacher) |
 | 11c · Szerkesztő, Projekt fül | `SzerkesztoProjekt.png` · `html/SzerkesztoProjekt.html` | 1440×1220 | még nincs |
 
 ## Megjegyzések a vázról

@@ -41,6 +41,23 @@ body {
   color: var(--hs-fg);
 }
 
+/* Gombméretek a skálán: sm 36, alap 44, lg 52 (döntésnapló) */
+.button {
+  height: var(--control-md);
+  padding-inline: var(--space-5);
+}
+
+.button--sm {
+  height: var(--control-sm);
+  padding-inline: var(--space-4);
+}
+
+.button--lg {
+  height: var(--control-lg);
+  padding-inline: var(--space-6);
+  font-size: var(--text-body);
+}
+
 /* ---------- Oldalváz ---------- */
 
 .kid-page {
@@ -379,14 +396,208 @@ body {
   color: var(--hs-muted);
 }
 
+/* ---------- Belépési oldalak (6, 6b, 6c, 7) ---------- */
+
+.auth-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-page .site-header {
+  max-width: none;
+}
+
+.auth-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--kid-page-x) var(--space-16);
+}
+
+.breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-md);
+  font-weight: 500;
+  color: var(--hs-muted);
+  text-decoration: none;
+  border-radius: var(--radius-pill);
+}
+
+.auth-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: var(--auth-card-w);
+  box-sizing: border-box;
+  padding: var(--space-8);
+  background: var(--hs-surface);
+  border-radius: var(--radius-content);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.auth-heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.auth-heading h1 {
+  margin: 0;
+  font-size: var(--text-h1-card);
+  font-weight: 700;
+  line-height: var(--leading-snug);
+}
+
+.auth-heading p,
+.auth-footnote {
+  margin: 0;
+  font-size: var(--text-md);
+  color: var(--hs-muted);
+}
+
+.auth-footnote {
+  max-width: var(--auth-card-w);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.auth-field .label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  padding-inline-start: var(--label-inset);
+}
+
+.auth-field .description,
+.auth-field .field-error,
+.auth-checkbox .field-error {
+  font-size: var(--text-sm);
+  padding-inline-start: var(--label-inset);
+}
+
+.auth-field .input,
+.auth-field .input-group {
+  width: 100%;
+  min-height: var(--control-md);
+  font-size: var(--text-md);
+}
+
+.auth-field .input,
+.auth-field .input-group__input {
+  padding-inline: var(--field-pad-x);
+}
+
+.auth-field .input[readonly] {
+  color: var(--hs-muted);
+}
+
+.auth-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.password-toggle {
+  padding-inline-end: var(--space-1);
+  color: var(--hs-muted);
+}
+
+.auth-checkbox {
+  font-size: var(--text-md);
+}
+
+.text-link {
+  color: var(--hs-fg);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-decoration: underline;
+  border-radius: var(--radius-pill);
+}
+
+.auth-checkbox .text-link {
+  font-size: inherit;
+}
+
+.auth-center-link {
+  align-self: center;
+  font-size: var(--text-md);
+}
+
+.auth-full {
+  width: 100%;
+}
+
+.auth-status-slot:empty {
+  display: none;
+}
+
+.auth-status {
+  margin: 0;
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-content);
+  background: var(--hs-default);
+  font-size: var(--text-md);
+}
+
+.auth-status-icon {
+  color: var(--hs-success);
+  flex-shrink: 0;
+}
+
+.form-error {
+  margin: 0;
+  color: var(--hs-danger);
+  font-size: var(--text-md);
+}
+
+.breadcrumb:focus-visible,
+.text-link:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 var(--ring-offset-width) var(--background),
+    0 0 0 calc(var(--focus-ring-width) + var(--ring-offset-width)) var(--focus);
+}
+
 /* ---------- Keskeny kijelző ---------- */
 
 /* Médialekérdezésben nem lehet változó: ez a --intro-max értéke. */
 @media (max-width: 720px) {
   .site-header,
   .kid-main,
-  .site-footer {
+  .site-footer,
+  .auth-main {
     padding-inline: var(--kid-page-x-narrow);
+  }
+
+  .auth-card {
+    padding: var(--space-6);
   }
 
   .site-header {

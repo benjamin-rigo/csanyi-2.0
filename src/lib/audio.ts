@@ -91,7 +91,7 @@ function stop(voice: Voice | null, fadeMs: number) {
 }
 
 export interface SceneAudioOptions {
-  background: Sound;
+  background: Sound | null;
   startCue: Sound;
   fadeInMs: number;
   fadeOutMs: number;
@@ -123,7 +123,7 @@ export class SceneAudio {
     const cue = await play(this.opts.startCue, { loop: false, fadeMs: 10, startGain: this.opts.startCue.volume });
     const cueMs = (cue.src.buffer?.duration ?? 0) * 1000;
     window.setTimeout(async () => {
-      if (this.disposed) return;
+      if (this.disposed || !this.opts.background) return;
       const bg = await play(this.opts.background, { loop: true, fadeMs: this.opts.fadeInMs });
       if (this.disposed) return stop(bg, this.opts.fadeOutMs);
       this.bg = bg;
@@ -133,7 +133,8 @@ export class SceneAudio {
 
   private duck(on: boolean) {
     if (!this.bg) return;
-    const target = on ? this.opts.background.volume * this.opts.duckLevel : this.opts.background.volume;
+    const volume = this.opts.background?.volume ?? 0;
+    const target = on ? volume * this.opts.duckLevel : volume;
     ramp(this.bg.gain.gain, target, 300);
   }
 

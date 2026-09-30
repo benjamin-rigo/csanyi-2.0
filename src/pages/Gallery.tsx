@@ -84,7 +84,7 @@ function ProjectCard({ project }: { project: Project }) {
   return (
     <li className="gcard">
       <div className="gcard-image">
-        <img src={project.image.src} alt="" width={project.image.width} height={project.image.height} loading="lazy" />
+        <img src={project.image.src ?? undefined} alt="" width={project.image.width ?? undefined} height={project.image.height ?? undefined} loading="lazy" />
       </div>
       <div className="gcard-body">
         <h2 className="gcard-title">

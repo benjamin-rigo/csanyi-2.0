@@ -41,5 +41,74 @@
     "reminder": "Keresd meg az ujjaddal a hangokat.",
     "notFound": "Ezt a képet nem találjuk.",
     "backToGallery": "Vissza a galériába"
+  },
+  "auth": {
+    "backToGallery": "Galéria",
+    "breadcrumbLabel": "Morzsamenü",
+    "email": "E-mail cím",
+    "emailPlaceholder": "nev@iskola.hu",
+    "password": "Jelszó",
+    "passwordHelp": "Legalább {min} karakter.",
+    "showPassword": "Jelszó megjelenítése",
+    "errors": {
+      "emailRequired": "Add meg az e-mail címed.",
+      "emailInvalid": "Ez nem tűnik e-mail címnek.",
+      "passwordRequired": "Add meg a jelszavad.",
+      "passwordShort": "A jelszó legalább {min} karakter legyen.",
+      "nameRequired": "Add meg a neved.",
+      "termsRequired": "A fiókhoz el kell fogadnod az ÁSZF-et és az adatvédelmi tájékoztatót.",
+      "invalidCredentials": "Hibás e-mail cím vagy jelszó.",
+      "rateLimit": "Túl sok próbálkozás. Várj néhány percet, és próbáld újra.",
+      "samePassword": "Az új jelszó nem lehet ugyanaz, mint a régi.",
+      "generic": "Valami nem sikerült. Próbáld újra később.",
+      "linkExpired": "Ez a link lejárt vagy már felhasználták.",
+      "requestNewLink": "Kérj új linket"
+    },
+    "login": {
+      "documentTitle": "Belépés · Hangösvény",
+      "title": "Belépés",
+      "subtitle": "Lépj be a pedagógus fiókodba.",
+      "forgot": "Elfelejtetted a jelszavad?",
+      "remember": "Maradjak bejelentkezve",
+      "submit": "Belépés",
+      "noAccount": "Még nincs fiókod? A Hangösvény meghívásos, hozzáférésért írj nekünk: {email}"
+    },
+    "forgot": {
+      "documentTitle": "Elfelejtett jelszó · Hangösvény",
+      "title": "Elfelejtett jelszó",
+      "subtitle": "Add meg az e-mail címed, és küldünk egy linket az új jelszó beállításához.",
+      "submit": "Link küldése",
+      "sent": "Ha van fiók ezzel a címmel, a link néhány percen belül megérkezik. Nézd meg a levélszemét mappát is.",
+      "backToLogin": "Vissza a belépéshez"
+    },
+    "newPassword": {
+      "documentTitle": "Új jelszó · Hangösvény",
+      "title": "Új jelszó beállítása",
+      "password": "Új jelszó",
+      "submit": "Mentés és belépés"
+    },
+    "setup": {
+      "documentTitle": "Fiók beállítása · Hangösvény",
+      "title": "Üdv a Hangösvényen!",
+      "subtitle": "Állítsd be a fiókodat, és kezdheted.",
+      "emailHelp": "A meghívó erre a címre érkezett.",
+      "name": "A neved",
+      "nameHelp": "Ez jelenik meg a megosztott képeiden.",
+      "termsBefore": "Elfogadom az ",
+      "terms": "ÁSZF-et",
+      "termsMiddle": " és az ",
+      "privacy": "adatvédelmi tájékoztatót",
+      "termsAfter": ".",
+      "submit": "Fiók létrehozása",
+      "needsInvite": "A fiók beállításához a meghívó levélben kapott linket nyisd meg."
+    }
+  },
+  "teacher": {
+    "projects": {
+      "documentTitle": "Projektjeim · Hangösvény",
+      "title": "Projektjeim",
+      "comingSoon": "Ez a képernyő a következő lépésben készül el. A belépés működik.",
+      "signOut": "Kijelentkezés"
+    }
   }
 }

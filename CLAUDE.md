@@ -21,13 +21,14 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 
 - React 19, Vite, TypeScript, react-router 7.
 - **HeroUI v3** (`@heroui/react`, `@heroui/styles`, React Aria alapon) és Tailwind 4. Ahol van HeroUI komponens, azt használd, saját komponens csak ha nincs.
-- Backend: **Supabase** (ingyenes csomag), még nincs bekötve. A gyerek oldal most a `public/data/*.json` fájlokból olvas; a `src/lib/data.ts` felülete maradjon ugyanaz, amikor Supabase-re váltunk.
+- Backend: **Supabase** (ingyenes csomag, Frankfurt). A böngésző a publikus kulccsal közvetlenül hívja (`.env`, `src/lib/supabase.ts`); a hozzáférést az RLS szabályok védik. A `service_role` kulcs soha nem kerül a repóba.
+- Séma: `supabase/migrations/` (időbélyeges fájlnév). Új változás mindig új migrációs fájl, a régit nem írjuk át. Futtatás előtt PGlite-tal helyben kipróbálható. A gyerek oldal a `gallery()` és `shared_project(id)` függvényekből olvas, a `src/lib/data.ts` felülete ugyanaz maradt.
 - Deploy: egyelőre **GitHub Pages** (`.github/workflows/deploy.yml`), Vercel most nem. Az alapcímet (`/<repó neve>/`) a workflow adja át `BASE_PATH`-ként; ezért minden fájlra `assetUrl()`-lel (`src/lib/data.ts`) hivatkozz, az adatfájlokban az utak relatívak, a router `basename`-et kap. Közvetlen útvonalakhoz a build `dist/404.html`-t is készít.
 
 ## Semmi nincs beégetve
 
 - **Szövegek:** `src/content/hu.json`, a `t('kulcs', {változó})` függvénnyel (`src/lib/i18n.ts`).
-- **Adatok és beállítások:** `public/data/gallery.json`, `public/data/config.json` (hangerők, időzítések, linkek).
+- **Adatok:** Supabase. **Beállítások:** `public/data/config.json` (hangerők, időzítések, linkek, jelszó minimális hossza). A `/`-rel kezdődő link az alkalmazáson belüli (`ConfigLink`).
 - **Kinézet:** `src/styles/tokens.css`. Minden szín, térköz, méret és lekerekítés innen jön, és a HeroUI változói is ide vannak kötve. A komponensek CSS-ében nem lehet nyers px vagy szín, csak token.
 
 ## Vizuális szabályok (részletesen a naplóban)
@@ -52,20 +53,24 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 src/
   pages/Gallery.tsx      galéria (1)
   pages/Viewer.tsx       képnézet (2–4)
-  components/            SiteHeader (benne a SiteFooter is), Icon
-  lib/                   data, i18n, audio, device
+  pages/teacher/         pedagógus oldal: Login (6), ForgotPassword (6b), NewPassword (6c), AccountSetup (7), MyProjects (8, még helykitöltő)
+  components/            SiteHeader (Logo, ConfigLink, SiteFooter), AuthLayout, AuthFields, Icon
+  lib/                   data, supabase, i18n, audio, device
   content/hu.json        felületi szövegek
   styles/tokens.css      design tokenek
-public/data, media, sounds   ideiglenes adatok, képek, hangok
+public/data/config.json      beállítások
+public/media, sounds         a kezdő projektek képei és hangjai (az adatbázis relatív úttal hivatkozik rájuk)
+supabase/migrations/         adatbázis séma és kezdő adatok
 docs/dontesnaplo.md      döntésnapló (fő példány)
 docs/design/             a képernyők tervei
 ```
 
 ## Állapot
 
-- Kész: gyerek oldal (galéria + képnézet), adatfájlból. Build rendben, axe 0 hiba.
+- Kész: gyerek oldal (galéria + képnézet) Supabase-ből; belépési képernyők (6, 6b, 6c, 7). Build rendben, axe 0 hiba.
 - Élő teszt: https://benjamin-rigo.github.io/csanyi-2.0/ (minden main pushra frissül).
-- Következő: tablet teszt felolvasóval (iPad VoiceOver, Android TalkBack), utána a pedagógus oldal (6–14) Supabase-szel.
+- Következő: Projektjeim (8), Szerkesztő (11, 11b, 11c, 12), Megosztás (13), Első lépések (9a, 9b), Profil (14).
+- Meghívás: Supabase → Authentication → Users → Invite user. A beépített levélküldés csak teszthez jó; élesben ingyenes SMTP kell (nyitott).
 - A `@heroui/styles` most minden komponens stílusát betölti; később csak a használtakat importáljuk.
 - A nyitott témák listája a napló végén.
 
