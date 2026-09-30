@@ -978,6 +978,571 @@ body {
     0 0 0 calc(var(--focus-ring-width) + var(--ring-offset-width)) var(--focus);
 }
 
+/* ---------- Szerkesztő (11, 11b, 12) ---------- */
+
+.editor-page {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-header {
+  height: var(--editor-header-h);
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding-inline: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  background: var(--hs-surface);
+  border-bottom: var(--border-thin) solid var(--hs-border);
+}
+
+.editor-breadcrumb {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-md);
+}
+
+.editor-breadcrumb h1 {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.breadcrumb-sep {
+  color: var(--hs-border-strong);
+}
+
+.save-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.save-status--saving {
+  color: var(--hs-muted);
+}
+
+.save-status--error {
+  color: var(--hs-danger);
+}
+
+.editor-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.soon-wrap {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.soon-note {
+  margin: 0;
+  font-size: var(--text-caption);
+  color: var(--hs-muted);
+}
+
+.editor-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.editor-stage {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.draw-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-pill);
+  background: var(--hs-surface);
+}
+
+.tool-button.toggle-button {
+  height: var(--tool-h);
+  padding-inline: var(--space-4);
+  gap: var(--space-2);
+  border-radius: var(--radius-pill);
+  border: var(--border-strong) solid transparent;
+  background: var(--hs-surface);
+  color: var(--hs-fg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+/* Aktív eszköz: 2 px fekete keret, nem fekete kitöltés (döntésnapló) */
+.tool-button.toggle-button[data-selected="true"] {
+  border-color: var(--hs-fg);
+  background: var(--hs-surface);
+  color: var(--hs-fg);
+}
+
+.toolbar-sep {
+  width: var(--border-thin);
+  height: var(--space-6);
+  margin-inline: var(--space-2);
+  background: var(--hs-border);
+}
+
+.size-slider {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3);
+  padding-inline: var(--space-2);
+}
+
+.size-slider .label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--hs-muted);
+}
+
+.size-slider .slider__track {
+  width: var(--size-slider-w);
+}
+
+.canvas-hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--hs-muted);
+}
+
+.draw-area {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.draw-frame {
+  position: relative;
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: var(--ratio);
+  border-radius: var(--radius-content);
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: none;
+}
+
+.draw-frame.is-disabled {
+  cursor: not-allowed;
+}
+
+.draw-frame img,
+.draw-frame svg,
+.draw-frame canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.draw-frame canvas.is-hidden {
+  visibility: hidden;
+}
+
+.draw-field {
+  fill: color-mix(in srgb, var(--c) var(--field-fill-alpha), transparent);
+  stroke: var(--c);
+  stroke-width: var(--border-strong);
+  vector-effect: non-scaling-stroke;
+}
+
+.draw-field.is-selected {
+  stroke-width: calc(var(--border-strong) * 2);
+}
+
+.brush-cursor {
+  position: absolute;
+  width: var(--d);
+  height: var(--d);
+  transform: translate(-50%, -50%);
+  border-radius: var(--radius-pill);
+  border: var(--border-thin) solid var(--hs-fg);
+  box-shadow: 0 0 0 var(--border-thin) var(--hs-surface);
+  pointer-events: none;
+}
+
+.editor-panel {
+  width: var(--editor-panel-w);
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: var(--space-6);
+  background: var(--hs-surface);
+  border-left: var(--border-thin) solid var(--hs-border);
+  overflow-y: auto;
+}
+
+/* Szegmentált fülek: szürke sáv, a kiválasztott fehér (terv) */
+.segmented {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.segmented .tabs__list {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-pill);
+  background: var(--hs-default);
+}
+
+.segmented .tabs__tab {
+  flex: 1;
+  height: var(--control-sm);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--hs-muted);
+}
+
+.segmented .tabs__tab[data-selected="true"] {
+  color: var(--hs-fg);
+  font-weight: 600;
+}
+
+.segmented .tabs__indicator {
+  border-radius: var(--radius-pill);
+  background: var(--hs-surface);
+  box-shadow: none;
+}
+
+.segmented .tabs__tab[data-disabled="true"] {
+  opacity: 0.5;
+}
+
+.panel-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding-top: var(--space-4);
+}
+
+.panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.panel-detail {
+  gap: var(--space-6);
+  padding-top: var(--space-8);
+  border-top: var(--border-thin) solid var(--hs-border);
+  margin-inline: calc(-1 * var(--space-6));
+  padding-inline: var(--space-6);
+}
+
+.panel-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--control-sm);
+}
+
+.panel-section-head h2 {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.panel-list {
+  list-style: none;
+  margin: 0 calc(-1 * var(--space-3));
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.panel-row {
+  width: 100%;
+  min-height: var(--control-lg);
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: left;
+  border: 0;
+  border-radius: var(--radius-content);
+  background: transparent;
+  font: inherit;
+  color: var(--hs-fg);
+  cursor: pointer;
+}
+
+.panel-row > svg {
+  color: var(--hs-muted);
+  flex-shrink: 0;
+}
+
+.panel-row:hover {
+  background: var(--hs-default);
+}
+
+.panel-row[aria-pressed="true"] {
+  background: var(--hs-default);
+}
+
+.panel-row-icon {
+  width: var(--space-8);
+  height: var(--space-8);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--hs-default);
+}
+
+.panel-row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+}
+
+.panel-row-title {
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.panel-row-sub {
+  font-size: var(--text-caption);
+  color: var(--hs-muted);
+}
+
+.field-swatch {
+  width: var(--swatch);
+  height: var(--swatch);
+  flex-shrink: 0;
+  border-radius: var(--radius-swatch);
+  background: var(--c);
+}
+
+.add-tile--row {
+  min-height: var(--control-lg);
+  flex-direction: row;
+  gap: var(--space-2);
+  font-weight: 600;
+}
+
+.panel-help,
+.panel-hint {
+  margin: 0;
+  font-size: var(--text-caption);
+  color: var(--hs-muted);
+}
+
+.panel-hint {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-content);
+  background: var(--hs-warning-soft);
+  color: var(--hs-warning);
+  font-size: var(--text-sm);
+}
+
+.panel-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.panel-label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  padding-inline-start: var(--label-inset);
+}
+
+.auth-field .textarea {
+  width: 100%;
+  padding: var(--space-3) var(--field-pad-x);
+  font-size: var(--text-md);
+  line-height: var(--leading-body);
+  resize: none;
+  box-sizing: border-box;
+}
+
+.sound-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-content);
+  background: var(--hs-default);
+}
+
+.sound-card-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+}
+
+.sound-card-title {
+  font-size: var(--text-md);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sound-card-meta {
+  font-size: var(--text-caption);
+  color: var(--hs-muted);
+}
+
+.play-button.button {
+  width: var(--control-sm);
+  height: var(--control-sm);
+  padding: 0;
+  flex-shrink: 0;
+  border-radius: var(--radius-pill);
+}
+
+.voice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.recording-status {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.recording-status:empty {
+  display: none;
+}
+
+.recording-dot {
+  width: var(--space-3);
+  height: var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--hs-danger);
+}
+
+.volume-slider {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.volume-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-sm);
+}
+
+.volume-head .label {
+  font-weight: 600;
+}
+
+.volume-head output {
+  color: var(--hs-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Csúszka a terv szerint: 20 px-es kattintható sáv, benne 4 px-es vonal, 16 px-es fekete pötty */
+.slider[data-orientation] .slider__track {
+  height: var(--space-5);
+  border-inline-width: 0;
+  margin-inline: var(--space-2);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(var(--hs-default-hover), var(--hs-default-hover)) center / 100% var(--space-1) no-repeat;
+}
+
+.slider[data-orientation] .slider__fill {
+  top: 50%;
+  height: var(--space-1);
+  transform: translateY(-50%);
+  border-radius: var(--radius-pill);
+  background: var(--hs-accent);
+}
+
+.slider[data-orientation] .slider__thumb {
+  top: 50%;
+  width: var(--space-4);
+  height: var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--hs-accent);
+}
+
+.slider .slider__thumb::after {
+  display: none;
+}
+
+.button.button--danger-soft {
+  background: var(--hs-danger-soft);
+  color: var(--hs-danger);
+  border: var(--border-strong) solid transparent;
+}
+
+.button.button--danger {
+  background: var(--hs-danger);
+  color: var(--hs-accent-fg);
+}
+
+.button.danger-text {
+  color: var(--hs-danger);
+}
+
+.modal-dialog--small {
+  width: min(var(--modal-w-sm), calc(100vw - 2 * var(--space-4)));
+}
+
+.picker-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.panel-row:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 var(--ring-offset-width) var(--background),
+    0 0 0 calc(var(--focus-ring-width) + var(--ring-offset-width)) var(--focus);
+}
+
 /* ---------- Keskeny kijelző ---------- */
 
 /* Médialekérdezésben nem lehet változó: ez a --intro-max értéke. */

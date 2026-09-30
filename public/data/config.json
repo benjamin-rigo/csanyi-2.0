@@ -24,6 +24,13 @@
     "passwordMinLength": 8
   },
   "upload": {
-    "imageMaxMb": 10
+    "imageMaxMb": 10,
+    "soundMaxMb": 20
+  },
+  "editor": {
+    "autosaveDelayMs": 700,
+    "brushDefault": 24,
+    "brushMin": 4,
+    "brushMax": 80
   }
 }

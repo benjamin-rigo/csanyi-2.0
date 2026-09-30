@@ -19,9 +19,9 @@ Ha a terv és a `docs/dontesnaplo.md` eltér, a döntésnapló az érvényes.
 | 9a · Első lépések: minta a szerkesztőben | `OnboardingMinta.png` · `html/OnboardingMinta.html` | 1440×900 | még nincs |
 | 9b · Első lépések: most te | `Onboarding.png` · `html/Onboarding.html` | 1440×900 | még nincs |
 | 10 · Új projekt | `UjProjekt.png` · `html/UjProjekt.html` | 1440×900 | kész (src/pages/teacher) |
-| 11 · Szerkesztő | `Szerkeszto.png` · `html/Szerkeszto.html` | 1440×900 | még nincs |
-| 11b · Szerkesztő, háttérhang kijelölve | `SzerkesztoHatter.png` · `html/SzerkesztoHatter.html` | 1440×900 | még nincs |
-| 12 · Hang kiválasztása | `Hangvalaszto.png` · `html/Hangvalaszto.html` | 1440×900 | még nincs |
+| 11 · Szerkesztő | `Szerkeszto.png` · `html/Szerkeszto.html` | 1440×900 | kész, Hangok fül (src/pages/teacher/Editor.tsx) |
+| 11b · Szerkesztő, háttérhang kijelölve | `SzerkesztoHatter.png` · `html/SzerkesztoHatter.html` | 1440×900 | kész (Editor.tsx) |
+| 12 · Hang kiválasztása | `Hangvalaszto.png` · `html/Hangvalaszto.html` | 1440×900 | részben: saját feltöltés kész, Könyvtár (Freesound) később |
 | 13 · Megosztás | `Megosztas.png` · `html/Megosztas.html` | 1440×900 | még nincs |
 | 14 · Profil | `Profil.png` · `html/Profil.html` | 1440×900 | még nincs |
 | 6b · Elfelejtett jelszó (link elküldve) | `ElfelejtettJelszo.png` · `html/ElfelejtettJelszo.html` | 1440×900 | kész (src/pages/teacher) |

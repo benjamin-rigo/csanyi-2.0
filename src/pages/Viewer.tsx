@@ -2,21 +2,12 @@ import type React from 'react';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { Button } from '@heroui/react';
-import { useSharedProject, type Config, type Gallery, type Point, type Project, type Sound } from '../lib/data';
+import { useSharedProject, type Config, type Gallery, type Project, type Sound } from '../lib/data';
 import { t } from '../lib/i18n';
 import { detectPlatform } from '../lib/device';
 import { preload, SceneAudio } from '../lib/audio';
 import { Icon } from '../components/Icon';
-
-function inPolygon(x: number, y: number, pts: Point[]): boolean {
-  let inside = false;
-  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
-    const [xi, yi] = pts[i];
-    const [xj, yj] = pts[j];
-    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
-  }
-  return inside;
-}
+import { inShape, shapePath } from '../lib/geometry';
 
 export function Viewer({ gallery, config }: { gallery: Gallery; config: Config }) {
   const { id } = useParams();
@@ -190,7 +181,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
       const r = frame.getBoundingClientRect();
       const x = ((clientX - r.left) / r.width) * imgW;
       const y = ((clientY - r.top) / r.height) * imgH;
-      const hit = project.fields.find((f) => inPolygon(x, y, f.points));
+      const hit = project.fields.find((f) => inShape(x, y, f.polygons));
       // Érintés és egér csak kikapcsolt felolvasónál jut ide, ezért a felvett leírás nem beszél a felolvasóra.
       if (hit?.descriptionSound && hit.id !== activeRef.current) audioRef.current?.speak(hit.id, hit.descriptionSound);
       activate(hit?.id ?? null);
@@ -293,9 +284,10 @@ function Scene({ project, config }: { project: Project; config: Config }) {
               />
             )}
             {project.fields.map((f) => (
-              <polygon
+              <path
                 key={f.id}
-                points={f.points.map((p) => p.join(',')).join(' ')}
+                d={shapePath(f.polygons)}
+                fillRule="evenodd"
                 role="img"
                 aria-label={f.description}
                 tabIndex={0}

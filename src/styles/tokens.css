@@ -18,6 +18,17 @@
   --hs-warning-soft: #fdf3e1;
   --hs-danger-soft: #fdecec;
   --hs-overlay: rgb(24 24 27 / 0.45);
+
+  /* Hangmezők színe a szerkesztőben, a lista sorrendjében */
+  --field-color-1: #f59e0b;
+  --field-color-2: #2563eb;
+  --field-color-3: #db2777;
+  --field-color-4: #16a34a;
+  --field-color-5: #7c3aed;
+  --field-color-6: #0d9488;
+  --field-color-7: #ea580c;
+  --field-color-8: #dc2626;
+  --field-fill-alpha: 22%;
   --hs-accent: #18181b;
   --hs-accent-fg: #fafafa;
   --hs-viewer-bg: #0b0b0c;
@@ -60,6 +71,13 @@
   --auth-card-w: 420px;
   --sidebar-w: 264px;
   --modal-w: 560px;
+  --modal-w-sm: 440px;
+  --editor-header-h: 64px;
+  --editor-panel-w: 384px;
+  --tool-h: 40px;
+  --size-slider-w: 120px;
+  --swatch: 12px;
+  --radius-swatch: 3px;
   --dropzone-h: 200px;
   --chip-h: 24px;
   --chip-pad-x: var(--space-3);

@@ -16,7 +16,8 @@ export interface SoundField {
   sound: Sound | null;
   /** Felvett leírás: kikapcsolt felolvasónál ez szól érintésre. */
   descriptionSound: Sound | null;
-  points: Point[];
+  /** Egy vagy több sokszög (lyukakkal), páros-páratlan kitöltéssel. */
+  polygons: Point[][];
 }
 
 export interface Project {
@@ -45,7 +46,8 @@ export interface Config {
   contactEmail: string;
   links: Record<'help' | 'teachers' | 'accessibility' | 'privacy' | 'terms', string>;
   auth: { passwordMinLength: number };
-  upload: { imageMaxMb: number };
+  upload: { imageMaxMb: number; soundMaxMb: number };
+  editor: { autosaveDelayMs: number; brushDefault: number; brushMin: number; brushMax: number };
   viewer: {
     startCue: Sound;
     backgroundFadeInMs: number;
@@ -85,7 +87,16 @@ function resolveProject(p: Project): Project {
     ...p,
     image: { ...p.image, src: p.image.src && assetUrl(p.image.src) },
     background: soundOrNull(p.background),
-    fields: p.fields.map((f) => ({ ...f, sound: soundOrNull(f.sound), descriptionSound: soundOrNull(f.descriptionSound ?? null) })),
+    fields: p.fields.map((f) => {
+      // A régebbi adat még egyetlen sokszöget ad (points).
+      const legacy = f as SoundField & { points?: Point[] };
+      return {
+        ...f,
+        sound: soundOrNull(f.sound),
+        descriptionSound: soundOrNull(f.descriptionSound ?? null),
+        polygons: f.polygons ?? (legacy.points ? [legacy.points] : []),
+      };
+    }),
   };
 }
 
