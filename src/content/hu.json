@@ -105,10 +105,68 @@
     }
   },
   "teacher": {
+    "sidebarLabel": "Oldalsáv",
+    "navLabel": "Fő navigáció",
+    "nav": {
+      "projects": "Projektjeim",
+      "gallery": "Galéria",
+      "newTab": "(új lapon nyílik)"
+    },
+    "profileLink": "Profil",
     "projects": {
       "documentTitle": "Projektjeim · Hangösvény",
       "title": "Projektjeim",
-      "comingSoon": "Ez a képernyő a következő lépésben készül el. A belépés működik.",
+      "subtitle": "A képeid, amikhez hangokat és hangmezőket adtál.",
+      "newProject": "Új projekt",
+      "listLabel": "Projektek",
+      "empty": "Még nincs projekted. Kezdd egy képpel.",
+      "editLabel": "{title} szerkesztése",
+      "untitled": "Névtelen projekt",
+      "fieldCount": "{count} hangmező",
+      "loadError": "Nem sikerült betölteni a projekteket. Próbáld újra később.",
+      "visibility": {
+        "private": "Privát",
+        "link": "Linkkel elérhető",
+        "gallery": "Galériában"
+      },
+      "sample": "Gyakorló"
+    },
+    "time": {
+      "now": "most",
+      "minutes": "{n} perce",
+      "hours": "{n} órája",
+      "days": "{n} napja"
+    },
+    "newProject": {
+      "title": "Új projekt",
+      "subtitle": "Kezdd egy képpel, a többit a szerkesztőben állítod be.",
+      "close": "Bezárás",
+      "drop": "Húzd ide a képet",
+      "or": " vagy",
+      "browse": "Tallózás",
+      "fileHelp": "JPG, PNG vagy WebP, legfeljebb {mb} MB",
+      "change": "Másik kép",
+      "titleLabel": "Cím",
+      "titlePlaceholder": "Például: A macskának négy a lába",
+      "privateNote": "A projekt privátként jön létre. A megosztást a szerkesztőben állíthatod be.",
+      "cancel": "Mégse",
+      "create": "Létrehozás",
+      "errors": {
+        "imageRequired": "Válassz egy képet.",
+        "imageType": "Ez a fájl nem JPG, PNG vagy WebP kép.",
+        "imageSize": "A kép legfeljebb {mb} MB lehet.",
+        "titleRequired": "Adj címet a projektnek.",
+        "generic": "Nem sikerült létrehozni a projektet. Próbáld újra."
+      }
+    },
+    "editor": {
+      "documentTitle": "Szerkesztő · Hangösvény",
+      "comingSoon": "A szerkesztő a következő lépésben készül el."
+    },
+    "profile": {
+      "documentTitle": "Profil · Hangösvény",
+      "title": "Profil",
+      "comingSoon": "A profil oldal később készül el.",
       "signOut": "Kijelentkezés"
     }
   }

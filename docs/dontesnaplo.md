@@ -44,6 +44,9 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 - Szerkesztő panel fülei: Projekt / Hangok / Megosztás. A Hangok fül tetején a Háttérhang (kötelező) rögzített sorként, alatta a hangmezők. Üresen: „+ Háttérhang hozzáadása” mező, alatta: „Minden képhez kell háttérhang: végig szól, így a gyerek mindig hall valamit.”
 - Projekt fül (11c): Cím; Kép (előnézet + Csere); Rövid leírás (a galéria kártyáján látszik és a felolvasó is felolvassa); Bevezető (nem kötelező; jelenleg nincs helye, mert a leírás oldal kiesett); Téma; legalul külön blokkban Projekt törlése.
 - Előnézet gomb: a kép nézetet nyitja meg.
+- Hangmező rajzolása: Ecset és Radír (a terv szerint), mentéskor körvonallá (sokszöggé) alakítva, így a kép nézet nem változik. A húzás nélküli „Pontok” eszköz (WCAG 2.5.7) a következő körben.
+- Leíró hang a szerkesztőben: a hangmező panelén a Leírás alatt; Felvétel (mikrofonnal, a böngészőben) vagy Feltöltés, visszajátszás, törlés.
+- Új projekt: amíg az Első lépések nincs kész, átmenetileg aktív; a zárolás az onboardinggal együtt kerül be.
 
 ## Gyerek oldal
 - Gyerek flow: galéria → kép nézet. Nincs külön leírás oldal (látó gyerekeknek sem).

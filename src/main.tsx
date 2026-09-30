@@ -12,6 +12,7 @@ import { ForgotPassword } from './pages/teacher/ForgotPassword';
 import { Login } from './pages/teacher/Login';
 import { MyProjects } from './pages/teacher/MyProjects';
 import { NewPassword } from './pages/teacher/NewPassword';
+import { EditorPlaceholder, ProfilePlaceholder } from './pages/teacher/Placeholders';
 
 function StatusPage({ error }: { error?: boolean }) {
   return error ? (
@@ -73,7 +74,23 @@ function App() {
           path="/projektjeim"
           element={
             <RequireAuth>
-              <MyProjects />
+              <MyProjects config={config} />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/szerkeszto/:id"
+          element={
+            <RequireAuth>
+              <EditorPlaceholder />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/profil"
+          element={
+            <RequireAuth>
+              <ProfilePlaceholder />
             </RequireAuth>
           }
         />

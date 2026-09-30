@@ -45,6 +45,7 @@ export interface Config {
   contactEmail: string;
   links: Record<'help' | 'teachers' | 'accessibility' | 'privacy' | 'terms', string>;
   auth: { passwordMinLength: number };
+  upload: { imageMaxMb: number };
   viewer: {
     startCue: Sound;
     backgroundFadeInMs: number;

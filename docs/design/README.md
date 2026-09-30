@@ -15,10 +15,10 @@ Ha a terv és a `docs/dontesnaplo.md` eltér, a döntésnapló az érvényes.
 | 4 · Asztali gép, billentyűzettel | `KepAsztali.png` · `html/KepAsztali.html` | 1440×900 | kész (src/pages) |
 | 6 · Belépés | `Belepes.png` · `html/Belepes.html` | 1440×900 | kész (src/pages/teacher) |
 | 7 · Fiók beállítása (meghívó után) | `Fiok.png` · `html/Fiok.html` | 1440×900 | kész (src/pages/teacher) |
-| 8 · Projektjeim | `Projektjeim.png` · `html/Projektjeim.html` | 1440×900 | még nincs |
+| 8 · Projektjeim | `Projektjeim.png` · `html/Projektjeim.html` | 1440×900 | kész (src/pages/teacher) |
 | 9a · Első lépések: minta a szerkesztőben | `OnboardingMinta.png` · `html/OnboardingMinta.html` | 1440×900 | még nincs |
 | 9b · Első lépések: most te | `Onboarding.png` · `html/Onboarding.html` | 1440×900 | még nincs |
-| 10 · Új projekt | `UjProjekt.png` · `html/UjProjekt.html` | 1440×900 | még nincs |
+| 10 · Új projekt | `UjProjekt.png` · `html/UjProjekt.html` | 1440×900 | kész (src/pages/teacher) |
 | 11 · Szerkesztő | `Szerkeszto.png` · `html/Szerkeszto.html` | 1440×900 | még nincs |
 | 11b · Szerkesztő, háttérhang kijelölve | `SzerkesztoHatter.png` · `html/SzerkesztoHatter.html` | 1440×900 | még nincs |
 | 12 · Hang kiválasztása | `Hangvalaszto.png` · `html/Hangvalaszto.html` | 1440×900 | még nincs |
