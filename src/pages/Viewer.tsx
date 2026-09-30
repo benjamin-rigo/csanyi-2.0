@@ -57,9 +57,10 @@ function Scene({ project, config }: { project: Project; config: Config }) {
   const [reminder, setReminder] = useState('');
   const v = config.viewer;
   // Kísérlet: néma elem az üres részen, hogy a VoiceOver ne ugorjon a legközelebbi hangmezőre.
-  // A szerep szövegét („kép”) üres karakterre cseréljük; két változat, mert nem tudni, melyiket hagyja figyelmen kívül.
+  // A „kép” szerepet a VoiceOver akkor is kimondja, ha felülírjuk; ezért a szerepet cseréljük, három változatban.
   const mod = new URLSearchParams(location.search).get('mod');
-  const filler = mod === 'kitoltes' ? '\u00a0' : mod === 'kitoltes2' ? '\u200b' : null;
+  const fillerRoles: Record<string, string | undefined> = { kitoltes: 'group', kitoltes2: undefined, kitoltes3: 'text' };
+  const filler = mod && mod in fillerRoles ? { role: fillerRoles[mod] } : null;
   // Kép nélküli (félkész, linkkel megosztott) projektnél is legyen képarány.
   const imgW = project.image.width ?? 4;
   const imgH = project.image.height ?? 3;
@@ -284,9 +285,8 @@ function Scene({ project, config }: { project: Project; config: Config }) {
                 y={0}
                 width={imgW}
                 height={imgH}
-                role="img"
-                aria-label={filler}
-                aria-roledescription={filler}
+                role={filler.role}
+                aria-label={'\u00a0'}
                 // Fókuszálható, de nincs a Tab sorrendben: amikor a VoiceOver rálép, a hangmező elhallgat.
                 tabIndex={-1}
                 onFocus={() => activate(null)}
