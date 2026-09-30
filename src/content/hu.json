@@ -283,9 +283,10 @@
         "select": "Kiválasztás",
         "selectLabel": "{title} kiválasztása",
         "playing": "szól",
-        "more": "Több találat",
         "importError": "Nem sikerült átvenni a hangot. Próbáld újra.",
-        "translated": "Angolul kerestük: {query}."
+        "translated": "Angolul kerestük: {query}.",
+        "loadingMore": "További találatok betöltése…",
+        "loadedMore": "{n} további találat."
       },
       "panelBack": "Hangok",
       "panelBackLabel": "Vissza a hangokhoz",

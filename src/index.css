@@ -1635,8 +1635,11 @@ body {
   background: var(--hs-default);
 }
 
-.library-more.button {
-  align-self: center;
+.library-more {
+  min-height: var(--space-8);
+  text-align: center;
+  font-size: var(--text-caption);
+  color: var(--hs-muted);
 }
 
 .panel-row:focus-visible {

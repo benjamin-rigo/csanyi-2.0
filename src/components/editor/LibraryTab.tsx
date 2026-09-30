@@ -52,6 +52,9 @@ export function LibraryTab({
   const [busyId, setBusyId] = useState<number | null>(null);
   const [importError, setImportError] = useState(false);
   const request = useRef(0);
+  const sentinel = useRef<HTMLDivElement>(null);
+  const [announce, setAnnounce] = useState('');
+  const [loadingMore, setLoadingMore] = useState(false);
 
   // Gépelés után rövid szünettel keres; a régebbi válaszokat eldobjuk.
   useEffect(() => {
@@ -77,16 +80,18 @@ export function LibraryTab({
 
   async function more() {
     const id = request.current;
-    setStatus('loading');
+    setLoadingMore(true);
     try {
       const r = await searchLibrary(query.trim(), page + 1);
       if (id !== request.current) return;
       setResults((prev) => [...prev, ...r.results]);
       setNext(r.next);
       setPage(page + 1);
-      setStatus('idle');
+      setAnnounce(t('teacher.editor.picker.loadedMore', { n: r.results.length }));
     } catch {
       setStatus('error');
+    } finally {
+      setLoadingMore(false);
     }
   }
 
@@ -102,6 +107,20 @@ export function LibraryTab({
       setBusyId(null);
     }
   }
+
+  // A lista aljára érve (görgetéssel vagy Tabbal) magától jön a következő oldal.
+  const moreRef = useRef(more);
+  useEffect(() => {
+    moreRef.current = more;
+  });
+  const canLoadMore = next && status === 'idle' && !loadingMore && query.trim() !== '';
+  useEffect(() => {
+    const el = sentinel.current;
+    if (!el || !canLoadMore) return;
+    const io = new IntersectionObserver((entries) => entries.some((e) => e.isIntersecting) && void moreRef.current());
+    io.observe(el);
+    return () => io.disconnect();
+  }, [canLoadMore, results.length]);
 
   // Üres keresőmezőnél a korábbi találatok nem látszanak.
   const empty = !query.trim();
@@ -146,11 +165,14 @@ export function LibraryTab({
           ))}
         </ul>
       )}
-      {!empty && next && status !== 'loading' && (
-        <Button variant="outline" size="sm" className="library-more" onPress={() => void more()}>
-          {t('teacher.editor.picker.more')}
-        </Button>
+      {!empty && next && (
+        <div ref={sentinel} className="library-more">
+          {loadingMore && t('teacher.editor.picker.loadingMore')}
+        </div>
       )}
+      <p className="sr-only" role="status">
+        {announce}
+      </p>
     </div>
   );
 }

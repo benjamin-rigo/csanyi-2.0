@@ -157,6 +157,22 @@ export function SoundsPanel({
           {t('teacher.editor.fields.detailTitle')}
         </h2>
         {field.polygons.length === 0 && <p className="panel-hint">{t('teacher.editor.fields.shapeHint')}</p>}
+        <div className="panel-field">
+          <span className="panel-label">{t('teacher.editor.fields.sound')}</span>
+          {field.sound ? (
+            <SoundCard
+              sound={field.sound}
+              action={
+                <Button size="sm" variant="outline" onPress={() => onPickSound(field.id)}>
+                  {t('teacher.editor.sound.replace')}
+                </Button>
+              }
+            />
+          ) : (
+            <AddTile label={t('teacher.editor.fields.addSound')} onPress={() => onPickSound(field.id)} />
+          )}
+        </div>
+        <VolumeSlider id="field-volume" value={field.volume} onChange={(volume) => onFieldChange(field.id, { volume })} />
         <TextField value={field.name} onChange={(name) => onFieldChange(field.id, { name })} className="auth-field">
           <Label>{t('teacher.editor.fields.name')}</Label>
           <Input />
@@ -174,22 +190,6 @@ export function SoundsPanel({
           userId={userId}
           onChange={(s) => onFieldVoice(field.id, s)}
         />
-        <div className="panel-field">
-          <span className="panel-label">{t('teacher.editor.fields.sound')}</span>
-          {field.sound ? (
-            <SoundCard
-              sound={field.sound}
-              action={
-                <Button size="sm" variant="outline" onPress={() => onPickSound(field.id)}>
-                  {t('teacher.editor.sound.replace')}
-                </Button>
-              }
-            />
-          ) : (
-            <AddTile label={t('teacher.editor.fields.addSound')} onPress={() => onPickSound(field.id)} />
-          )}
-        </div>
-        <VolumeSlider id="field-volume" value={field.volume} onChange={(volume) => onFieldChange(field.id, { volume })} />
         <VolumeSlider
           id="field-softness"
           label={t('teacher.editor.fields.softness')}
