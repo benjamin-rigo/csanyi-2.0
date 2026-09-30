@@ -56,8 +56,10 @@ function Scene({ project, config }: { project: Project; config: Config }) {
   const [touched, setTouched] = useState(false);
   const [reminder, setReminder] = useState('');
   const v = config.viewer;
-  // Kísérlet (?mod=kitoltes): néma elem az üres részen, hogy a VoiceOver ne ugorjon a legközelebbi hangmezőre.
-  const filler = new URLSearchParams(location.search).get('mod') === 'kitoltes';
+  // Kísérlet: néma elem az üres részen, hogy a VoiceOver ne ugorjon a legközelebbi hangmezőre.
+  // A szerep szövegét („kép”) üres karakterre cseréljük; két változat, mert nem tudni, melyiket hagyja figyelmen kívül.
+  const mod = new URLSearchParams(location.search).get('mod');
+  const filler = mod === 'kitoltes' ? '\u00a0' : mod === 'kitoltes2' ? '\u200b' : null;
   // Kép nélküli (félkész, linkkel megosztott) projektnél is legyen képarány.
   const imgW = project.image.width ?? 4;
   const imgH = project.image.height ?? 3;
@@ -275,7 +277,18 @@ function Scene({ project, config }: { project: Project; config: Config }) {
               if (!e.currentTarget.contains(e.relatedTarget as Node | null)) activate(null);
             }}
           >
-            {filler && <rect className="field-filler" x={0} y={0} width={imgW} height={imgH} role="img" aria-label={'\u00a0'} />}
+            {filler && (
+              <rect
+                className="field-filler"
+                x={0}
+                y={0}
+                width={imgW}
+                height={imgH}
+                role="img"
+                aria-label={filler}
+                aria-roledescription={filler}
+              />
+            )}
             {project.fields.map((f) => (
               <polygon
                 key={f.id}
