@@ -45,6 +45,7 @@ export function LibraryTab({
   const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState<LibraryResult[]>([]);
   const [count, setCount] = useState<number | null>(null);
+  const [searchedFor, setSearchedFor] = useState('');
   const [next, setNext] = useState(false);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
@@ -64,6 +65,7 @@ export function LibraryTab({
           if (id !== request.current) return;
           setResults(r.results);
           setCount(r.count);
+          setSearchedFor(r.searchedFor);
           setNext(r.next);
           setPage(1);
           setStatus('idle');
@@ -122,7 +124,14 @@ export function LibraryTab({
               : count === 0
                 ? t('teacher.editor.picker.noResults')
                 : count !== null
-                  ? t('teacher.editor.picker.count', { count: count.toLocaleString('hu-HU') })
+                  ? [
+                      searchedFor && searchedFor.toLowerCase() !== query.trim().toLowerCase()
+                        ? t('teacher.editor.picker.translated', { query: searchedFor })
+                        : '',
+                      t('teacher.editor.picker.count', { count: count.toLocaleString('hu-HU') }),
+                    ]
+                      .filter(Boolean)
+                      .join(' ')
                   : ''}
       </p>
       {importError && (

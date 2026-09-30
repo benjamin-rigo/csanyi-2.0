@@ -35,7 +35,14 @@ export interface EditorProject {
   fields: EditorField[];
 }
 
-type SoundRow = { id: string; title: string; path: string; source: 'upload' | 'library'; license: string | null; duration_ms: number | null };
+type SoundRow = {
+  id: string;
+  title: string;
+  path: string;
+  source: 'upload' | 'library';
+  license: string | null;
+  duration_ms: number | null;
+};
 
 function toSound(row: SoundRow | null): EditorSound | null {
   return row && { id: row.id, title: row.title, path: row.path, source: row.source, license: row.license, durationMs: row.duration_ms };
@@ -131,7 +138,11 @@ async function check<T extends { error: unknown }>(q: PromiseLike<T>): Promise<T
 
 export async function insertField(projectId: string, sort: number): Promise<string> {
   const { data } = await check(
-    supabase.from('fields').insert({ project_id: projectId, sort, shape: shapeOf([]) }).select('id').single(),
+    supabase
+      .from('fields')
+      .insert({ project_id: projectId, sort, shape: shapeOf([]) })
+      .select('id')
+      .single(),
   );
   return (data as { id: string }).id;
 }
@@ -197,7 +208,7 @@ export function useAutosave(delayMs: number) {
   const failed = useRef(false);
   const pending = useRef(new Map<string, { timer: number; run: () => Promise<unknown> }>());
 
-  const track = useCallback(async <T,>(work: Promise<T>): Promise<T> => {
+  const track = useCallback(async <T>(work: Promise<T>): Promise<T> => {
     inflight.current += 1;
     setStatus('saving');
     try {
@@ -262,7 +273,10 @@ export interface LibraryResult {
 }
 
 /** Keresés a Freesound CC0 hangjai között (Supabase függvényen át, a kulcs ott marad). */
-export async function searchLibrary(query: string, page: number): Promise<{ count: number; next: boolean; results: LibraryResult[] }> {
+export async function searchLibrary(
+  query: string,
+  page: number,
+): Promise<{ count: number; next: boolean; searchedFor: string; results: LibraryResult[] }> {
   const { data, error } = await supabase.functions.invoke('freesound', { body: { query, page } });
   if (error) throw error;
   return data;
@@ -270,7 +284,11 @@ export async function searchLibrary(query: string, page: number): Promise<{ coun
 
 /** A Freesound fájlnevekből olvasható cím: kiterjesztés, aláhúzás és kötőjel nélkül. */
 export function libraryTitle(name: string): string {
-  return name.replace(/\.[a-z0-9]{2,4}$/i, '').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
+  return name
+    .replace(/\.[a-z0-9]{2,4}$/i, '')
+    .replace(/[_-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 /** A kiválasztott könyvtári hangot a saját tárhelyünkre másoljuk, így a projekt nem függ a Freesoundtól. */

@@ -274,7 +274,7 @@
           "generic": "Nem sikerült feltölteni a hangot. Próbáld újra."
         },
         "searchLabel": "Keresés a hangkönyvtárban",
-        "searchHelp": "Angolul több találat van, például: cat, bird, door, rain.",
+        "searchHelp": "Magyarul is kereshetsz: a szót automatikusan angolra fordítjuk, mert a hangok címkéi angolok.",
         "resultsLabel": "Találatok",
         "count": "{count} találat, csak szabadon felhasználható (CC0) hangok",
         "noResults": "Nincs találat. Próbáld angolul vagy más szóval.",
@@ -284,7 +284,8 @@
         "selectLabel": "{title} kiválasztása",
         "playing": "szól",
         "more": "Több találat",
-        "importError": "Nem sikerült átvenni a hangot. Próbáld újra."
+        "importError": "Nem sikerült átvenni a hangot. Próbáld újra.",
+        "translated": "Angolul kerestük: {query}."
       },
       "panelBack": "Hangok",
       "panelBackLabel": "Vissza a hangokhoz",
