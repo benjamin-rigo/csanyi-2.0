@@ -18,7 +18,9 @@
     "fieldFadeMs": 120,
     "reminderDelayMs": 15000,
     "reminderMax": 2,
-    "welcomeSettleMs": 1500
+    "welcomeSettleMs": 1500,
+    "edgeMaxFraction": 0.08,
+    "descriptionThreshold": 0.5
   },
   "auth": {
     "passwordMinLength": 8
@@ -34,6 +36,7 @@
     "brushMax": 80,
     "zoomMin": 1,
     "zoomMax": 6,
-    "zoomStep": 1.25
+    "zoomStep": 1.25,
+    "softnessDefault": 0.3
   }
 }

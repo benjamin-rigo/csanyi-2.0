@@ -80,6 +80,13 @@ async function play(sound: Sound, { loop, fadeMs, startGain = 0 }: { loop: boole
   return { src, gain };
 }
 
+/** Folyamatos hangerő-követés (ujjmozgás közben), kattanás nélkül. */
+function glide(param: AudioParam, to: number) {
+  const now = context().currentTime;
+  param.cancelScheduledValues(now);
+  param.setTargetAtTime(to, now, 0.03);
+}
+
 function stop(voice: Voice | null, fadeMs: number) {
   if (!voice || !ctx) return;
   ramp(voice.gain.gain, 0, fadeMs);
@@ -102,7 +109,8 @@ export interface SceneAudioOptions {
 /** Egy kép hangjai: indító jel + háttérhang + a hangmezők. */
 export class SceneAudio {
   private bg: Voice | null = null;
-  private field: { id: string; voice: Promise<Voice> } | null = null;
+  /** A szóló hangmezők: erősség (0–1) és a hang saját hangereje. */
+  private fields = new Map<string, { voice: Promise<Voice>; gain: number }>();
   private speech: { id: string; voice: Promise<Voice>; ended: boolean } | null = null;
   private started = false;
   private disposed = false;
@@ -128,33 +136,50 @@ export class SceneAudio {
       const bg = await play(this.opts.background, { loop: true, fadeMs: this.opts.fadeInMs });
       if (this.disposed) return stop(bg, this.opts.fadeOutMs);
       this.bg = bg;
-      if (this.field) this.duck(true);
+      this.duck();
     }, cueMs);
   }
 
-  private duck(on: boolean) {
+  /** A háttérhang a legerősebb szóló hangmező arányában halkul. */
+  private duck() {
     if (!this.bg) return;
     const volume = this.opts.background?.volume ?? 0;
-    const target = on ? volume * this.opts.duckLevel : volume;
-    ramp(this.bg.gain.gain, target, 300);
+    const strongest = Math.max(0, ...[...this.fields.values()].map((f) => f.gain));
+    ramp(this.bg.gain.gain, volume * (1 - (1 - this.opts.duckLevel) * strongest), 300);
   }
 
-  /** Hangmező szólal meg (vagy null: egyik sem). */
+  /**
+   * A szóló hangmezők és erősségük (lágy szél, átfedés). Ami nincs a listában, elhalkul és leáll.
+   * Az állapotot azonnal frissítjük, a hang betöltése után igazodik: gyors simításnál sem ragad be hang.
+   */
+  setFields(active: { id: string; sound: Sound; gain: number }[]): void {
+    if (this.disposed) return;
+    const fadeMs = this.opts.fieldFadeMs;
+    for (const [id, f] of this.fields) {
+      if (!active.some((a) => a.id === id && a.gain > 0)) {
+        void f.voice.then((v) => stop(v, fadeMs));
+        this.fields.delete(id);
+      }
+    }
+    for (const { id, sound, gain } of active) {
+      if (gain <= 0) continue;
+      const existing = this.fields.get(id);
+      if (existing) {
+        existing.gain = gain;
+        void existing.voice.then((v) => this.fields.get(id) === existing && glide(v.gain.gain, sound.volume * existing.gain));
+        continue;
+      }
+      if (!this.started) void this.start();
+      const entry = { voice: play(sound, { loop: true, fadeMs, startGain: 0 }), gain };
+      void entry.voice.then((v) => glide(v.gain.gain, sound.volume * entry.gain));
+      this.fields.set(id, entry);
+    }
+    this.duck();
+  }
+
+  /** Egyetlen hangmező teljes erővel (felolvasó, billentyűzet), vagy null: egyik sem. */
   setField(id: string | null, sound: Sound | null): void {
-    if (this.field?.id === id) return;
-    // Az állapotot azonnal frissítjük, a leállítás a hang betöltése után jön: így gyors simításnál sem ragad be hang.
-    if (this.field) {
-      const fadeMs = this.opts.fieldFadeMs;
-      void this.field.voice.then((v) => stop(v, fadeMs));
-      this.field = null;
-    }
-    if (!id || !sound || this.disposed) {
-      this.duck(false);
-      return;
-    }
-    if (!this.started) void this.start();
-    this.field = { id, voice: play(sound, { loop: true, fadeMs: this.opts.fieldFadeMs }) };
-    this.duck(true);
+    this.setFields(id && sound ? [{ id, sound, gain: 1 }] : []);
   }
 
   /**
@@ -181,11 +206,9 @@ export class SceneAudio {
       void this.speech.voice.then((v) => stop(v, fadeMs));
     }
     this.speech = null;
-    if (this.field) {
-      const fadeMs = this.opts.fadeOutMs;
-      void this.field.voice.then((v) => stop(v, fadeMs));
-    }
-    this.field = null;
+    const fadeMs = this.opts.fadeOutMs;
+    for (const f of this.fields.values()) void f.voice.then((v) => stop(v, fadeMs));
+    this.fields.clear();
     stop(this.bg, this.opts.fadeOutMs);
     this.bg = null;
   }

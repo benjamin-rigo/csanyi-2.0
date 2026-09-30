@@ -1537,6 +1537,7 @@ body {
   height: var(--space-5);
   border-inline-width: 0;
   margin-inline: var(--space-2);
+  max-width: calc(100% - 2 * var(--space-2));
   border-radius: var(--radius-pill);
   background: linear-gradient(var(--hs-default-hover), var(--hs-default-hover)) center / 100% var(--space-1) no-repeat;
 }

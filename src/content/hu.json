@@ -226,7 +226,9 @@
         "shapeHint": "Fesd ki a képen az ecsettel, hol van ez a hangmező.",
         "pickerTarget": "{name} hangmező",
         "detailTitle": "Hangmező",
-        "deleteField": "Hangmező törlése"
+        "deleteField": "Hangmező törlése",
+        "softness": "Él lágysága",
+        "softnessHelp": "Minél lágyabb, annál fokozatosabban erősödik a hang, ahogy az ujj a hangmező széléről befelé halad. Felolvasóval ez nem számít."
       },
       "voice": {
         "title": "Leíró hang",

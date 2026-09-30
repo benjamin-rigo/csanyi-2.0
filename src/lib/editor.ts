@@ -20,6 +20,7 @@ export interface EditorField {
   polygons: Point[][];
   sound: EditorSound | null;
   volume: number;
+  softness: number;
   descriptionSound: EditorSound | null;
 }
 
@@ -54,7 +55,7 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
     .select(
       `id, title, image_path, image_width, image_height, background_volume, owner_id,
        background:sounds!projects_background_sound_id_fkey(${SOUND}),
-       fields(id, sort, name, description, shape, volume,
+       fields(id, sort, name, description, shape, volume, edge_softness,
          sound:sounds!fields_sound_id_fkey(${SOUND}),
          description_sound:sounds!fields_description_sound_id_fkey(${SOUND}))`,
     )
@@ -78,6 +79,7 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
       description: string;
       shape: Shape;
       volume: number;
+      edge_softness: number;
       sound: SoundRow | null;
       description_sound: SoundRow | null;
     }[];
@@ -100,6 +102,7 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
         polygons: shapePolygons(f.shape),
         sound: toSound(f.sound),
         volume: f.volume,
+        softness: f.edge_softness,
         descriptionSound: toSound(f.description_sound),
       })),
   };
@@ -112,6 +115,7 @@ export type FieldPatch = Partial<{
   shape: Shape;
   sound_id: string | null;
   volume: number;
+  edge_softness: number;
   description_sound_id: string | null;
 }>;
 

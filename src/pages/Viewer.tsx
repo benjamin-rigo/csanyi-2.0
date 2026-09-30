@@ -2,12 +2,12 @@ import type React from 'react';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { Button } from '@heroui/react';
-import { useSharedProject, type Config, type Gallery, type Project, type Sound } from '../lib/data';
+import { useSharedProject, type Config, type Gallery, type Project, type Sound, type SoundField } from '../lib/data';
 import { t } from '../lib/i18n';
 import { detectPlatform } from '../lib/device';
 import { preload, SceneAudio } from '../lib/audio';
 import { Icon } from '../components/Icon';
-import { inShape, shapePath } from '../lib/geometry';
+import { edgeGain, shapePath } from '../lib/geometry';
 
 export function Viewer({ gallery, config }: { gallery: Gallery; config: Config }) {
   const { id } = useParams();
@@ -128,18 +128,24 @@ function Scene({ project, config }: { project: Project; config: Config }) {
     };
   }, [v.reminderDelayMs, v.reminderMax]);
 
+  // A „megtalált” hangmező: ennek a neve látszik a feliratban, és ez számít az emlékeztetőnél.
+  const markActive = useCallback((field: SoundField | null) => {
+    setActive(field?.id ?? null);
+    if (field) {
+      foundRef.current = true;
+      setReminder('');
+    }
+    activeRef.current = field?.id ?? null;
+  }, []);
+
+  // Fókusz (felolvasó, billentyűzet): egyetlen hangmező, teljes erővel.
   const activate = useCallback(
     (fieldId: string | null) => {
-      setActive(fieldId);
       const field = project.fields.find((f) => f.id === fieldId) ?? null;
-      if (field) {
-        foundRef.current = true;
-        setReminder('');
-      }
-      activeRef.current = field?.id ?? null;
+      markActive(field);
       audioRef.current?.setField(field?.id ?? null, field?.sound ?? null);
     },
-    [project.fields],
+    [markActive, project.fields],
   );
 
   // iPaden a VoiceOver megnyitás után a koppintás helyén lévő hangmezőre ugorhat; ilyenkor vissza az üdvözléshez.
@@ -181,12 +187,19 @@ function Scene({ project, config }: { project: Project; config: Config }) {
       const r = frame.getBoundingClientRect();
       const x = ((clientX - r.left) / r.width) * imgW;
       const y = ((clientY - r.top) / r.height) * imgH;
-      const hit = project.fields.find((f) => inShape(x, y, f.polygons));
+      // Lágy szél: a hangmező szélétől befelé erősödik a hang; az átfedő hangmezők együtt szólnak.
+      const edge = v.edgeMaxFraction * Math.min(imgW, imgH);
+      const hits = project.fields
+        .map((f) => ({ field: f, gain: edgeGain(x, y, f.polygons, f.softness * edge) }))
+        .filter((h) => h.gain > 0);
+      audioRef.current?.setFields(hits.flatMap(({ field, gain }) => (field.sound ? [{ id: field.id, sound: field.sound, gain }] : [])));
+      const strongest = hits.reduce<(typeof hits)[number] | null>((best, h) => (!best || h.gain > best.gain ? h : best), null);
+      const found = strongest && strongest.gain >= v.descriptionThreshold ? strongest.field : null;
       // Érintés és egér csak kikapcsolt felolvasónál jut ide, ezért a felvett leírás nem beszél a felolvasóra.
-      if (hit?.descriptionSound && hit.id !== activeRef.current) audioRef.current?.speak(hit.id, hit.descriptionSound);
-      activate(hit?.id ?? null);
+      if (found?.descriptionSound && found.id !== activeRef.current) audioRef.current?.speak(found.id, found.descriptionSound);
+      markActive(found);
     },
-    [activate, imgH, imgW, project.fields],
+    [imgH, imgW, markActive, project.fields, v.descriptionThreshold, v.edgeMaxFraction],
   );
 
   // Érintés felolvasó nélkül: simogatás. (Felolvasóval a hangmezők fókusza indítja a hangot.)

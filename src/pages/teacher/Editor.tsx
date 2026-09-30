@@ -75,7 +75,9 @@ export function Editor({ config }: { config: Config }) {
     (fieldId: string) =>
       schedule(`field:${fieldId}`, () => {
         const f = projectRef.current?.fields.find((x) => x.id === fieldId);
-        return f ? updateField(fieldId, { name: f.name, description: f.description, volume: f.volume }) : Promise.resolve();
+        return f
+          ? updateField(fieldId, { name: f.name, description: f.description, volume: f.volume, edge_softness: f.softness })
+          : Promise.resolve();
       }),
     [schedule],
   );
@@ -92,7 +94,17 @@ export function Editor({ config }: { config: Config }) {
     if (!project) return null;
     const sort = project.fields.reduce((m, f) => Math.max(m, f.sort + 1), 0);
     const fieldId = await track(insertField(project.id, sort));
-    const field: EditorField = { id: fieldId, sort, name: '', description: '', polygons, sound: null, volume: 1, descriptionSound: null };
+    const field: EditorField = {
+      id: fieldId,
+      sort,
+      name: '',
+      description: '',
+      polygons,
+      sound: null,
+      volume: 1,
+      softness: config.editor.softnessDefault,
+      descriptionSound: null,
+    };
     setProject((p) => p && { ...p, fields: [...p.fields, field] });
     setSelection({ kind: 'field', id: fieldId });
     setTool('brush');
@@ -144,6 +156,29 @@ export function Editor({ config }: { config: Config }) {
     setHistory((h) => ({ done: h.done.filter((s) => s.fieldId !== field.id), undone: h.undone.filter((s) => s.fieldId !== field.id) }));
     await track(deleteField(field.id)).catch(() => undefined);
   }
+
+  // Cmd/Ctrl + Z visszavon, Cmd/Ctrl + Shift + Z vagy Ctrl + Y újra. Szövegmezőben a szöveg saját visszavonása marad.
+  const undoRef = useRef(undo);
+  const redoRef = useRef(redo);
+  useEffect(() => {
+    undoRef.current = undo;
+    redoRef.current = redo;
+  });
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.metaKey || e.ctrlKey) || (e.target as HTMLElement).closest('input, textarea, [contenteditable]')) return;
+      const key = e.key.toLowerCase();
+      if (key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        undoRef.current();
+      } else if ((key === 'z' && e.shiftKey) || key === 'y') {
+        e.preventDefault();
+        redoRef.current();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   // Gombos nagyítás a rajzterület közepe körül.
   function zoomBy(factor: number) {

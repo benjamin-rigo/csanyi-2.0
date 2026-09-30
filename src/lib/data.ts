@@ -18,6 +18,8 @@ export interface SoundField {
   descriptionSound: Sound | null;
   /** Egy vagy több sokszög (lyukakkal), páros-páratlan kitöltéssel. */
   polygons: Point[][];
+  /** Lágy szél 0–1: a szélétől befelé ekkora sávban erősödik a hang. */
+  softness: number;
 }
 
 export interface Project {
@@ -47,7 +49,7 @@ export interface Config {
   links: Record<'help' | 'teachers' | 'accessibility' | 'privacy' | 'terms', string>;
   auth: { passwordMinLength: number };
   upload: { imageMaxMb: number; soundMaxMb: number };
-  editor: { autosaveDelayMs: number; brushDefault: number; brushMin: number; brushMax: number; zoomMin: number; zoomMax: number; zoomStep: number };
+  editor: { autosaveDelayMs: number; brushDefault: number; brushMin: number; brushMax: number; zoomMin: number; zoomMax: number; zoomStep: number; softnessDefault: number };
   viewer: {
     startCue: Sound;
     backgroundFadeInMs: number;
@@ -58,6 +60,10 @@ export interface Config {
     reminderMax: number;
     /** Ennyi ideig a hangmezőre ugró fókuszt visszatesszük az üdvözlésre. */
     welcomeSettleMs: number;
+    /** Teljes lágyságnál az átmeneti sáv szélessége, a kép rövidebb oldalának hányadában. */
+    edgeMaxFraction: number;
+    /** E fölötti erősségnél számít „megtaláltnak” a hangmező: felirat, leíró hang. */
+    descriptionThreshold: number;
   };
 }
 
@@ -95,6 +101,7 @@ function resolveProject(p: Project): Project {
         sound: soundOrNull(f.sound),
         descriptionSound: soundOrNull(f.descriptionSound ?? null),
         polygons: f.polygons ?? (legacy.points ? [legacy.points] : []),
+        softness: f.softness ?? 0,
       };
     }),
   };

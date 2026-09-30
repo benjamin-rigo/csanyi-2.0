@@ -9,7 +9,19 @@ import { VoiceRecorder } from './VoiceRecorder';
 
 export type Selection = { kind: 'background' } | { kind: 'field'; id: string } | null;
 
-function VolumeSlider({ id, value, onChange, help }: { id: string; value: number; onChange: (v: number) => void; help?: string }) {
+function VolumeSlider({
+  id,
+  value,
+  onChange,
+  help,
+  label = t('teacher.editor.fields.volume'),
+}: {
+  id: string;
+  value: number;
+  onChange: (v: number) => void;
+  help?: string;
+  label?: string;
+}) {
   return (
     <div className="panel-field">
       <Slider
@@ -22,7 +34,7 @@ function VolumeSlider({ id, value, onChange, help }: { id: string; value: number
         className="volume-slider"
       >
         <div className="volume-head">
-          <Label>{t('teacher.editor.fields.volume')}</Label>
+          <Label>{label}</Label>
           <Slider.Output />
         </div>
         <Slider.Track>
@@ -69,7 +81,7 @@ export function SoundsPanel({
   onPickSound: (target: 'background' | string) => void;
   onBackgroundVolume: (v: number) => void;
   onRemoveBackground: () => void;
-  onFieldChange: (id: string, patch: Partial<Pick<EditorField, 'name' | 'description' | 'volume'>>) => void;
+  onFieldChange: (id: string, patch: Partial<Pick<EditorField, 'name' | 'description' | 'volume' | 'softness'>>) => void;
   onFieldVoice: (id: string, sound: EditorSound | null) => void;
   onDeleteField: (field: EditorField) => void;
 }) {
@@ -178,6 +190,13 @@ export function SoundsPanel({
           )}
         </div>
         <VolumeSlider id="field-volume" value={field.volume} onChange={(volume) => onFieldChange(field.id, { volume })} />
+        <VolumeSlider
+          id="field-softness"
+          label={t('teacher.editor.fields.softness')}
+          value={field.softness}
+          onChange={(softness) => onFieldChange(field.id, { softness })}
+          help={t('teacher.editor.fields.softnessHelp')}
+        />
         <div className="panel-danger-zone">
           <Button size="sm" className="button--danger-soft" onPress={() => onDeleteField(field)}>
             {t('teacher.editor.fields.deleteField')}
