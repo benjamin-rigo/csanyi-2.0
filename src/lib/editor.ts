@@ -24,9 +24,15 @@ export interface EditorField {
   descriptionSound: EditorSound | null;
 }
 
+export type Visibility = 'private' | 'link' | 'gallery';
+
 export interface EditorProject {
   id: string;
   title: string;
+  shortDescription: string;
+  author: string;
+  visibility: Visibility;
+  categories: string[];
   imagePath: string;
   imageWidth: number;
   imageHeight: number;
@@ -60,7 +66,8 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
   const { data, error } = await supabase
     .from('projects')
     .select(
-      `id, title, image_path, image_width, image_height, background_volume, owner_id,
+      `id, title, short_description, author, visibility, image_path, image_width, image_height, background_volume, owner_id,
+       project_categories(category_id),
        background:sounds!projects_background_sound_id_fkey(${SOUND}),
        fields(id, sort, name, description, shape, volume, edge_softness,
          sound:sounds!fields_sound_id_fkey(${SOUND}),
@@ -74,6 +81,10 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
   const row = data as unknown as {
     id: string;
     title: string;
+    short_description: string;
+    author: string;
+    visibility: Visibility;
+    project_categories: { category_id: string }[];
     image_path: string;
     image_width: number;
     image_height: number;
@@ -94,6 +105,10 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
   return {
     id: row.id,
     title: row.title,
+    shortDescription: row.short_description,
+    author: row.author,
+    visibility: row.visibility,
+    categories: row.project_categories.map((c) => c.category_id),
     imagePath: row.image_path,
     imageWidth: row.image_width,
     imageHeight: row.image_height,
@@ -115,7 +130,17 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
   };
 }
 
-export type ProjectPatch = Partial<{ background_sound_id: string | null; background_volume: number }>;
+export type ProjectPatch = Partial<{
+  background_sound_id: string | null;
+  background_volume: number;
+  title: string;
+  short_description: string;
+  author: string;
+  visibility: Visibility;
+  image_path: string;
+  image_width: number;
+  image_height: number;
+}>;
 export type FieldPatch = Partial<{
   name: string;
   description: string;
@@ -301,4 +326,44 @@ export async function importLibrarySound(userId: string, result: LibraryResult):
     license: 'CC0',
     attribution: `${result.username} · https://freesound.org/s/${result.id}/`,
   });
+}
+
+export interface CategoryOption {
+  id: string;
+  label: string;
+  icon: string | null;
+}
+
+/** A galéria kategóriái a Téma választóhoz („Összes kép” nélkül, az nem szűr). */
+export async function loadCategories(): Promise<CategoryOption[]> {
+  const { data } = await check(supabase.from('categories').select('id, label, icon, sort').neq('id', 'all').order('sort'));
+  return (data ?? []) as CategoryOption[];
+}
+
+/** A projekt témái: a régieket töröljük, az újakat beírjuk. */
+export async function setProjectCategories(projectId: string, ids: string[]) {
+  await check(supabase.from('project_categories').delete().eq('project_id', projectId));
+  if (ids.length) await check(supabase.from('project_categories').insert(ids.map((category_id) => ({ project_id: projectId, category_id }))));
+}
+
+export const deleteProject = (id: string) => check(supabase.from('projects').delete().eq('id', id));
+
+/** A galériába kerülés feltételei (döntésnapló), ugyanaz, mint az adatbázis project_missing() függvénye. */
+export type Missing =
+  | { kind: 'image' | 'title' | 'shortDescription' | 'background' | 'fields' }
+  | { kind: 'fieldName' | 'fieldDescription' | 'fieldSound'; fieldId: string };
+
+export function projectMissing(p: EditorProject): Missing[] {
+  const out: Missing[] = [];
+  if (!p.imagePath) out.push({ kind: 'image' });
+  if (!p.title.trim()) out.push({ kind: 'title' });
+  if (!p.shortDescription.trim()) out.push({ kind: 'shortDescription' });
+  if (!p.background) out.push({ kind: 'background' });
+  if (!p.fields.length) out.push({ kind: 'fields' });
+  for (const f of p.fields) {
+    if (!f.name.trim()) out.push({ kind: 'fieldName', fieldId: f.id });
+    if (!f.description.trim()) out.push({ kind: 'fieldDescription', fieldId: f.id });
+    if (!f.sound) out.push({ kind: 'fieldSound', fieldId: f.id });
+  }
+  return out;
 }

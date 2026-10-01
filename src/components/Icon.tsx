@@ -26,6 +26,7 @@ const PATHS: Record<string, string> = {
   mic: 'M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM5 11a7 7 0 0 0 14 0M12 18v3',
   stop: 'M7 7h10v10H7z',
   minus: 'M5 12h14',
+  lock: 'M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6z',
   music: 'M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM21 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
 };
 

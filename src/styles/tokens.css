@@ -5,9 +5,9 @@
  */
 :root {
   /* HeroUI: csak akadálymentességi okból tér el az alaptól (WCAG 2.2 AA, mérve):
-     a kék ugyanaz az árnyalat, csak sötétebb (fehér felirat rajta 4,87:1 a 3,68 helyett; a fókuszgyűrű is ez),
+     a kék ugyanaz az árnyalat, csak sötétebb (fehér felirat rajta 5,99:1 a 3,68 helyett, rámutatáskor is 4,91:1; a fókuszgyűrű is ez),
      a halvány szöveg szürke felületen 5:1, a piros fehéren és halvány piroson is 4,5:1 fölött. */
-  --accent: oklch(0.55 0.195 253.83);
+  --accent: oklch(0.5 0.195 253.83);
   --muted: #63636b;
   --danger: #c01a1f;
 

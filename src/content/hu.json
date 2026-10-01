@@ -172,8 +172,33 @@
         "error": "Nem sikerült menteni. Ellenőrizd az internetkapcsolatot."
       },
       "preview": "Előnézet",
-      "share": "Megosztás",
-      "comingSoon": "Hamarosan",
+      "share": {
+        "title": "Ki láthatja?",
+        "private": "Privát",
+        "privateHelp": "Csak te látod.",
+        "link": "Linkkel elérhető",
+        "linkHelp": "Aki megkapja a linket, meghallgathatja.",
+        "gallery": "Galériában is",
+        "galleryHelp": "Megjelenik a galériában, és linkkel is elérhető.",
+        "notReady": "A galériába még nem kerülhet ki. Hiányzik:",
+        "missing": {
+          "image": "Kép (Projekt fül)",
+          "title": "Cím (Projekt fül)",
+          "shortDescription": "Kép rövid leírása (Projekt fül)",
+          "background": "Háttérhang (Hangok fül)",
+          "fields": "Legalább egy hangmező (Hangok fül)",
+          "fieldName": "{name}: nincs neve (Hangok fül)",
+          "fieldDescription": "{name}: nincs leírása (Hangok fül)",
+          "fieldSound": "{name}: nincs hang (Hangok fül)"
+        },
+        "linkLabel": "Link",
+        "copy": "Másolás",
+        "copied": "Kimásolva",
+        "linkHelpPrivate": "Privát projektnél a link csak neked működik, belépve.",
+        "linkHelpLink": "Bárki meghallgathatja, akinek elküldöd. A galériában nem jelenik meg.",
+        "linkHelpGallery": "Bárki meghallgathatja, és a galériában is megjelenik.",
+        "saveError": "Nem sikerült menteni a megosztást. Próbáld újra."
+      },
       "canvasLabel": "Rajzterület",
       "toolbarLabel": "Rajzeszközök",
       "brush": "Ecset",
@@ -191,7 +216,6 @@
         "sounds": "Hangok",
         "share": "Megosztás"
       },
-      "tabsSoon": "A Projekt és a Megosztás fül a következő lépésben készül el.",
       "background": {
         "title": "Háttérhang",
         "add": "Háttérhang hozzáadása",
@@ -295,7 +319,29 @@
         "in": "Nagyítás",
         "fit": "Igazítás a kép méretéhez, most {n}%",
         "hint": "Nagyítás: Ctrl vagy Cmd + görgő. Mozgatás: görgetés vagy szóköz + húzás."
-      }
+      },
+      "project": {
+        "title": "Cím",
+        "image": "Kép",
+        "imageSize": "{w} × {h} px",
+        "replaceImage": "Csere",
+        "replaceHelp": "Csere után a hangmezők arányosan az új képre kerülnek; érdemes ugyanilyen arányú képet választani.",
+        "shortDescription": "Rövid leírás",
+        "shortDescriptionHelp": "Egy mondat arról, mi van a képen. A galéria kártyáján látszik, és a felolvasó a cím után ezt mondja el. A galériához kötelező.",
+        "author": "Alkotó",
+        "authorHelp": "A kép alkotója (festő, fotós, vagy a te neved). A galériában így jelenik meg: „[Alkotó] alkotása”. Nem kötelező.",
+        "themes": "Téma",
+        "themesHelp": "Ezek alapján szűrhetnek a galériában. Több is választható.",
+        "deleteTitle": "Projekt törlése",
+        "deleteText": "A projekt, a hangmezők és a megosztott link véglegesen törlődik.",
+        "deleteButton": "Projekt törlése",
+        "deleteConfirmTitle": "Törlöd a projektet?",
+        "deleteConfirmText": "A(z) „{title}” projekt a hangmezőivel és a megosztott linkjével együtt véglegesen törlődik. Ezt nem lehet visszavonni.",
+        "deleteConfirm": "Végleges törlés",
+        "cancel": "Mégse",
+        "imageError": "Nem sikerült cserélni a képet. Próbáld újra."
+      },
+      "shareButton": "Megosztás"
     },
     "profile": {
       "documentTitle": "Profil · Hangösvény",

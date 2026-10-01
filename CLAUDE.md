@@ -34,7 +34,7 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 ## Vizuális szabályok (részletesen a naplóban)
 
 - **HeroUI v3 alapértelmezett megjelenés mindenhol.** Ahol van HeroUI komponens, azt használd, és ne írd felül a kinézetét (szín, méret, lekerekítés, árnyék, állapotok). Gombnak látszó linkhez: `ButtonLink` (`buttonVariants`), szöveges linkhez HeroUI `Link`; a router a react-aria `RouterProvider`-en át kezeli őket.
-- A témából csak akadálymentességi okból tér el bármi (`src/styles/tokens.css`, mérve): a HeroUI kékje sötétebben (`--accent`, fehér felirat rajta 4,87:1), sötétebb `--muted` és `--danger`. Új eltérés csak így, mérve. Másodlagos gomb: `variant="secondary"` (szürke), `outline` nem.
+- A témából csak akadálymentességi okból tér el bármi (`src/styles/tokens.css`, mérve): a HeroUI kékje sötétebben (`--accent`, fehér felirat rajta 5,99:1, rámutatáskor 4,91:1), sötétebb `--muted` és `--danger`. Új eltérés csak így, mérve. Másodlagos gomb: `variant="secondary"` (szürke), `outline` nem.
 - Saját CSS (`src/index.css`) csak elrendezés (térköz, rács, oldalszerkezet) és a HeroUI-ban nem létező elemek: képnézet, rajzterület, feltöltő mező, hangmező-színek. A saját színek a HeroUI változóiból jönnek (`--hs-*`).
 - Térköz csak a skálából: 2, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64 (`--space-*`).
 - Ami átmenetileg nem használható, az letiltva látszik a helyén (HeroUI `isDisabled`, mellette rövid ok), nem tűnik el.
@@ -52,9 +52,9 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 src/
   pages/Gallery.tsx      galéria (1)
   pages/Viewer.tsx       képnézet (2–4)
-  pages/teacher/         pedagógus oldal: Login (6), ForgotPassword (6b), NewPassword (6c), AccountSetup (7), MyProjects (8), Editor (11); Placeholders (profil)
+  pages/teacher/         pedagógus oldal: Login (6), ForgotPassword (6b), NewPassword (6c), AccountSetup (7), MyProjects (8), Editor (11, 11b, 11c, 13); Placeholders (profil)
   components/            SiteHeader (Logo, ButtonLink, SiteFooter), AuthLayout, AuthFields, TeacherLayout, NewProjectModal (10), Icon
-  components/editor/     DrawingCanvas (ecset, radír), SoundsPanel (Hangok fül), SoundPicker (12), SoundCard, VoiceRecorder (leíró hang)
+  components/editor/     DrawingCanvas (ecset, radír), SoundsPanel (Hangok fül), ProjectPanel (Projekt fül), SharePanel (Megosztás fül), SoundPicker (12), LibraryTab, SoundCard, VoiceRecorder (leíró hang)
   lib/                   data, supabase, teacher, editor (betöltés, automatikus mentés, hangfeltöltés), contour (maszk ↔ sokszög), geometry, i18n, audio, device
   content/hu.json        felületi szövegek
   styles/tokens.css      design tokenek
@@ -80,7 +80,7 @@ docs/design/             a képernyők tervei
 ## Következő lépések
 
 1. A `freesound` függvény már csak bejelentkezett pedagógust enged (kódban kész, 2026-10-01); a Supabase-ben újra kell telepíteni, utána élesben ellenőrizni (nyilvános kulccsal 401).
-2. Projekt fül (11c) és Megosztás (13), a Megosztás gomb bekapcsolása.
+2. Projekt fül (11c) és Megosztás (13): kész (2026-10-01). A galériába kerülés feltételeit a kliens (`projectMissing`) és az adatbázis (`project_missing()`) is ellenőrzi; a kettőt együtt kell módosítani.
 3. Tesztelni iPaden: lágy szél felolvasó nélkül, leíró hang (gépen felvett m4a lejátszása), töltelék szerep-változatai felolvasóval.
 4. Később: Pontok rajzeszköz (WCAG 2.5.7), csippentéses nagyítás érintőképernyőn, visszavonás a festésen túl (törlés, hangcsere, szöveg), Első lépések (9a, 9b), Profil (14), SMTP a meghívókhoz.
 - A nyitott témák listája a napló végén.

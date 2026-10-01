@@ -7,18 +7,27 @@ import { SoundsPanel, type Selection } from '../../components/editor/SoundsPanel
 import { stopPreview } from '../../components/editor/SoundCard';
 import { Icon } from '../../components/Icon';
 import type { Config, Point } from '../../lib/data';
+import { ProjectPanel, type ProjectTextPatch } from '../../components/editor/ProjectPanel';
+import { SharePanel } from '../../components/editor/SharePanel';
 import {
   deleteField,
+  deleteProject,
   insertField,
+  loadCategories,
   loadProject,
+  setProjectCategories,
   shapeOf,
   updateField,
   updateProject,
   useAutosave,
+  type CategoryOption,
   type EditorField,
   type EditorProject,
   type EditorSound,
+  type Missing,
+  type Visibility,
 } from '../../lib/editor';
+import { uploadFile } from '../../lib/teacher';
 import { t } from '../../lib/i18n';
 import { useSession } from '../../lib/supabase';
 
@@ -37,6 +46,10 @@ export function Editor({ config }: { config: Config }) {
   const [view, setView] = useState<View>(FIT);
   const [picker, setPicker] = useState<'background' | string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<EditorField | null>(null);
+  const [confirmProjectDelete, setConfirmProjectDelete] = useState(false);
+  const [tab, setTab] = useState<'project' | 'sounds' | 'share'>('sounds');
+  const [categories, setCategories] = useState<CategoryOption[]>([]);
+  const [shareError, setShareError] = useState(false);
   const [history, setHistory] = useState<{ done: Stroke[]; undone: Stroke[] }>({ done: [], undone: [] });
   const { status, schedule, track } = useAutosave(config.editor.autosaveDelayMs);
 
@@ -149,6 +162,86 @@ export function Editor({ config }: { config: Config }) {
     }
   }
 
+  useEffect(() => {
+    void loadCategories()
+      .then(setCategories)
+      .catch(() => undefined);
+  }, []);
+
+  function onProjectText(patch: ProjectTextPatch) {
+    setProject((p) => p && { ...p, ...patch });
+    schedule('project-text', () => {
+      const p = projectRef.current!;
+      return updateProject(p.id, { title: p.title, short_description: p.shortDescription, author: p.author });
+    });
+  }
+
+  function onCategories(ids: string[]) {
+    if (!project) return;
+    setProject({ ...project, categories: ids });
+    void track(setProjectCategories(project.id, ids)).catch(() => undefined);
+  }
+
+  /** Képcsere: a hangmezők a kép saját pixeleiben vannak, ezért arányosan az új méretre kerülnek. */
+  async function onReplaceImage(file: File) {
+    if (!project || !userId) return;
+    const bitmap = await createImageBitmap(file);
+    const { width, height } = bitmap;
+    bitmap.close();
+    const imagePath = await track(uploadFile('images', userId, file, file.type.split('/')[1].replace('jpeg', 'jpg')));
+    const sx = width / project.imageWidth;
+    const sy = height / project.imageHeight;
+    const fields = project.fields.map((f) => ({
+      ...f,
+      polygons: f.polygons.map((pts) => pts.map(([x, y]) => [x * sx, y * sy] as Point)),
+    }));
+    setProject({ ...project, imagePath, imageWidth: width, imageHeight: height, fields });
+    setHistory({ done: [], undone: [] });
+    await track(
+      Promise.all([
+        updateProject(project.id, { image_path: imagePath, image_width: width, image_height: height }),
+        ...fields.map((f) => updateField(f.id, { shape: shapeOf(f.polygons) })),
+      ]),
+    );
+  }
+
+  function onVisibility(visibility: Visibility) {
+    if (!project) return;
+    const previous = project.visibility;
+    setShareError(false);
+    setProject({ ...project, visibility });
+    // A galériához az adatbázis is ellenőrzi a feltételeket; ha elutasítja, visszaállunk.
+    track(updateProject(project.id, { visibility })).catch(() => {
+      setShareError(true);
+      setProject((p) => p && { ...p, visibility: previous });
+    });
+  }
+
+  /** A hiányzó tételek odavisznek, ahol pótolni lehet (döntésnapló). */
+  function goToMissing(m: Missing) {
+    const focus = (id: string) => requestAnimationFrame(() => document.getElementById(id)?.focus());
+    if (m.kind === 'image' || m.kind === 'title') {
+      setTab('project');
+      focus('project-title');
+    } else if (m.kind === 'shortDescription') {
+      setTab('project');
+      focus('project-short-description');
+    } else if (m.kind === 'background' || m.kind === 'fields') {
+      setTab('sounds');
+      setSelection(null);
+    } else if ('fieldId' in m) {
+      setTab('sounds');
+      setSelection({ kind: 'field', id: m.fieldId });
+    }
+  }
+
+  async function removeProject() {
+    if (!project) return;
+    setConfirmProjectDelete(false);
+    await track(deleteProject(project.id)).catch(() => undefined);
+    navigate('/projektjeim', { replace: true });
+  }
+
   async function removeField(field: EditorField) {
     setConfirmDelete(null);
     setProject((p) => p && { ...p, fields: p.fields.filter((f) => f.id !== field.id) });
@@ -229,15 +322,10 @@ export function Editor({ config }: { config: Config }) {
             <Icon name="eye" size={16} />
             {t('teacher.editor.preview')}
           </Button>
-          <span className="soon-wrap">
-            <Button isDisabled aria-describedby="share-soon">
-              <Icon name="link" size={16} />
-              {t('teacher.editor.share')}
-            </Button>
-            <span id="share-soon" className="soon-note">
-              {t('teacher.editor.comingSoon')}
-            </span>
-          </span>
+          <Button onPress={() => setTab('share')}>
+            <Icon name="link" size={16} />
+            {t('teacher.editor.shareButton')}
+          </Button>
         </div>
       </header>
 
@@ -335,12 +423,12 @@ export function Editor({ config }: { config: Config }) {
         </main>
 
         <aside className="editor-panel" aria-label={t('teacher.editor.panelLabel')}>
-          <Tabs selectedKey="sounds">
+          <Tabs selectedKey={tab} onSelectionChange={(key) => setTab(key as typeof tab)}>
             {/* Rögzített burkoló: a fülsor görgetéskor is fent marad, a HeroUI-elem kinézete érintetlen. */}
             <div className="panel-tabs-sticky">
               <Tabs.ListContainer>
                 <Tabs.List aria-label={t('teacher.editor.tabsLabel')}>
-                  <Tabs.Tab id="project" isDisabled aria-describedby="tabs-soon">
+                  <Tabs.Tab id="project">
                     {t('teacher.editor.tabs.project')}
                     <Tabs.Indicator />
                   </Tabs.Tab>
@@ -348,17 +436,23 @@ export function Editor({ config }: { config: Config }) {
                     {t('teacher.editor.tabs.sounds')}
                     <Tabs.Indicator />
                   </Tabs.Tab>
-                  <Tabs.Tab id="share" isDisabled aria-describedby="tabs-soon">
+                  <Tabs.Tab id="share">
                     {t('teacher.editor.tabs.share')}
                     <Tabs.Indicator />
                   </Tabs.Tab>
                 </Tabs.List>
               </Tabs.ListContainer>
             </div>
-            <p id="tabs-soon" className="soon-note">
-              {t('teacher.editor.tabsSoon')}
-            </p>
-            <Tabs.Panel id="project">{null}</Tabs.Panel>
+            <Tabs.Panel id="project">
+              <ProjectPanel
+                project={project}
+                categories={categories}
+                onChange={onProjectText}
+                onCategories={onCategories}
+                onReplaceImage={onReplaceImage}
+                onDelete={() => setConfirmProjectDelete(true)}
+              />
+            </Tabs.Panel>
             <Tabs.Panel id="sounds">
               <SoundsPanel
                 project={project}
@@ -389,7 +483,9 @@ export function Editor({ config }: { config: Config }) {
                 onDeleteField={setConfirmDelete}
               />
             </Tabs.Panel>
-            <Tabs.Panel id="share">{null}</Tabs.Panel>
+            <Tabs.Panel id="share">
+              <SharePanel project={project} onVisibility={onVisibility} onGoToMissing={goToMissing} error={shareError} />
+            </Tabs.Panel>
           </Tabs>
         </aside>
       </div>
@@ -424,6 +520,29 @@ export function Editor({ config }: { config: Config }) {
                 </Button>
                 <Button variant="danger" onPress={() => confirmDelete && void removeField(confirmDelete)}>
                   {t('teacher.editor.fields.deleteConfirm')}
+                </Button>
+              </Modal.Footer>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
+      </Modal>
+
+      <Modal>
+        <Modal.Backdrop isOpen={confirmProjectDelete} onOpenChange={setConfirmProjectDelete}>
+          <Modal.Container size="sm">
+            <Modal.Dialog role="alertdialog">
+              <Modal.Header>
+                <div className="modal-heading">
+                  <Modal.Heading>{t('teacher.editor.project.deleteConfirmTitle')}</Modal.Heading>
+                  <p>{t('teacher.editor.project.deleteConfirmText', { title: project.title })}</p>
+                </div>
+              </Modal.Header>
+              <Modal.Footer>
+                <Button variant="secondary" slot="close">
+                  {t('teacher.editor.project.cancel')}
+                </Button>
+                <Button variant="danger" onPress={() => void removeProject()}>
+                  {t('teacher.editor.project.deleteConfirm')}
                 </Button>
               </Modal.Footer>
             </Modal.Dialog>

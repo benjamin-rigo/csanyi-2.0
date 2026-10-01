@@ -120,12 +120,12 @@ function ProjectCard({ project }: { project: Project }) {
             </Link>
           </Card.Title>
           <Card.Description id={descId}>
-            <span className="sr-only">{t('gallery.authorPrefix', { author: project.author })} </span>
+            {project.author && <span className="sr-only">{t('gallery.authorPrefix', { author: project.author })} </span>}
             {project.shortDescription}
           </Card.Description>
         </Card.Header>
         <Card.Footer className="gcard-meta" aria-hidden="true">
-          {project.author} · {t('gallery.fieldCount', { count: project.fields.length })}
+          {[project.author, t('gallery.fieldCount', { count: project.fields.length })].filter(Boolean).join(' · ')}
         </Card.Footer>
       </Card>
     </li>
