@@ -79,7 +79,7 @@ docs/design/             a képernyők tervei
 
 ## Következő lépések
 
-1. A `freesound` függvény már csak bejelentkezett pedagógust enged (kódban kész, 2026-10-01); a Supabase-ben újra kell telepíteni, utána élesben ellenőrizni (nyilvános kulccsal 401).
+1. A `freesound` függvény csak bejelentkezett pedagógust enged: kész és telepítve (2026-10-01), élesben ellenőrizve (token nélkül és nyilvános kulccsal 401).
 2. Projekt fül (11c) és Megosztás (13): kész (2026-10-01). A galériába kerülés feltételeit a kliens (`projectMissing`) és az adatbázis (`project_missing()`) is ellenőrzi; a kettőt együtt kell módosítani.
 3. Tesztelni iPaden: lágy szél felolvasó nélkül, leíró hang (gépen felvett m4a lejátszása), töltelék szerep-változatai felolvasóval.
 4. Később: Pontok rajzeszköz (WCAG 2.5.7), csippentéses nagyítás érintőképernyőn, visszavonás a festésen túl (törlés, hangcsere, szöveg), Első lépések (9a, 9b), Profil (14), SMTP a meghívókhoz.
