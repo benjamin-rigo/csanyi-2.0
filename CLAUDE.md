@@ -34,7 +34,7 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 ## Vizuális szabályok (részletesen a naplóban)
 
 - **HeroUI v3 alapértelmezett megjelenés mindenhol.** Ahol van HeroUI komponens, azt használd, és ne írd felül a kinézetét (szín, méret, lekerekítés, árnyék, állapotok). Gombnak látszó linkhez: `ButtonLink` (`buttonVariants`), szöveges linkhez HeroUI `Link`; a router a react-aria `RouterProvider`-en át kezeli őket.
-- A témából csak ennyi tér el (`src/styles/tokens.css`): fekete `--accent`, kék `--focus` (a HeroUI alap kékje), és WCAG AA miatt sötétebb `--muted` és `--danger`. Új eltérés csak akadálymentességi okból, mérve.
+- A témából csak akadálymentességi okból tér el bármi (`src/styles/tokens.css`, mérve): a HeroUI kékje sötétebben (`--accent`, fehér felirat rajta 4,87:1), sötétebb `--muted` és `--danger`. Új eltérés csak így, mérve. Másodlagos gomb: `variant="secondary"` (szürke), `outline` nem.
 - Saját CSS (`src/index.css`) csak elrendezés (térköz, rács, oldalszerkezet) és a HeroUI-ban nem létező elemek: képnézet, rajzterület, feltöltő mező, hangmező-színek. A saját színek a HeroUI változóiból jönnek (`--hs-*`).
 - Térköz csak a skálából: 2, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64 (`--space-*`).
 - Ami átmenetileg nem használható, az letiltva látszik a helyén (HeroUI `isDisabled`, mellette rövid ok), nem tűnik el.

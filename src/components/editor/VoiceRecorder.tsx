@@ -90,7 +90,7 @@ export function VoiceRecorder({
           {t('teacher.editor.voice.stop')}
         </Button>
       ) : (
-        <Button size="sm" variant="outline" onPress={() => void start()} isPending={busy}>
+        <Button size="sm" variant="secondary" onPress={() => void start()} isPending={busy}>
           <Icon name="mic" size={16} />
           {sound ? t('teacher.editor.voice.rerecord') : t('teacher.editor.voice.record')}
         </Button>

@@ -11,7 +11,7 @@ export function ProfilePlaceholder() {
         <h1>{t('teacher.profile.title')}</h1>
         <p>{t('teacher.profile.comingSoon')}</p>
       </div>
-      <Button variant="outline" onPress={() => void supabase.auth.signOut()}>
+      <Button variant="secondary" onPress={() => void supabase.auth.signOut()}>
         {t('teacher.profile.signOut')}
       </Button>
     </TeacherLayout>

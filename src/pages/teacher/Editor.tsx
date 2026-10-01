@@ -225,7 +225,7 @@ export function Editor({ config }: { config: Config }) {
           {t(`teacher.editor.status.${status}`)}
         </span>
         <div className="editor-actions">
-          <Button variant="outline" onPress={() => navigate(`/kep/${project.id}`)}>
+          <Button variant="secondary" onPress={() => navigate(`/kep/${project.id}`)}>
             <Icon name="eye" size={16} />
             {t('teacher.editor.preview')}
           </Button>
@@ -336,22 +336,25 @@ export function Editor({ config }: { config: Config }) {
 
         <aside className="editor-panel" aria-label={t('teacher.editor.panelLabel')}>
           <Tabs selectedKey="sounds">
-            <Tabs.ListContainer>
-              <Tabs.List aria-label={t('teacher.editor.tabsLabel')}>
-                <Tabs.Tab id="project" isDisabled aria-describedby="tabs-soon">
-                  {t('teacher.editor.tabs.project')}
-                  <Tabs.Indicator />
-                </Tabs.Tab>
-                <Tabs.Tab id="sounds">
-                  {t('teacher.editor.tabs.sounds')}
-                  <Tabs.Indicator />
-                </Tabs.Tab>
-                <Tabs.Tab id="share" isDisabled aria-describedby="tabs-soon">
-                  {t('teacher.editor.tabs.share')}
-                  <Tabs.Indicator />
-                </Tabs.Tab>
-              </Tabs.List>
-            </Tabs.ListContainer>
+            {/* Rögzített burkoló: a fülsor görgetéskor is fent marad, a HeroUI-elem kinézete érintetlen. */}
+            <div className="panel-tabs-sticky">
+              <Tabs.ListContainer>
+                <Tabs.List aria-label={t('teacher.editor.tabsLabel')}>
+                  <Tabs.Tab id="project" isDisabled aria-describedby="tabs-soon">
+                    {t('teacher.editor.tabs.project')}
+                    <Tabs.Indicator />
+                  </Tabs.Tab>
+                  <Tabs.Tab id="sounds">
+                    {t('teacher.editor.tabs.sounds')}
+                    <Tabs.Indicator />
+                  </Tabs.Tab>
+                  <Tabs.Tab id="share" isDisabled aria-describedby="tabs-soon">
+                    {t('teacher.editor.tabs.share')}
+                    <Tabs.Indicator />
+                  </Tabs.Tab>
+                </Tabs.List>
+              </Tabs.ListContainer>
+            </div>
             <p id="tabs-soon" className="soon-note">
               {t('teacher.editor.tabsSoon')}
             </p>
@@ -416,7 +419,7 @@ export function Editor({ config }: { config: Config }) {
                 </div>
               </Modal.Header>
               <Modal.Footer>
-                <Button variant="outline" slot="close">
+                <Button variant="secondary" slot="close">
                   {t('teacher.editor.fields.cancel')}
                 </Button>
                 <Button variant="danger" onPress={() => confirmDelete && void removeField(confirmDelete)}>

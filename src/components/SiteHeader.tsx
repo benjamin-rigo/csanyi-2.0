@@ -46,7 +46,7 @@ export function SiteHeader({ config }: { config: Config }) {
       <Logo />
       <nav aria-label={t('nav.label')} className="site-nav">
         <ButtonLink href={config.links.help}>{t('nav.help')}</ButtonLink>
-        <ButtonLink href={config.links.teachers} variant="outline">
+        <ButtonLink href={config.links.teachers} variant="secondary">
           {t('nav.teachers')}
         </ButtonLink>
       </nav>

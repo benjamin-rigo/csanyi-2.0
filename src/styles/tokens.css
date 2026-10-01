@@ -1,14 +1,13 @@
 /*
  * Hangösvény design tokenek.
- * A megjelenés a HeroUI alap témája (döntésnapló); felülírva csak a kiemelőszín (fekete) és a fókusz (a HeroUI alap kékje).
+ * A megjelenés a HeroUI alap témája (döntésnapló); felülírva csak az, amit a WCAG AA kontraszt megkövetel.
  * Az itteni színek a HeroUI változóiból származnak, így a saját elrendezésünk is a HeroUI témát követi.
  */
 :root {
-  /* HeroUI: csak ennyi tér el az alaptól */
-  --accent: #18181b;
-  --accent-foreground: #fafafa;
-  --focus: oklch(0.6204 0.195 253.83);
-  /* WCAG 2.2 AA miatt sötétebb, mint a HeroUI alap: a halvány szöveg szürke felületen 5:1, a piros fehéren és halvány piroson is 4,5:1 fölött. */
+  /* HeroUI: csak akadálymentességi okból tér el az alaptól (WCAG 2.2 AA, mérve):
+     a kék ugyanaz az árnyalat, csak sötétebb (fehér felirat rajta 4,87:1 a 3,68 helyett; a fókuszgyűrű is ez),
+     a halvány szöveg szürke felületen 5:1, a piros fehéren és halvány piroson is 4,5:1 fölött. */
+  --accent: oklch(0.55 0.195 253.83);
   --muted: #63636b;
   --danger: #c01a1f;
 
@@ -20,8 +19,6 @@
   --hs-fg: var(--foreground);
   --hs-muted: var(--muted);
   --hs-border: var(--border);
-  --hs-accent: var(--accent);
-  --hs-accent-fg: var(--accent-foreground);
   --hs-danger: var(--danger);
   --hs-warning: var(--warning);
   --hs-overlay: var(--backdrop);

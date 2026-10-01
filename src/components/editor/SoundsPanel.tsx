@@ -138,7 +138,7 @@ export function SoundsPanel({
             sound={bg}
             loops
             action={
-              <Button size="sm" variant="outline" onPress={() => onPickSound('background')}>
+              <Button size="sm" variant="secondary" onPress={() => onPickSound('background')}>
                 {t('teacher.editor.sound.replace')}
               </Button>
             }
@@ -187,7 +187,7 @@ export function SoundsPanel({
             <SoundCard
               sound={field.sound}
               action={
-                <Button size="sm" variant="outline" onPress={() => onPickSound(field.id)}>
+                <Button size="sm" variant="secondary" onPress={() => onPickSound(field.id)}>
                   {t('teacher.editor.sound.replace')}
                 </Button>
               }
@@ -257,7 +257,7 @@ export function SoundsPanel({
       <section className="panel-section" aria-labelledby="fields-title">
         <div className="panel-section-head">
           <h2 id="fields-title">{t('teacher.editor.fields.title')}</h2>
-          <Button variant="outline" size="sm" onPress={onAddField}>
+          <Button variant="secondary" size="sm" onPress={onAddField}>
             <Icon name="plus" size={16} />
             {t('teacher.editor.fields.add')}
           </Button>

@@ -33,7 +33,7 @@ export function MyProjects({ config }: { config: Config }) {
           <h1>{t('teacher.projects.title')}</h1>
           <p>{t('teacher.projects.subtitle')}</p>
         </div>
-        <Button variant="outline" size="lg" onPress={() => setCreating(true)}>
+        <Button variant="secondary" size="lg" onPress={() => setCreating(true)}>
           <Icon name="plus" />
           {t('teacher.projects.newProject')}
         </Button>

@@ -150,7 +150,7 @@ export function SoundPicker({
                           </>
                         )}
                         <FileTrigger acceptedFileTypes={AUDIO_TYPES} onSelect={(files) => pick(files?.[0])}>
-                          <Button variant="outline" className="dropzone-browse" aria-describedby="sound-help sound-error">
+                          <Button variant="secondary" className="dropzone-browse" aria-describedby="sound-help sound-error">
                             {picked ? t('teacher.editor.picker.change') : t('teacher.editor.picker.browse')}
                           </Button>
                         </FileTrigger>
@@ -182,7 +182,7 @@ export function SoundPicker({
                 </Tabs>
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="outline" slot="close">
+                <Button variant="secondary" slot="close">
                   {t('teacher.editor.picker.cancel')}
                 </Button>
                 {tab === 'own' && (

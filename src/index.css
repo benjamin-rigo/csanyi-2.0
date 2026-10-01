@@ -18,7 +18,8 @@ body {
   background: var(--hs-bg);
   color: var(--hs-fg);
   font-family: var(--font-sans);
-  font-size: var(--text-body);
+  /* A HeroUI alapmérete: a komponensek, amelyek nem adnak saját betűméretet, ezt öröklik. */
+  font-size: var(--text-base);
   line-height: var(--leading-body);
 }
 
@@ -94,8 +95,8 @@ body {
   width: var(--space-10);
   height: var(--space-10);
   border-radius: var(--radius-pill);
-  background: var(--hs-accent);
-  color: var(--hs-accent-fg);
+  background: var(--hs-fg);
+  color: var(--hs-surface);
 }
 
 .site-nav {
@@ -813,8 +814,9 @@ body {
   --panel-tabs-h: calc(var(--space-6) + var(--space-10) + var(--space-2));
 }
 
-/* A panel fülsora és alatta a visszagomb görgetéskor is fent marad (fontos navigáció). */
-.editor-panel .tabs__list-container {
+/* A panel fülsora és alatta a visszagomb görgetéskor is fent marad (fontos navigáció).
+   A fülsort egy saját burkoló rögzíti, a HeroUI fülsor kinézete érintetlen. */
+.panel-tabs-sticky {
   position: sticky;
   top: calc(-1 * var(--space-6));
   z-index: 2;
