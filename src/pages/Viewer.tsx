@@ -1,12 +1,13 @@
 import type React from 'react';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { Button } from '@heroui/react';
 import { useSharedProject, type Config, type Gallery, type Project, type Sound, type SoundField } from '../lib/data';
 import { t } from '../lib/i18n';
 import { detectPlatform } from '../lib/device';
 import { preload, SceneAudio } from '../lib/audio';
 import { Icon } from '../components/Icon';
+import { ButtonLink } from '../components/SiteHeader';
 import { edgeGain, shapePath } from '../lib/geometry';
 
 export function Viewer({ gallery, config }: { gallery: Gallery; config: Config }) {
@@ -26,9 +27,9 @@ export function Viewer({ gallery, config }: { gallery: Gallery; config: Config }
     return (
       <main className="viewer viewer-missing">
         <h1>{t('viewer.notFound')}</h1>
-        <Link to="/" className="button button--outline btn-on-dark">
+        <ButtonLink href="/" variant="secondary">
           {t('viewer.backToGallery')}
-        </Link>
+        </ButtonLink>
       </main>
     );
   }
@@ -189,9 +190,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
       const y = ((clientY - r.top) / r.height) * imgH;
       // Lágy szél: a hangmező szélétől befelé erősödik a hang; az átfedő hangmezők együtt szólnak.
       const edge = v.edgeMaxFraction * Math.min(imgW, imgH);
-      const hits = project.fields
-        .map((f) => ({ field: f, gain: edgeGain(x, y, f.polygons, f.softness * edge) }))
-        .filter((h) => h.gain > 0);
+      const hits = project.fields.map((f) => ({ field: f, gain: edgeGain(x, y, f.polygons, f.softness * edge) })).filter((h) => h.gain > 0);
       audioRef.current?.setFields(hits.flatMap(({ field, gain }) => (field.sound ? [{ id: field.id, sound: field.sound, gain }] : [])));
       const strongest = hits.reduce<(typeof hits)[number] | null>((best, h) => (!best || h.gain > best.gain ? h : best), null);
       const found = strongest && strongest.gain >= v.descriptionThreshold ? strongest.field : null;
@@ -248,7 +247,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
     // Nincs main és header tájékozódási pont: a felolvasó különben „központi jellegzetes hely”-et mond.
     <div className="viewer">
       <div className="viewer-header">
-        <Button variant="outline" className="btn-on-dark" onPress={exit}>
+        <Button variant="secondary" onPress={exit}>
           <Icon name="back" />
           {t('viewer.back')}
         </Button>

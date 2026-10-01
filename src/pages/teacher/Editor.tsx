@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router';
-import { Button, Label, Modal, Slider, Tabs, ToggleButton } from '@heroui/react';
+import { useNavigate, useParams } from 'react-router';
+import { Breadcrumbs, Button, Link, Modal, Separator, Slider, Tabs, ToggleButton, ToggleButtonGroup, Toolbar } from '@heroui/react';
 import { DrawingCanvas, FIT, zoomAt, type Tool, type View } from '../../components/editor/DrawingCanvas';
 import { SoundPicker } from '../../components/editor/SoundPicker';
 import { SoundsPanel, type Selection } from '../../components/editor/SoundsPanel';
@@ -199,11 +199,7 @@ export function Editor({ config }: { config: Config }) {
               ? t('teacher.editor.loadError')
               : t('teacher.editor.loading')}
         </p>
-        {state !== 'loading' && (
-          <Link to="/projektjeim" className="text-link">
-            {t('teacher.editor.backToProjects')}
-          </Link>
-        )}
+        {state !== 'loading' && <Link href="/projektjeim">{t('teacher.editor.backToProjects')}</Link>}
       </main>
     );
   }
@@ -219,16 +215,11 @@ export function Editor({ config }: { config: Config }) {
   return (
     <div className="editor-page">
       <header className="editor-header">
-        <nav aria-label={t('teacher.editor.breadcrumbLabel')} className="editor-breadcrumb">
-          <Link to="/projektjeim" className="breadcrumb">
-            <Icon name="back" size={16} />
-            {t('teacher.editor.backToProjects')}
-          </Link>
-          <span aria-hidden="true" className="breadcrumb-sep">
-            /
-          </span>
-          <h1>{project.title}</h1>
-        </nav>
+        <h1 className="sr-only">{project.title}</h1>
+        <Breadcrumbs aria-label={t('teacher.editor.breadcrumbLabel')} className="editor-breadcrumb">
+          <Breadcrumbs.Item href="/projektjeim">{t('teacher.editor.backToProjects')}</Breadcrumbs.Item>
+          <Breadcrumbs.Item>{project.title}</Breadcrumbs.Item>
+        </Breadcrumbs>
         <span role="status" className={`save-status save-status--${status}`}>
           <Icon name="cloud" size={16} />
           {t(`teacher.editor.status.${status}`)}
@@ -252,16 +243,24 @@ export function Editor({ config }: { config: Config }) {
 
       <div className="editor-body">
         <main className="editor-stage">
-          <div role="toolbar" aria-label={t('teacher.editor.toolbarLabel')} className="draw-toolbar">
-            <ToggleButton isSelected={tool === 'brush'} onChange={() => setTool('brush')} className="tool-button">
-              <Icon name="brush" size={16} />
-              {t('teacher.editor.brush')}
-            </ToggleButton>
-            <ToggleButton isSelected={tool === 'eraser'} onChange={() => setTool('eraser')} className="tool-button">
-              <Icon name="eraser" size={16} />
-              {t('teacher.editor.eraser')}
-            </ToggleButton>
-            <span className="toolbar-sep" aria-hidden="true" />
+          <Toolbar aria-label={t('teacher.editor.toolbarLabel')} className="draw-toolbar">
+            <ToggleButtonGroup
+              aria-label={t('teacher.editor.toolbarLabel')}
+              selectionMode="single"
+              disallowEmptySelection
+              selectedKeys={new Set([tool])}
+              onSelectionChange={(keys) => setTool([...keys][0] as Tool)}
+            >
+              <ToggleButton id="brush">
+                <Icon name="brush" size={16} />
+                {t('teacher.editor.brush')}
+              </ToggleButton>
+              <ToggleButton id="eraser">
+                <Icon name="eraser" size={16} />
+                {t('teacher.editor.eraser')}
+              </ToggleButton>
+            </ToggleButtonGroup>
+            <Separator orientation="vertical" />
             <Slider
               value={size}
               minValue={config.editor.brushMin}
@@ -270,13 +269,12 @@ export function Editor({ config }: { config: Config }) {
               aria-label={t('teacher.editor.sizeLabel')}
               className="size-slider"
             >
-              <Label>{t('teacher.editor.size')}</Label>
               <Slider.Track>
                 <Slider.Fill />
                 <Slider.Thumb />
               </Slider.Track>
             </Slider>
-            <span className="toolbar-sep" aria-hidden="true" />
+            <Separator orientation="vertical" />
             <Button
               isIconOnly
               variant="ghost"
@@ -289,7 +287,6 @@ export function Editor({ config }: { config: Config }) {
             <Button
               variant="ghost"
               size="sm"
-              className="zoom-level"
               aria-label={t('teacher.editor.zoom.fit', { n: Math.round(view.zoom * 100) })}
               aria-describedby="zoom-hint"
               onPress={() => setView(FIT)}
@@ -305,18 +302,16 @@ export function Editor({ config }: { config: Config }) {
             >
               <Icon name="plus" />
             </Button>
-            <span className="toolbar-sep" aria-hidden="true" />
+            <Separator orientation="vertical" />
             <Button isIconOnly variant="ghost" aria-label={t('teacher.editor.undo')} isDisabled={!history.done.length} onPress={undo}>
               <Icon name="undo" />
             </Button>
             <Button isIconOnly variant="ghost" aria-label={t('teacher.editor.redo')} isDisabled={!history.undone.length} onPress={redo}>
               <Icon name="redo" />
             </Button>
-          </div>
+          </Toolbar>
           <p className="canvas-hint">
-            {selectedField
-              ? t('teacher.editor.canvasHintSelected')
-              : t('teacher.editor.canvasHintNew')}
+            {selectedField ? t('teacher.editor.canvasHintSelected') : t('teacher.editor.canvasHintNew')}
             <span id="zoom-hint" className="canvas-hint-zoom">
               {t('teacher.editor.zoom.hint')}
             </span>
@@ -340,7 +335,7 @@ export function Editor({ config }: { config: Config }) {
         </main>
 
         <aside className="editor-panel" aria-label={t('teacher.editor.panelLabel')}>
-          <Tabs selectedKey="sounds" className="segmented">
+          <Tabs selectedKey="sounds">
             <Tabs.ListContainer>
               <Tabs.List aria-label={t('teacher.editor.tabsLabel')}>
                 <Tabs.Tab id="project" isDisabled aria-describedby="tabs-soon">
@@ -407,10 +402,10 @@ export function Editor({ config }: { config: Config }) {
       />
 
       <Modal>
-        <Modal.Backdrop isOpen={confirmDelete !== null} onOpenChange={(open) => !open && setConfirmDelete(null)} className="modal-backdrop">
-          <Modal.Container className="modal-container">
-            <Modal.Dialog className="modal-dialog modal-dialog--small" role="alertdialog">
-              <Modal.Header className="modal-header">
+        <Modal.Backdrop isOpen={confirmDelete !== null} onOpenChange={(open) => !open && setConfirmDelete(null)}>
+          <Modal.Container size="sm">
+            <Modal.Dialog role="alertdialog">
+              <Modal.Header>
                 <div className="modal-heading">
                   <Modal.Heading>{t('teacher.editor.fields.deleteConfirmTitle')}</Modal.Heading>
                   <p>
@@ -420,11 +415,11 @@ export function Editor({ config }: { config: Config }) {
                   </p>
                 </div>
               </Modal.Header>
-              <Modal.Footer className="modal-footer">
+              <Modal.Footer>
                 <Button variant="outline" slot="close">
                   {t('teacher.editor.fields.cancel')}
                 </Button>
-                <Button className="button--danger" onPress={() => confirmDelete && void removeField(confirmDelete)}>
+                <Button variant="danger" onPress={() => confirmDelete && void removeField(confirmDelete)}>
                   {t('teacher.editor.fields.deleteConfirm')}
                 </Button>
               </Modal.Footer>

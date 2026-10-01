@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button } from '@heroui/react';
+import { Button, Card } from '@heroui/react';
 import { assetUrl } from '../../lib/data';
 import type { EditorSound } from '../../lib/editor';
 import { t } from '../../lib/i18n';
@@ -52,7 +52,6 @@ export function PlayButton({ src, title }: { src: string; title: string }) {
     <Button
       isIconOnly
       size="sm"
-      className="play-button"
       aria-label={t(playing ? 'teacher.editor.sound.pause' : 'teacher.editor.sound.play', { title })}
       onPress={toggle}
     >
@@ -69,13 +68,13 @@ export function SoundCard({ sound, loops, action }: { sound: EditorSound; loops?
     loops ? t('teacher.editor.sound.loops') : '',
   ].filter(Boolean);
   return (
-    <div className="sound-card">
+    <Card variant="secondary" className="sound-card">
       <PlayButton src={assetUrl(sound.path)} title={sound.title} />
       <span className="sound-card-text">
         <span className="sound-card-title">{sound.title}</span>
         <span className="sound-card-meta">{meta.join(' · ')}</span>
       </span>
       {action}
-    </div>
+    </Card>
   );
 }

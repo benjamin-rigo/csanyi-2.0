@@ -1,9 +1,7 @@
 import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router';
-import { Button, Form } from '@heroui/react';
+import { Alert, Button, Form, Link } from '@heroui/react';
 import { AuthLayout } from '../../components/AuthLayout';
 import { EmailField, FormError, isEmail, focusFirstInvalid } from '../../components/AuthFields';
-import { Icon } from '../../components/Icon';
 import { t } from '../../lib/i18n';
 import { supabase } from '../../lib/supabase';
 
@@ -47,18 +45,18 @@ export function ForgotPassword() {
           {t('auth.forgot.submit')}
         </Button>
       </Form>
-      <div role="status" className="auth-status-slot">
+      <div role="status">
         {sent && (
-          <p className="auth-status">
-            <span className="auth-status-icon">
-              <Icon name="check" />
-            </span>
-            {t('auth.forgot.sent')}
-          </p>
+          <Alert status="success">
+            <Alert.Indicator />
+            <Alert.Content>
+              <Alert.Description>{t('auth.forgot.sent')}</Alert.Description>
+            </Alert.Content>
+          </Alert>
         )}
       </div>
       {formError && <FormError message={formError} />}
-      <Link to="/belepes" className="text-link auth-center-link">
+      <Link href="/belepes" className="auth-center-link">
         {t('auth.forgot.backToLogin')}
       </Link>
     </AuthLayout>

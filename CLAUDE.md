@@ -20,7 +20,7 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 ## Stack
 
 - React 19, Vite, TypeScript, react-router 7.
-- **HeroUI v3** (`@heroui/react`, `@heroui/styles`, React Aria alapon) és Tailwind 4. Ahol van HeroUI komponens, azt használd, saját komponens csak ha nincs.
+- **HeroUI v3** (`@heroui/react`, `@heroui/styles`, React Aria alapon) és Tailwind 4. Ahol van HeroUI komponens, azt használd, alapértelmezett kinézettel; saját komponens csak ha nincs.
 - Backend: **Supabase** (ingyenes csomag, Frankfurt). A böngésző a publikus kulccsal közvetlenül hívja (`.env`, `src/lib/supabase.ts`); a hozzáférést az RLS szabályok védik. A `service_role` kulcs soha nem kerül a repóba.
 - Séma: `supabase/migrations/` (időbélyeges fájlnév). Új változás mindig új migrációs fájl, a régit nem írjuk át. Futtatás előtt PGlite-tal helyben kipróbálható. A gyerek oldal a `gallery()` és `shared_project(id)` függvényekből olvas, a `src/lib/data.ts` felülete ugyanaz maradt.
 - Deploy: egyelőre **GitHub Pages** (`.github/workflows/deploy.yml`), Vercel most nem. Az alapcímet (`/<repó neve>/`) a workflow adja át `BASE_PATH`-ként; ezért minden fájlra `assetUrl()`-lel (`src/lib/data.ts`) hivatkozz, az adatfájlokban az utak relatívak, a router `basename`-et kap. Közvetlen útvonalakhoz a build `dist/404.html`-t is készít.
@@ -28,17 +28,16 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 ## Semmi nincs beégetve
 
 - **Szövegek:** `src/content/hu.json`, a `t('kulcs', {változó})` függvénnyel (`src/lib/i18n.ts`).
-- **Adatok:** Supabase. **Beállítások:** `public/data/config.json` (hangerők, időzítések, linkek, jelszó minimális hossza). A `/`-rel kezdődő link az alkalmazáson belüli (`ConfigLink`).
-- **Kinézet:** `src/styles/tokens.css`. Minden szín, térköz, méret és lekerekítés innen jön, és a HeroUI változói is ide vannak kötve. A komponensek CSS-ében nem lehet nyers px vagy szín, csak token.
+- **Adatok:** Supabase. **Beállítások:** `public/data/config.json` (hangerők, időzítések, linkek, jelszó minimális hossza). A `/`-rel kezdődő link az alkalmazáson belüli (a router kezeli).
+- **Kinézet:** a HeroUI alap témája; `src/styles/tokens.css` csak a néhány eltérést és az elrendezés tokenjeit tartalmazza. A saját CSS-ben nem lehet nyers px vagy szín, csak token.
 
 ## Vizuális szabályok (részletesen a naplóban)
 
-- Térköz csak a skálából: 2, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64 (`--space-*`). 7, 10, 14 és hasonló értékek sehol.
-- Lekerekítés: minden kattintható elem és címke pill; minden tartalmat foglaló elem (kártya, mező, listasor, kép, ablak) 12 px.
-- Flat, nincs árnyék. Fehér alapon fekete.
-- Gombok: a fő gomb tömör fekete, nézetenként egy. A másodlagos háttér nélküli, 2 px fekete kerettel (HeroUI `outline` + felülírás az `index.css`-ben). A ghost gomb keret nélküli. Magasság 36 / 44 / 52 / 60, vízszintes margó 16 / 20 / 24 / 32.
-- Fókusz: a HeroUI beépített fókuszgyűrűje (`--focus`). Nem HeroUI elemen ugyanezt a gyűrűt rajzold ugyanezekből a változókból.
-- Ami átmenetileg nem használható, az letiltva látszik a helyén (50% átlátszóság, `aria-disabled`, mellette rövid ok), nem tűnik el.
+- **HeroUI v3 alapértelmezett megjelenés mindenhol.** Ahol van HeroUI komponens, azt használd, és ne írd felül a kinézetét (szín, méret, lekerekítés, árnyék, állapotok). Gombnak látszó linkhez: `ButtonLink` (`buttonVariants`), szöveges linkhez HeroUI `Link`; a router a react-aria `RouterProvider`-en át kezeli őket.
+- A témából csak ennyi tér el (`src/styles/tokens.css`): fekete `--accent`, kék `--focus` (a HeroUI alap kékje), és WCAG AA miatt sötétebb `--muted` és `--danger`. Új eltérés csak akadálymentességi okból, mérve.
+- Saját CSS (`src/index.css`) csak elrendezés (térköz, rács, oldalszerkezet) és a HeroUI-ban nem létező elemek: képnézet, rajzterület, feltöltő mező, hangmező-színek. A saját színek a HeroUI változóiból jönnek (`--hs-*`).
+- Térköz csak a skálából: 2, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64 (`--space-*`).
+- Ami átmenetileg nem használható, az letiltva látszik a helyén (HeroUI `isDisabled`, mellette rövid ok), nem tűnik el.
 - Betű: egyelőre Inter, saját tárhelyről (`@fontsource-variable/inter`, nem Google Fonts); a végleges párosítás nyitott.
 
 ## Akadálymentesség
@@ -54,7 +53,7 @@ src/
   pages/Gallery.tsx      galéria (1)
   pages/Viewer.tsx       képnézet (2–4)
   pages/teacher/         pedagógus oldal: Login (6), ForgotPassword (6b), NewPassword (6c), AccountSetup (7), MyProjects (8), Editor (11); Placeholders (profil)
-  components/            SiteHeader (Logo, ConfigLink, SiteFooter), AuthLayout, AuthFields, TeacherLayout, NewProjectModal (10), Icon
+  components/            SiteHeader (Logo, ButtonLink, SiteFooter), AuthLayout, AuthFields, TeacherLayout, NewProjectModal (10), Icon
   components/editor/     DrawingCanvas (ecset, radír), SoundsPanel (Hangok fül), SoundPicker (12), SoundCard, VoiceRecorder (leíró hang)
   lib/                   data, supabase, teacher, editor (betöltés, automatikus mentés, hangfeltöltés), contour (maszk ↔ sokszög), geometry, i18n, audio, device
   content/hu.json        felületi szövegek

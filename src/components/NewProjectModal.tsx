@@ -57,7 +57,9 @@ export function NewProjectModal({
     };
     setErrors(next);
     if (next.image || next.title || !file) {
-      requestAnimationFrame(() => document.querySelector<HTMLElement>('.new-project [aria-invalid="true"], .new-project .dropzone-browse')?.focus());
+      requestAnimationFrame(() =>
+        document.querySelector<HTMLElement>('.new-project [aria-invalid="true"], .new-project .dropzone-browse')?.focus(),
+      );
       return;
     }
     setPending(true);
@@ -72,20 +74,18 @@ export function NewProjectModal({
 
   return (
     <Modal>
-      <Modal.Backdrop isOpen={isOpen} onOpenChange={onOpenChange} className="modal-backdrop">
-        <Modal.Container className="modal-container">
-          <Modal.Dialog className="modal-dialog new-project">
-            <Modal.Header className="modal-header">
+      <Modal.Backdrop isOpen={isOpen} onOpenChange={onOpenChange}>
+        <Modal.Container size="lg">
+          <Modal.Dialog className="new-project">
+            <Modal.Header>
               <div className="modal-heading">
                 <Modal.Heading>{t('teacher.newProject.title')}</Modal.Heading>
                 <p>{t('teacher.newProject.subtitle')}</p>
               </div>
-              <Modal.CloseTrigger aria-label={t('teacher.newProject.close')} className="modal-close">
-                <Icon name="close" />
-              </Modal.CloseTrigger>
+              <Modal.CloseTrigger aria-label={t('teacher.newProject.close')} />
             </Modal.Header>
             <Form onSubmit={submit} validationBehavior="aria">
-              <Modal.Body className="modal-body">
+              <Modal.Body>
                 <div className="dropzone-field">
                   <DropZone
                     className="dropzone"
@@ -125,7 +125,7 @@ export function NewProjectModal({
                     setErrors((e) => ({ ...e, title: undefined }));
                   }}
                   isInvalid={Boolean(errors.title)}
-                  className="auth-field"
+                  fullWidth
                 >
                   <Label>{t('teacher.newProject.titleLabel')}</Label>
                   <Input placeholder={t('teacher.newProject.titlePlaceholder')} />
@@ -134,7 +134,7 @@ export function NewProjectModal({
                 <p className="modal-note">{t('teacher.newProject.privateNote')}</p>
                 {errors.form && <FormError message={errors.form} />}
               </Modal.Body>
-              <Modal.Footer className="modal-footer">
+              <Modal.Footer>
                 <Button variant="outline" slot="close">
                   {t('teacher.newProject.cancel')}
                 </Button>

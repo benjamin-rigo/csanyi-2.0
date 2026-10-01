@@ -1,9 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
-import { Button, Checkbox, FieldError, Form, TextField, Description, Input, Label } from '@heroui/react';
+import { Button, Checkbox, Description, FieldError, Form, Input, Label, Link, TextField } from '@heroui/react';
 import { AuthLayout } from '../../components/AuthLayout';
 import { authErrorMessage, EmailField, FormError, PasswordField, focusFirstInvalid } from '../../components/AuthFields';
-import { ConfigLink } from '../../components/SiteHeader';
 import type { Config } from '../../lib/data';
 import { t } from '../../lib/i18n';
 import { supabase, useSession } from '../../lib/supabase';
@@ -60,7 +59,7 @@ export function AccountSetup({ config }: { config: Config }) {
       {session && (
         <Form className="auth-form" onSubmit={submit} validationBehavior="aria">
           <EmailField value={session.user.email ?? ''} onChange={() => undefined} description={t('auth.setup.emailHelp')} isReadOnly />
-          <TextField name="name" value={name} onChange={setName} isInvalid={Boolean(errors.name)} autoFocus className="auth-field">
+          <TextField name="name" value={name} onChange={setName} isInvalid={Boolean(errors.name)} autoFocus fullWidth>
             <Label>{t('auth.setup.name')}</Label>
             <Input autoComplete="name" />
             <Description>{t('auth.setup.nameHelp')}</Description>
@@ -73,20 +72,16 @@ export function AccountSetup({ config }: { config: Config }) {
             description={t('auth.passwordHelp', { min })}
             autoComplete="new-password"
           />
-          <Checkbox isSelected={terms} onChange={setTerms} isInvalid={Boolean(errors.terms)} className="auth-checkbox">
+          <Checkbox isSelected={terms} onChange={setTerms} isInvalid={Boolean(errors.terms)}>
             <Checkbox.Content>
               <Checkbox.Control>
                 <Checkbox.Indicator />
               </Checkbox.Control>
               <span>
                 {t('auth.setup.termsBefore')}
-                <ConfigLink href={config.links.terms} className="text-link">
-                  {t('auth.setup.terms')}
-                </ConfigLink>
+                <Link href={config.links.terms}>{t('auth.setup.terms')}</Link>
                 {t('auth.setup.termsMiddle')}
-                <ConfigLink href={config.links.privacy} className="text-link">
-                  {t('auth.setup.privacy')}
-                </ConfigLink>
+                <Link href={config.links.privacy}>{t('auth.setup.privacy')}</Link>
                 {t('auth.setup.termsAfter')}
               </span>
             </Checkbox.Content>

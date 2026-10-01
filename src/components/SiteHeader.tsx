@@ -1,33 +1,42 @@
 import type { ReactNode } from 'react';
-import { Link } from 'react-router';
+import { Link } from '@heroui/react';
+import { buttonVariants } from '@heroui/styles';
+import { Link as AriaLink } from 'react-aria-components';
 import type { Config } from '../lib/data';
 import { t } from '../lib/i18n';
 import { Icon } from './Icon';
 
-/** A config.json linkjei: a „/”-rel kezdődők az alkalmazáson belüliek (a router adja hozzá az alapcímet). */
-export function ConfigLink({ href, className, children }: { href: string; className?: string; children: ReactNode }) {
-  if (href.startsWith('/')) {
-    return (
-      <Link to={href} className={className}>
-        {children}
-      </Link>
-    );
-  }
+type ButtonLook = 'primary' | 'secondary' | 'tertiary' | 'outline' | 'ghost';
+
+/** Gombnak látszó link (HeroUI gombstílus), a config.json linkjeihez is: a „/”-rel kezdődőket a router kezeli. */
+export function ButtonLink({
+  href,
+  variant = 'ghost',
+  className,
+  children,
+  ...rest
+}: {
+  href: string;
+  variant?: ButtonLook;
+  className?: string;
+  children: ReactNode;
+  'aria-current'?: 'page';
+}) {
   return (
-    <a href={href} className={className}>
+    <AriaLink href={href} className={buttonVariants({ variant, className })} {...rest}>
       {children}
-    </a>
+    </AriaLink>
   );
 }
 
 export function Logo() {
   return (
-    <Link to="/" className="logo">
+    <AriaLink href="/" className="logo">
       <span className="logo-mark" aria-hidden="true">
         <Icon name="music" />
       </span>
       {t('app.name')}
-    </Link>
+    </AriaLink>
   );
 }
 
@@ -36,12 +45,10 @@ export function SiteHeader({ config }: { config: Config }) {
     <header className="site-header">
       <Logo />
       <nav aria-label={t('nav.label')} className="site-nav">
-        <ConfigLink href={config.links.help} className="button button--ghost">
-          {t('nav.help')}
-        </ConfigLink>
-        <ConfigLink href={config.links.teachers} className="button button--outline">
+        <ButtonLink href={config.links.help}>{t('nav.help')}</ButtonLink>
+        <ButtonLink href={config.links.teachers} variant="outline">
           {t('nav.teachers')}
-        </ConfigLink>
+        </ButtonLink>
       </nav>
     </header>
   );
@@ -52,9 +59,9 @@ export function SiteFooter({ config }: { config: Config }) {
     <footer className="site-footer">
       <span>{t('footer.teacherContact', { email: config.contactEmail })}</span>
       <nav aria-label={t('footer.legalLabel')} className="legal">
-        <ConfigLink href={config.links.accessibility}>{t('footer.accessibility')}</ConfigLink>
-        <ConfigLink href={config.links.privacy}>{t('footer.privacy')}</ConfigLink>
-        <ConfigLink href={config.links.terms}>{t('footer.terms')}</ConfigLink>
+        <Link href={config.links.accessibility}>{t('footer.accessibility')}</Link>
+        <Link href={config.links.privacy}>{t('footer.privacy')}</Link>
+        <Link href={config.links.terms}>{t('footer.terms')}</Link>
       </nav>
     </footer>
   );

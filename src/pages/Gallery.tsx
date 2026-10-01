@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
-import { ToggleButton, ToggleButtonGroup } from '@heroui/react';
+import { Card, ToggleButton, ToggleButtonGroup } from '@heroui/react';
 import type { Key } from 'react-aria-components';
 import { ALL_CATEGORY, type Config, type Gallery as GalleryData, type Project } from '../lib/data';
 import { t } from '../lib/i18n';
@@ -59,7 +59,7 @@ export function Gallery({ gallery, config }: { gallery: GalleryData; config: Con
             className="category-group"
           >
             {gallery.categories.map((c) => (
-              <ToggleButton key={c.id} id={c.id} className="category">
+              <ToggleButton key={c.id} id={c.id}>
                 {c.icon && <Icon name={c.icon} />}
                 {c.label}
               </ToggleButton>
@@ -93,33 +93,41 @@ function ProjectCard({ project }: { project: Project }) {
   // A kísérleti mód (?mod=...) a kép nézetbe is átmegy.
   const { search } = useLocation();
   return (
-    <li className="gcard" data-project={project.id}>
-      <div className="gcard-image">
-        <img src={project.image.src ?? undefined} alt="" width={project.image.width ?? undefined} height={project.image.height ?? undefined} loading="lazy" />
-      </div>
-      <div className="gcard-body">
-        <h2 className="gcard-title">
-          <Link
-            to={`/kep/${project.id}${search}`}
-            className="gcard-link"
-            aria-describedby={descId}
-            // Felolvasóval a kép nézetben már nincs koppintás: a hangot itt oldjuk fel.
-            onClick={() => {
-              lastOpened = project.id;
-              void unlock();
-            }}
-          >
-            {project.title}
-          </Link>
-        </h2>
-        <p id={descId} className="gcard-desc">
-          <span className="sr-only">{t('gallery.authorPrefix', { author: project.author })} </span>
-          {project.shortDescription}
-        </p>
-        <p className="gcard-meta" aria-hidden="true">
+    <li data-project={project.id}>
+      <Card className="gcard">
+        <img
+          className="gcard-image"
+          src={project.image.src ?? undefined}
+          alt=""
+          width={project.image.width ?? undefined}
+          height={project.image.height ?? undefined}
+          loading="lazy"
+        />
+        <Card.Header>
+          <Card.Title render={(props) => <h2 {...props} />}>
+            {/* Az egész kártya egy link (döntésnapló): a link a kártya teljes felületére kifeszül. */}
+            <Link
+              to={`/kep/${project.id}${search}`}
+              className="gcard-link"
+              aria-describedby={descId}
+              // Felolvasóval a kép nézetben már nincs koppintás: a hangot itt oldjuk fel.
+              onClick={() => {
+                lastOpened = project.id;
+                void unlock();
+              }}
+            >
+              {project.title}
+            </Link>
+          </Card.Title>
+          <Card.Description id={descId}>
+            <span className="sr-only">{t('gallery.authorPrefix', { author: project.author })} </span>
+            {project.shortDescription}
+          </Card.Description>
+        </Card.Header>
+        <Card.Footer className="gcard-meta" aria-hidden="true">
           {project.author} · {t('gallery.fieldCount', { count: project.fields.length })}
-        </p>
-      </div>
+        </Card.Footer>
+      </Card>
     </li>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Button, Description, FieldError, Input, InputGroup, Label, TextField } from '@heroui/react';
+import { Alert, Button, Description, FieldError, Input, InputGroup, Label, TextField } from '@heroui/react';
 import type { AuthError } from '@supabase/supabase-js';
 import { t } from '../lib/i18n';
 import { Icon } from './Icon';
@@ -22,7 +22,7 @@ export function EmailField({ value, onChange, error, description, autoFocus, isR
       isInvalid={Boolean(error)}
       isReadOnly={isReadOnly}
       autoFocus={autoFocus}
-      className="auth-field"
+      fullWidth
     >
       <Label>{t('auth.email')}</Label>
       <Input autoComplete="email" placeholder={t('auth.emailPlaceholder')} />
@@ -51,7 +51,7 @@ export function PasswordField({
       onChange={onChange}
       isInvalid={Boolean(error)}
       autoFocus={autoFocus}
-      className="auth-field"
+      fullWidth
     >
       <div className="auth-label-row">
         <Label>{label}</Label>
@@ -59,7 +59,7 @@ export function PasswordField({
       </div>
       <InputGroup>
         <InputGroup.Input autoComplete={autoComplete} />
-        <InputGroup.Suffix className="password-toggle">
+        <InputGroup.Suffix>
           <Button
             isIconOnly
             size="sm"
@@ -100,9 +100,12 @@ export function authErrorMessage(error: AuthError): string {
 /** Az űrlap egészére vonatkozó hiba (pl. hibás jelszó): a felolvasó azonnal bemondja. */
 export function FormError({ message }: { message: string }) {
   return (
-    <p className="form-error" role="alert">
-      {message}
-    </p>
+    <Alert status="danger" role="alert">
+      <Alert.Indicator />
+      <Alert.Content>
+        <Alert.Title>{message}</Alert.Title>
+      </Alert.Content>
+    </Alert>
   );
 }
 

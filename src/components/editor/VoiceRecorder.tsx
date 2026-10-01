@@ -104,7 +104,7 @@ export function VoiceRecorder({
         </FileTrigger>
       )}
       {sound && !recording && (
-        <Button size="sm" variant="ghost" className="danger-text" onPress={() => onChange(null)}>
+        <Button size="sm" variant="danger-soft" onPress={() => onChange(null)}>
           {t('teacher.editor.voice.remove')}
         </Button>
       )}

@@ -4,9 +4,9 @@
 @import "./styles/tokens.css";
 
 /*
- * Az alkalmazás saját stílusai. Csak tokeneket használ (styles/tokens.css).
- * Fókusz: a HeroUI beépített gyűrűje (--focus). Ahol nem HeroUI elem van
- * (kártya link, hangmező), ugyanazt a gyűrűt rajzoljuk ugyanazokból a változókból.
+ * Az alkalmazás saját stílusai: csak az oldalszerkezet (elrendezés, térközök) és a HeroUI-ban nem létező elemek
+ * (képnézet, rajzterület, feltöltő mező). A HeroUI komponensek megjelenését nem írjuk felül (döntésnapló).
+ * Csak tokeneket használ (styles/tokens.css).
  */
 
 html {
@@ -39,28 +39,15 @@ body {
   outline: none;
 }
 
-/* A HeroUI másodlagos gomb: átlátszó háttér, 2px fekete keret (döntésnapló) */
-.button.button--outline {
-  background: transparent;
-  border: var(--border-strong) solid var(--hs-fg);
-  color: var(--hs-fg);
-}
-
-/* Gombméretek a skálán: sm 36, alap 44, lg 52 (döntésnapló) */
-.button {
-  height: var(--control-md);
-  padding-inline: var(--space-5);
-}
-
-.button--sm {
-  height: var(--control-sm);
-  padding-inline: var(--space-4);
-}
-
-.button--lg {
-  height: var(--control-lg);
-  padding-inline: var(--space-6);
-  font-size: var(--text-body);
+/* Nem HeroUI elemek fókusza: ugyanaz a gyűrű, mint a HeroUI-é */
+.logo:focus-visible,
+.gcard:has(.gcard-link:focus-visible),
+.project-card:has(.card-link:focus-visible),
+.dropzone[data-focus-visible] {
+  outline: none;
+  box-shadow:
+    0 0 0 var(--ring-offset-width) var(--background),
+    0 0 0 calc(var(--focus-ring-width) + var(--ring-offset-width)) var(--focus);
 }
 
 /* ---------- Oldalváz ---------- */
@@ -104,8 +91,8 @@ body {
 .logo-mark {
   display: inline-grid;
   place-items: center;
-  width: var(--control-md);
-  height: var(--control-md);
+  width: var(--space-10);
+  height: var(--space-10);
   border-radius: var(--radius-pill);
   background: var(--hs-accent);
   color: var(--hs-accent-fg);
@@ -149,24 +136,7 @@ body {
 }
 
 .category-group {
-  display: flex;
-  justify-content: flex-start;
   flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.category.toggle-button {
-  min-height: var(--control-md);
-  padding-inline: var(--space-5);
-  border-radius: var(--radius-pill);
-  gap: var(--space-2);
-  font-size: var(--text-md);
-  font-weight: 600;
-}
-
-.category.toggle-button[data-selected="true"] {
-  background: var(--hs-accent);
-  color: var(--hs-accent-fg);
 }
 
 .count {
@@ -174,9 +144,14 @@ body {
   font-size: var(--text-md);
 }
 
-/* ---------- Kártyák ---------- */
+.empty {
+  color: var(--hs-muted);
+}
 
-.gcard-grid {
+/* ---------- Kártyák (galéria, Projektjeim) ---------- */
+
+.gcard-grid,
+.project-grid {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -185,79 +160,71 @@ body {
   gap: var(--space-6);
 }
 
-.gcard {
+/* Az egész kártya egy link: a link a kártya teljes felületére kifeszül (döntésnapló). */
+.gcard,
+.project-card {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  background: var(--hs-surface);
-  border-radius: var(--radius-content);
-  overflow: hidden;
-}
-
-.gcard:hover {
-  background: var(--hs-default);
-}
-
-.gcard:has(.gcard-link:focus-visible) {
-  box-shadow:
-    0 0 0 var(--ring-offset-width) var(--background),
-    0 0 0 calc(var(--focus-ring-width) + var(--ring-offset-width)) var(--focus);
-}
-
-.gcard-image {
-  height: var(--card-image-h);
-  padding: var(--space-4) var(--space-4) 0;
-  box-sizing: border-box;
-}
-
-/* A teljes kép látszik, levágás nélkül (döntésnapló). */
-.gcard-image img {
-  width: 100%;
   height: 100%;
-  object-fit: contain;
-  display: block;
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
 }
 
-.gcard-body {
-  padding: var(--space-5) var(--space-6) var(--space-6);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.gcard-title {
-  margin: 0;
-  font-size: var(--text-card-title);
-  font-weight: 700;
-  line-height: var(--leading-snug);
-}
-
-.gcard-link {
+.gcard-link,
+.card-link {
   color: inherit;
   text-decoration: none;
   outline: none;
 }
 
-/* Az egész kártya kattintható, de csak egy link van (egy tabulátor lépés). */
-.gcard-link::after {
+.gcard-link::after,
+.card-link::after {
   content: "";
   position: absolute;
   inset: 0;
 }
 
-.gcard-desc {
-  margin: 0;
-  font-size: var(--text-md);
+/* Rámutatás és lenyomás a HeroUI saját árnyékával és lenyomás-hatásával */
+.gcard:hover,
+.project-card:hover {
+  box-shadow: var(--overlay-shadow);
+}
+
+.gcard:active,
+.project-card:active {
+  transform: scale(0.98);
+}
+
+.gcard-image {
+  width: 100%;
+  height: var(--card-image-h);
+  object-fit: contain;
+  display: block;
 }
 
 .gcard-meta {
-  margin: 0;
   font-size: var(--text-sm);
   color: var(--hs-muted);
 }
 
-.empty {
-  color: var(--hs-muted);
+.project-thumb {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-content);
+  overflow: hidden;
+  background: var(--hs-default);
+}
+
+.project-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
 /* ---------- Lábléc ---------- */
@@ -278,19 +245,6 @@ body {
   display: flex;
   gap: var(--space-4);
   flex-wrap: wrap;
-}
-
-.legal a {
-  color: var(--hs-fg);
-  border-radius: var(--radius-pill);
-}
-
-.legal a:focus-visible,
-.logo:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 var(--ring-offset-width) var(--background),
-    0 0 0 calc(var(--focus-ring-width) + var(--ring-offset-width)) var(--focus);
 }
 
 /* ---------- Képnézet ---------- */
@@ -317,13 +271,6 @@ body {
   font-weight: 600;
 }
 
-.button.button--outline.btn-on-dark {
-  border-color: var(--hs-viewer-fg);
-  color: var(--hs-viewer-fg);
-  background: var(--hs-viewer-button-bg);
-  gap: var(--space-2);
-}
-
 .scene {
   flex: 1;
   display: grid;
@@ -334,7 +281,7 @@ body {
 
 .scene-frame {
   position: relative;
-  --scene-h: calc(100dvh - var(--control-md) - 2 * var(--space-4) - var(--space-6));
+  --scene-h: calc(100dvh - var(--space-16) - var(--space-8));
   width: min(100%, calc(var(--scene-h) * var(--ratio)));
   aspect-ratio: var(--ratio);
   touch-action: none;
@@ -364,6 +311,7 @@ body {
   outline: none;
 }
 
+/* A hangmező fókuszkerete csak billentyűzettel látszik; érintésnél és felolvasóval zavaró. */
 [data-input="keyboard"] .field:focus-visible {
   stroke: var(--focus);
   stroke-width: var(--field-focus-stroke);
@@ -422,15 +370,8 @@ body {
   padding: var(--space-8) var(--kid-page-x) var(--space-16);
 }
 
-.breadcrumb {
-  display: inline-flex;
-  align-items: center;
+.back-link {
   gap: var(--space-2);
-  font-size: var(--text-md);
-  font-weight: 500;
-  color: var(--hs-muted);
-  text-decoration: none;
-  border-radius: var(--radius-pill);
 }
 
 .auth-center {
@@ -446,79 +387,29 @@ body {
   width: 100%;
   max-width: var(--auth-card-w);
   box-sizing: border-box;
-  padding: var(--space-8);
-  background: var(--hs-surface);
-  border-radius: var(--radius-content);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
 }
 
-.auth-heading {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.auth-heading h1 {
-  margin: 0;
-  font-size: var(--text-h1-card);
-  font-weight: 700;
-  line-height: var(--leading-snug);
-}
-
-.auth-heading p,
-.auth-footnote {
-  margin: 0;
-  font-size: var(--text-md);
-  color: var(--hs-muted);
-}
-
-.auth-footnote {
-  max-width: var(--auth-card-w);
-  font-size: var(--text-sm);
-  text-align: center;
-}
-
+.auth-content,
 .auth-form {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
 }
 
-.auth-field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.auth-field .label {
+.auth-footnote {
+  margin: 0;
+  max-width: var(--auth-card-w);
   font-size: var(--text-sm);
-  font-weight: 600;
-  padding-inline-start: var(--label-inset);
-}
-
-.auth-field .description,
-.auth-field .field-error,
-.auth-checkbox .field-error {
-  font-size: var(--text-sm);
-  padding-inline-start: var(--label-inset);
-}
-
-.auth-field .input,
-.auth-field .input-group {
-  width: 100%;
-  min-height: var(--control-md);
-  font-size: var(--text-md);
-}
-
-.auth-field .input,
-.auth-field .input-group__input {
-  padding-inline: var(--field-pad-x);
-}
-
-.auth-field .input[readonly] {
   color: var(--hs-muted);
+  text-align: center;
+}
+
+/* A belépési oldal fő címe: a HeroUI kártyacíme kártyákhoz kicsi, itt ez az oldal címe */
+.auth-title {
+  margin: 0;
+  font-size: var(--text-h1-card);
+  font-weight: 700;
+  line-height: var(--leading-snug);
 }
 
 .auth-label-row {
@@ -528,67 +419,8 @@ body {
   gap: var(--space-2);
 }
 
-.password-toggle {
-  padding-inline-end: var(--space-1);
-  color: var(--hs-muted);
-}
-
-.auth-checkbox {
-  font-size: var(--text-md);
-}
-
-.text-link {
-  color: var(--hs-fg);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  text-decoration: underline;
-  border-radius: var(--radius-pill);
-}
-
-.auth-checkbox .text-link {
-  font-size: inherit;
-}
-
 .auth-center-link {
   align-self: center;
-  font-size: var(--text-md);
-}
-
-.auth-full {
-  width: 100%;
-}
-
-.auth-status-slot:empty {
-  display: none;
-}
-
-.auth-status {
-  margin: 0;
-  display: flex;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  border-radius: var(--radius-content);
-  background: var(--hs-default);
-  font-size: var(--text-md);
-}
-
-.auth-status-icon {
-  color: var(--hs-success);
-  flex-shrink: 0;
-}
-
-.form-error {
-  margin: 0;
-  color: var(--hs-danger);
-  font-size: var(--text-md);
-}
-
-.breadcrumb:focus-visible,
-.text-link:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 var(--ring-offset-width) var(--background),
-    0 0 0 calc(var(--focus-ring-width) + var(--ring-offset-width)) var(--focus);
 }
 
 /* ---------- Pedagógus oldal: keret (8, 14) ---------- */
@@ -622,54 +454,19 @@ body {
   flex: 1;
 }
 
-.teacher-nav-link,
-.teacher-profile {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  border-radius: var(--radius-pill);
-  text-decoration: none;
-  color: var(--hs-muted);
-}
-
+/* A HeroUI gombstílusú menüpontok balra igazítva, a szöveg kitölti a sort */
 .teacher-nav-link {
-  min-height: var(--control-md);
-  padding-inline: var(--space-3);
-  font-size: var(--text-md);
-  font-weight: 500;
+  justify-content: flex-start;
 }
 
-.teacher-nav-link > span {
+.teacher-nav-link .nav-text {
   flex: 1;
-}
-
-.teacher-nav-link:hover,
-.teacher-profile:hover {
-  background: var(--hs-default);
-}
-
-.teacher-nav-link[aria-current="page"],
-.teacher-profile[aria-current="page"] {
-  background: var(--hs-default-hover);
-  color: var(--hs-fg);
-  font-weight: 600;
+  text-align: start;
 }
 
 .teacher-profile {
-  padding: var(--space-3);
-}
-
-.teacher-avatar {
-  width: var(--avatar);
-  height: var(--avatar);
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  border-radius: var(--radius-pill);
-  background: var(--hs-accent);
-  color: var(--hs-accent-fg);
-  font-size: var(--text-caption);
-  font-weight: 600;
+  height: auto;
+  padding-block: var(--space-2);
 }
 
 .teacher-profile-text {
@@ -679,9 +476,6 @@ body {
 }
 
 .teacher-profile-name {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--hs-fg);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -689,6 +483,8 @@ body {
 
 .teacher-profile-sub {
   font-size: var(--text-caption);
+  color: var(--hs-muted);
+  font-weight: 400;
 }
 
 .teacher-content {
@@ -738,208 +534,41 @@ body {
   color: var(--hs-muted);
 }
 
-/* ---------- Projektjeim ---------- */
-
-.project-grid {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--card-min-w), 1fr));
-  gap: var(--space-8) var(--space-6);
-}
-
-.project-tile {
-  display: flex;
-  flex-direction: column;
+.projects-empty {
   gap: var(--space-4);
 }
 
-.project-thumb {
-  display: block;
-  aspect-ratio: 4 / 3;
-  border-radius: var(--radius-content);
-  overflow: hidden;
-  background: var(--hs-default);
-}
+/* ---------- Modális ablakok ---------- */
 
-.project-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.project-info {
+.modal-heading {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-1);
 }
 
-.project-title {
-  margin: 0;
-  font-size: var(--text-base);
-  font-weight: 600;
-}
-
-.project-title a {
-  color: var(--hs-fg);
-  text-decoration: none;
-  border-radius: var(--radius-pill);
-}
-
-.project-title a:hover {
-  text-decoration: underline;
-}
-
-.project-meta {
+.modal-heading p,
+.modal-note {
   margin: 0;
   font-size: var(--text-sm);
   color: var(--hs-muted);
 }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  height: var(--chip-h);
-  padding-inline: var(--chip-pad-x);
-  border-radius: var(--radius-pill);
-  background: var(--hs-default);
-  color: var(--hs-fg);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.chip--warning {
-  background: var(--hs-warning-soft);
-  color: var(--hs-warning);
-}
-
-/* Hozzáadás helye: szaggatott keret és „+” (döntésnapló) */
-.add-tile,
-.dropzone {
-  border: var(--border-thin) dashed var(--hs-border-strong);
-  border-radius: var(--radius-content);
-  background: var(--hs-bg);
-  color: var(--hs-fg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-  text-align: center;
-  font: inherit;
-  font-size: var(--text-md);
-}
-
-.add-tile {
-  min-height: var(--dropzone-h);
-  cursor: pointer;
-}
-
-.add-tile:hover {
-  background: var(--hs-default);
-}
-
-/* ---------- Modális ablak ---------- */
-
-.modal-backdrop {
-  background: var(--hs-overlay);
-}
-
-.modal-dialog {
-  width: min(var(--modal-w), calc(100vw - 2 * var(--space-4)));
-  max-width: none;
-  /* A képernyőnél nem magasabb: a fejléc és a lábléc a helyén marad, a törzs görög. */
-  max-height: calc(100dvh - 2 * var(--space-6));
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  gap: 0;
-  border-radius: var(--radius-content);
-  background: var(--hs-surface);
-  box-shadow: none;
-}
-
-.modal-dialog > form {
+/* Az űrlap a törzset és a láblécet is körbeveszi: így marad görgethető a törzs, a lábléc a helyén. */
+.new-project > form,
+.sound-picker > form {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
 }
 
-.modal-dialog .modal-body {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-}
-
-.modal-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-4);
-  padding: var(--space-6) var(--space-6) 0;
-}
-
-.modal-heading {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.modal-heading h2 {
-  margin: 0;
-  font-size: var(--text-h2-modal);
-  font-weight: 700;
-}
-
-.modal-heading p {
-  margin: 0;
-  font-size: var(--text-md);
-  color: var(--hs-muted);
-}
-
-.modal-close {
-  width: var(--control-sm);
-  height: var(--control-sm);
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  border: 0;
-  border-radius: var(--radius-pill);
-  background: var(--hs-default);
-  color: var(--hs-fg);
-}
-
-.modal-body {
-  padding: var(--space-6);
+.picker-panel {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
 }
 
-.modal-note {
-  margin: 0;
-  font-size: var(--text-caption);
-  color: var(--hs-muted);
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-6);
-  border-top: var(--border-thin) solid var(--hs-sep);
-}
-
+/* Feltöltő mező (a HeroUI-ban nincs ilyen): szaggatott keret, húzáskor kiemelve */
 .dropzone-field {
   display: flex;
   flex-direction: column;
@@ -950,6 +579,15 @@ body {
   min-height: var(--dropzone-h);
   padding: var(--space-4);
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  text-align: center;
+  border: var(--border-thin) dashed var(--hs-border);
+  border-radius: var(--radius-content);
+  background: var(--hs-default);
 }
 
 .dropzone p {
@@ -958,7 +596,7 @@ body {
 
 .dropzone[data-drop-target] {
   border-color: var(--hs-fg);
-  background: var(--hs-default);
+  background: var(--hs-default-hover);
 }
 
 .dropzone-preview {
@@ -974,25 +612,12 @@ body {
 
 .field-error-text {
   margin: 0;
-  padding-inline-start: var(--label-inset);
   font-size: var(--text-sm);
   color: var(--hs-danger);
 }
 
 .field-error-text:empty {
   display: none;
-}
-
-.add-tile:focus-visible,
-.teacher-nav-link:focus-visible,
-.teacher-profile:focus-visible,
-.project-title a:focus-visible,
-.modal-close:focus-visible,
-.dropzone[data-focus-visible] {
-  outline: none;
-  box-shadow:
-    0 0 0 var(--ring-offset-width) var(--background),
-    0 0 0 calc(var(--focus-ring-width) + var(--ring-offset-width)) var(--focus);
 }
 
 /* ---------- Szerkesztő (11, 11b, 12) ---------- */
@@ -1018,23 +643,6 @@ body {
 .editor-breadcrumb {
   flex: 1;
   min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-size: var(--text-md);
-}
-
-.editor-breadcrumb h1 {
-  margin: 0;
-  font-size: var(--text-md);
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.breadcrumb-sep {
-  color: var(--hs-border-strong);
 }
 
 .save-status {
@@ -1042,7 +650,6 @@ body {
   align-items: center;
   gap: var(--space-2);
   font-size: var(--text-sm);
-  font-weight: 500;
   white-space: nowrap;
 }
 
@@ -1091,56 +698,15 @@ body {
 }
 
 .draw-toolbar {
-  display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--space-2);
   padding: var(--space-1);
   border-radius: var(--radius-pill);
   background: var(--hs-surface);
 }
 
-.tool-button.toggle-button {
-  height: var(--tool-h);
-  padding-inline: var(--space-4);
-  gap: var(--space-2);
-  border-radius: var(--radius-pill);
-  border: var(--border-strong) solid transparent;
-  background: var(--hs-surface);
-  color: var(--hs-fg);
-  font-size: var(--text-sm);
-  font-weight: 600;
-}
-
-/* Aktív eszköz: 2 px fekete keret, nem fekete kitöltés (döntésnapló) */
-.tool-button.toggle-button[data-selected="true"] {
-  border-color: var(--hs-fg);
-  background: var(--hs-surface);
-  color: var(--hs-fg);
-}
-
-.toolbar-sep {
-  width: var(--border-thin);
-  height: var(--space-6);
-  margin-inline: var(--space-2);
-  background: var(--hs-border);
-}
-
 .size-slider {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--space-3);
-  padding-inline: var(--space-2);
-}
-
-.size-slider .label {
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--hs-muted);
-}
-
-.size-slider .slider__track {
-  width: var(--size-slider-w);
+  width: calc(var(--space-16) * 2);
 }
 
 .canvas-hint {
@@ -1217,12 +783,12 @@ body {
 .draw-field {
   fill: color-mix(in srgb, var(--c) var(--field-fill-alpha), transparent);
   stroke: var(--c);
-  stroke-width: var(--border-strong);
+  stroke-width: 2;
   vector-effect: non-scaling-stroke;
 }
 
 .draw-field.is-selected {
-  stroke-width: calc(var(--border-strong) * 2);
+  stroke-width: 4;
 }
 
 .brush-cursor {
@@ -1244,60 +810,11 @@ body {
   background: var(--hs-surface);
   border-left: var(--border-thin) solid var(--hs-border);
   overflow-y: auto;
-}
-
-/* Szegmentált fülek: szürke sáv, a kiválasztott fehér (terv) */
-.segmented {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.segmented .tabs__list {
-  display: flex;
-  gap: var(--space-1);
-  padding: var(--space-1);
-  border-radius: var(--radius-pill);
-  background: var(--hs-default);
-}
-
-.segmented .tabs__tab {
-  flex: 1;
-  height: var(--control-sm);
-  border-radius: var(--radius-pill);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--hs-muted);
-}
-
-.segmented .tabs__tab[data-selected="true"] {
-  color: var(--hs-fg);
-  font-weight: 600;
-}
-
-.segmented .tabs__indicator {
-  border-radius: var(--radius-pill);
-  background: var(--hs-surface);
-  box-shadow: none;
-}
-
-.segmented .tabs__tab[data-disabled="true"] {
-  opacity: 0.5;
-}
-
-.zoom-level.button {
-  min-width: var(--control-lg);
-  padding-inline: var(--space-2);
-  font-variant-numeric: tabular-nums;
-  font-size: var(--text-sm);
+  --panel-tabs-h: calc(var(--space-6) + var(--space-10) + var(--space-2));
 }
 
 /* A panel fülsora és alatta a visszagomb görgetéskor is fent marad (fontos navigáció). */
-.editor-panel {
-  --panel-tabs-h: calc(var(--space-6) + var(--control-sm) + 2 * var(--space-1) + var(--space-2));
-}
-
-.editor-panel .segmented > .tabs__list-container {
+.editor-panel .tabs__list-container {
   position: sticky;
   top: calc(-1 * var(--space-6));
   z-index: 2;
@@ -1316,65 +833,8 @@ body {
   border-bottom: var(--border-thin) solid var(--hs-border);
 }
 
-.panel-back.button {
-  align-self: flex-start;
-  margin-inline-start: calc(-1 * var(--space-3));
+.panel-back {
   gap: var(--space-2);
-  color: var(--hs-muted);
-}
-
-.panel-detail-title {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-size: var(--text-h2);
-  font-weight: 700;
-}
-
-.panel-detail-title:focus {
-  outline: none;
-}
-
-/* A hangmező neve címként: nagy betű, csak rámutatáskor és szerkesztéskor látszik mezőnek. */
-.title-field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.title-field-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.title-field .input.title-input {
-  flex: 1;
-  min-width: 0;
-  min-height: var(--control-md);
-  margin-inline-start: calc(-1 * var(--space-2));
-  padding-inline: var(--space-2);
-  background: transparent;
-  font-size: var(--text-h2);
-  font-weight: 700;
-}
-
-.title-field .input.title-input:hover,
-.title-field .input.title-input:focus {
-  background: var(--hs-default);
-}
-
-.title-field .description {
-  font-size: var(--text-caption);
-  color: var(--hs-muted);
-  padding-inline-start: calc(var(--swatch) + var(--space-3));
-}
-
-/* Romboló művelet a részletek alján, elválasztva */
-.panel-danger-zone {
-  padding-top: var(--space-6);
-  border-top: var(--border-thin) solid var(--hs-border);
 }
 
 .panel-sections {
@@ -1395,53 +855,26 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  min-height: var(--control-sm);
 }
 
 .panel-section-head h2 {
   margin: 0;
   font-size: var(--text-base);
   font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.panel-list {
-  list-style: none;
-  margin: 0 calc(-1 * var(--space-3));
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.panel-row {
-  width: 100%;
-  min-height: var(--control-lg);
-  padding: var(--space-2) var(--space-3);
+.panel-detail-title {
+  margin: 0;
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  text-align: left;
-  border: 0;
-  border-radius: var(--radius-content);
-  background: transparent;
-  font: inherit;
-  color: var(--hs-fg);
-  cursor: pointer;
+  font-size: var(--text-h2);
+  font-weight: 700;
 }
 
-.panel-row > svg {
-  color: var(--hs-muted);
-  flex-shrink: 0;
-}
-
-.panel-row:hover {
-  background: var(--hs-default);
-}
-
-.panel-row[aria-pressed="true"] {
-  background: var(--hs-default);
+/* A HeroUI listasor tartalma: ikon vagy szín, szöveg, címkék, nyíl */
+.panel-list .list-box-item {
+  gap: var(--space-3);
 }
 
 .panel-row-icon {
@@ -1463,7 +896,6 @@ body {
 }
 
 .panel-row-title {
-  font-size: var(--text-md);
   font-weight: 600;
 }
 
@@ -1480,25 +912,17 @@ body {
   background: var(--c);
 }
 
-.add-tile--row {
-  min-height: var(--control-lg);
-  flex-direction: row;
-  gap: var(--space-2);
-  font-weight: 600;
-}
-
-.panel-help,
-.panel-hint {
+.panel-help {
   margin: 0;
   font-size: var(--text-caption);
   color: var(--hs-muted);
 }
 
 .panel-hint {
+  margin: 0;
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-content);
-  background: var(--hs-warning-soft);
-  color: var(--hs-warning);
+  background: var(--warning-soft);
   font-size: var(--text-sm);
 }
 
@@ -1510,26 +934,46 @@ body {
 
 .panel-label {
   font-size: var(--text-sm);
-  font-weight: 600;
-  padding-inline-start: var(--label-inset);
+  font-weight: 500;
 }
 
-.auth-field .textarea {
-  width: 100%;
-  padding: var(--space-3) var(--field-pad-x);
-  font-size: var(--text-md);
-  line-height: var(--leading-body);
-  resize: none;
-  box-sizing: border-box;
+.title-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
-.sound-card {
+.title-field-row {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-3);
-  border-radius: var(--radius-content);
-  background: var(--hs-default);
+}
+
+.title-field-row .input {
+  flex: 1;
+  min-width: 0;
+}
+
+.panel-danger-zone {
+  padding-top: var(--space-6);
+  border-top: var(--border-thin) solid var(--hs-border);
+}
+
+.volume-slider {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.volume-head {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sound-card {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .sound-card-text {
@@ -1541,7 +985,6 @@ body {
 }
 
 .sound-card-title {
-  font-size: var(--text-md);
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1551,14 +994,6 @@ body {
 .sound-card-meta {
   font-size: var(--text-caption);
   color: var(--hs-muted);
-}
-
-.play-button.button {
-  width: var(--control-sm);
-  height: var(--control-sm);
-  padding: 0;
-  flex-shrink: 0;
-  border-radius: var(--radius-pill);
 }
 
 .voice-actions {
@@ -1585,82 +1020,6 @@ body {
   height: var(--space-3);
   border-radius: var(--radius-pill);
   background: var(--hs-danger);
-}
-
-.volume-slider {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.volume-head {
-  display: flex;
-  justify-content: space-between;
-  font-size: var(--text-sm);
-}
-
-.volume-head .label {
-  font-weight: 600;
-}
-
-.volume-head output {
-  color: var(--hs-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-/* Csúszka a terv szerint: 20 px-es kattintható sáv, benne 4 px-es vonal, 16 px-es fekete pötty */
-.slider[data-orientation] .slider__track {
-  height: var(--space-5);
-  border-inline-width: 0;
-  margin-inline: var(--space-2);
-  max-width: calc(100% - 2 * var(--space-2));
-  border-radius: var(--radius-pill);
-  background: linear-gradient(var(--hs-default-hover), var(--hs-default-hover)) center / 100% var(--space-1) no-repeat;
-}
-
-.slider[data-orientation] .slider__fill {
-  top: 50%;
-  height: var(--space-1);
-  transform: translateY(-50%);
-  border-radius: var(--radius-pill);
-  background: var(--hs-accent);
-}
-
-.slider[data-orientation] .slider__thumb {
-  top: 50%;
-  width: var(--space-4);
-  height: var(--space-4);
-  border-radius: var(--radius-pill);
-  background: var(--hs-accent);
-}
-
-.slider .slider__thumb::after {
-  display: none;
-}
-
-.button.button--danger-soft {
-  background: var(--hs-danger-soft);
-  color: var(--hs-danger);
-  border: var(--border-strong) solid transparent;
-}
-
-.button.button--danger {
-  background: var(--hs-danger);
-  color: var(--hs-accent-fg);
-}
-
-.button.danger-text {
-  color: var(--hs-danger);
-}
-
-.modal-dialog--small {
-  width: min(var(--modal-w-sm), calc(100vw - 2 * var(--space-4)));
-}
-
-.picker-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
 }
 
 .library-status {
@@ -1701,13 +1060,6 @@ body {
   color: var(--hs-muted);
 }
 
-.panel-row:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 var(--ring-offset-width) var(--background),
-    0 0 0 calc(var(--focus-ring-width) + var(--ring-offset-width)) var(--focus);
-}
-
 /* ---------- Keskeny kijelző ---------- */
 
 /* Médialekérdezésben nem lehet változó: ez a --intro-max értéke. */
@@ -1719,8 +1071,21 @@ body {
     padding-inline: var(--kid-page-x-narrow);
   }
 
-  .auth-card {
-    padding: var(--space-6);
+  .site-header {
+    flex-wrap: wrap;
+  }
+
+  .gallery-intro h1 {
+    font-size: var(--text-h1-narrow);
+  }
+
+  .gcard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .viewer-header,
+  .scene {
+    padding-inline: var(--space-4);
   }
 
   .teacher-page {
@@ -1740,23 +1105,6 @@ body {
 
   .teacher-main {
     padding: var(--space-6);
-  }
-
-  .site-header {
-    flex-wrap: wrap;
-  }
-
-  .gallery-intro h1 {
-    font-size: var(--text-h1-narrow);
-  }
-
-  .gcard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .viewer-header,
-  .scene {
-    padding-inline: var(--space-4);
   }
 }
 

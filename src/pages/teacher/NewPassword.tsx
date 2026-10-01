@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { Button, Form } from '@heroui/react';
 import { AuthLayout } from '../../components/AuthLayout';
+import { ButtonLink } from '../../components/SiteHeader';
 import { authErrorMessage, FormError, PasswordField, focusFirstInvalid } from '../../components/AuthFields';
 import type { Config } from '../../lib/data';
 import { t } from '../../lib/i18n';
@@ -56,9 +57,9 @@ export function NewPassword({ config }: { config: Config }) {
           </Button>
         </Form>
       ) : (
-        <Link to="/elfelejtett-jelszo" className="button button--primary button--lg auth-full">
+        <ButtonLink href="/elfelejtett-jelszo" variant="primary" className="button--lg button--full-width">
           {t('auth.errors.requestNewLink')}
-        </Link>
+        </ButtonLink>
       )}
     </AuthLayout>
   );

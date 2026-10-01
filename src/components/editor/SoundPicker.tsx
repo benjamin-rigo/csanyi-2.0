@@ -95,21 +95,19 @@ export function SoundPicker({
 
   return (
     <Modal>
-      <Modal.Backdrop isOpen={isOpen} onOpenChange={close} className="modal-backdrop">
-        <Modal.Container className="modal-container">
-          <Modal.Dialog className="modal-dialog sound-picker">
-            <Modal.Header className="modal-header">
+      <Modal.Backdrop isOpen={isOpen} onOpenChange={close}>
+        <Modal.Container size="lg">
+          <Modal.Dialog className="sound-picker">
+            <Modal.Header>
               <div className="modal-heading">
                 <Modal.Heading>{t('teacher.editor.picker.title')}</Modal.Heading>
                 <p>{target}</p>
               </div>
-              <Modal.CloseTrigger aria-label={t('teacher.editor.picker.close')} className="modal-close">
-                <Icon name="close" />
-              </Modal.CloseTrigger>
+              <Modal.CloseTrigger aria-label={t('teacher.editor.picker.close')} />
             </Modal.Header>
             <Form onSubmit={submit} validationBehavior="aria">
-              <Modal.Body className="modal-body">
-                <Tabs selectedKey={tab} onSelectionChange={(k) => setTab(k as 'library' | 'own')} className="segmented">
+              <Modal.Body>
+                <Tabs selectedKey={tab} onSelectionChange={(k) => setTab(k as 'library' | 'own')}>
                   <Tabs.ListContainer>
                     <Tabs.List aria-label={t('teacher.editor.picker.tabsLabel')}>
                       <Tabs.Tab id="library">
@@ -172,7 +170,7 @@ export function SoundPicker({
                         setErrors((e) => ({ ...e, name: undefined }));
                       }}
                       isInvalid={Boolean(errors.name)}
-                      className="auth-field"
+                      fullWidth
                     >
                       <Label>{t('teacher.editor.picker.nameLabel')}</Label>
                       <Input />
@@ -183,7 +181,7 @@ export function SoundPicker({
                   </Tabs.Panel>
                 </Tabs>
               </Modal.Body>
-              <Modal.Footer className="modal-footer">
+              <Modal.Footer>
                 <Button variant="outline" slot="close">
                   {t('teacher.editor.picker.cancel')}
                 </Button>

@@ -1,6 +1,7 @@
 import { StrictMode, useEffect, useRef, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router';
+import { BrowserRouter, Navigate, Route, Routes, useHref, useNavigate } from 'react-router';
+import { RouterProvider } from 'react-aria-components';
 import './index.css';
 import { useConfig, useData } from './lib/data';
 import { t } from './lib/i18n';
@@ -62,9 +63,11 @@ function AuthLinkRedirect() {
 
 function App() {
   const config = useConfig();
+  // A HeroUI (react-aria) linkjei is a routerrel navigálnak, újratöltés nélkül.
+  const navigate = useNavigate();
   if (!config) return <StatusPage />;
   return (
-    <>
+    <RouterProvider navigate={navigate} useHref={useHref}>
       <AuthLinkRedirect />
       <Routes>
         <Route path="/belepes" element={<Login config={config} />} />
@@ -97,7 +100,7 @@ function App() {
         />
         <Route path="*" element={<KidApp />} />
       </Routes>
-    </>
+    </RouterProvider>
   );
 }
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, type CSSProperties, type RefObject } from 'react';
-import { Button, Description, Input, Label, Slider, TextArea, TextField } from '@heroui/react';
+import { Button, Chip, Description, Input, Label, ListBox, Slider, TextArea, TextField } from '@heroui/react';
 import type { EditorField, EditorProject, EditorSound } from '../../lib/editor';
 import { t } from '../../lib/i18n';
 import { Icon } from '../Icon';
@@ -49,10 +49,10 @@ function VolumeSlider({
 
 function AddTile({ label, onPress }: { label: string; onPress: () => void }) {
   return (
-    <button type="button" className="add-tile add-tile--row" onClick={onPress}>
+    <Button variant="tertiary" fullWidth onPress={onPress}>
       <Icon name="plus" />
-      <span>{label}</span>
-    </button>
+      {label}
+    </Button>
   );
 }
 
@@ -99,7 +99,10 @@ export function SoundsPanel({
       lastRow.current = selectionKey;
       detailHeading.current?.focus();
     } else if (lastRow.current) {
-      document.querySelector<HTMLElement>(`[data-row="${lastRow.current}"]`)?.focus();
+      // A react-aria a lista sorait a következő renderelési körben teszi ki, ezért egy képkockát várunk.
+      const key = lastRow.current;
+      const frame = requestAnimationFrame(() => document.querySelector<HTMLElement>(`.panel-list [data-key="${key}"]`)?.focus());
+      return () => cancelAnimationFrame(frame);
     }
   }, [selectionKey]);
 
@@ -148,7 +151,7 @@ export function SoundsPanel({
           help={t('teacher.editor.background.help')}
         />
         <div className="panel-danger-zone">
-          <Button size="sm" className="button--danger-soft" onPress={onRemoveBackground}>
+          <Button size="sm" variant="danger-soft" onPress={onRemoveBackground}>
             {t('teacher.editor.background.removeLong')}
           </Button>
         </div>
@@ -194,7 +197,7 @@ export function SoundsPanel({
           )}
         </div>
         <VolumeSlider id="field-volume" value={field.volume} onChange={(volume) => onFieldChange(field.id, { volume })} />
-        <TextField value={field.description} onChange={(description) => onFieldChange(field.id, { description })} className="auth-field">
+        <TextField value={field.description} onChange={(description) => onFieldChange(field.id, { description })} fullWidth>
           <Label>{t('teacher.editor.fields.description')}</Label>
           <TextArea rows={3} />
           <Description>{t('teacher.editor.fields.descriptionHelp')}</Description>
@@ -214,7 +217,7 @@ export function SoundsPanel({
           help={t('teacher.editor.fields.softnessHelp')}
         />
         <div className="panel-danger-zone">
-          <Button size="sm" className="button--danger-soft" onPress={() => onDeleteField(field)}>
+          <Button size="sm" variant="danger-soft" onPress={() => onDeleteField(field)}>
             {t('teacher.editor.fields.deleteField')}
           </Button>
         </div>
@@ -229,22 +232,20 @@ export function SoundsPanel({
           <h2 id="bg-title">{t('teacher.editor.background.title')}</h2>
         </div>
         {bg ? (
-          <ul className="panel-list">
-            <li>
-              <button type="button" className="panel-row" data-row="background" onClick={() => onSelect({ kind: 'background' })}>
-                <span className="panel-row-icon" aria-hidden="true">
-                  <Icon name="music" size={16} />
+          <ListBox aria-labelledby="bg-title" selectionMode="none" onAction={() => onSelect({ kind: 'background' })} className="panel-list">
+            <ListBox.Item id="background" textValue={bg.title}>
+              <span className="panel-row-icon" aria-hidden="true">
+                <Icon name="music" size={16} />
+              </span>
+              <span className="panel-row-text">
+                <span className="panel-row-title">{bg.title}</span>
+                <span className="panel-row-sub">
+                  {t('teacher.editor.background.volumeShort', { n: Math.round(project.backgroundVolume * 100) })}
                 </span>
-                <span className="panel-row-text">
-                  <span className="panel-row-title">{bg.title}</span>
-                  <span className="panel-row-sub">
-                    {t('teacher.editor.background.volumeShort', { n: Math.round(project.backgroundVolume * 100) })}
-                  </span>
-                </span>
-                <Icon name="chevron" size={16} />
-              </button>
-            </li>
-          </ul>
+              </span>
+              <Icon name="chevron" size={16} />
+            </ListBox.Item>
+          </ListBox>
         ) : (
           <>
             <AddTile label={t('teacher.editor.background.add')} onPress={() => onPickSound('background')} />
@@ -264,22 +265,33 @@ export function SoundsPanel({
         {project.fields.length === 0 ? (
           <p className="panel-help">{t('teacher.editor.fields.empty')}</p>
         ) : (
-          <ul className="panel-list">
+          <ListBox
+            aria-labelledby="fields-title"
+            selectionMode="none"
+            onAction={(key) => onSelect({ kind: 'field', id: String(key) })}
+            className="panel-list"
+          >
             {project.fields.map((f, i) => (
-              <li key={f.id}>
-                <button type="button" className="panel-row" data-row={f.id} onClick={() => onSelect({ kind: 'field', id: f.id })}>
-                  <span className="field-swatch" style={{ '--c': fieldColorVar(i) } as CSSProperties} aria-hidden="true" />
-                  <span className="panel-row-text">
-                    <span className="panel-row-title">{fieldName(f)}</span>
-                    {f.sound && <span className="panel-row-sub">{f.sound.title}</span>}
-                  </span>
-                  {!f.sound && <span className="chip chip--warning">{t('teacher.editor.fields.noSound')}</span>}
-                  {f.polygons.length === 0 && <span className="chip chip--warning">{t('teacher.editor.fields.noShape')}</span>}
-                  <Icon name="chevron" size={16} />
-                </button>
-              </li>
+              <ListBox.Item key={f.id} id={f.id} textValue={fieldName(f)}>
+                <span className="field-swatch" style={{ '--c': fieldColorVar(i) } as CSSProperties} aria-hidden="true" />
+                <span className="panel-row-text">
+                  <span className="panel-row-title">{fieldName(f)}</span>
+                  {f.sound && <span className="panel-row-sub">{f.sound.title}</span>}
+                </span>
+                {!f.sound && (
+                  <Chip size="sm" color="warning" variant="soft">
+                    {t('teacher.editor.fields.noSound')}
+                  </Chip>
+                )}
+                {f.polygons.length === 0 && (
+                  <Chip size="sm" color="warning" variant="soft">
+                    {t('teacher.editor.fields.noShape')}
+                  </Chip>
+                )}
+                <Icon name="chevron" size={16} />
+              </ListBox.Item>
             ))}
-          </ul>
+          </ListBox>
         )}
       </section>
     </div>

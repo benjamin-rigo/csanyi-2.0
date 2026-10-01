@@ -128,7 +128,7 @@ export function LibraryTab({
 
   return (
     <div className="picker-panel">
-      <TextField value={query} onChange={setQuery} type="search" className="auth-field" autoFocus>
+      <TextField value={query} onChange={setQuery} type="search" fullWidth autoFocus>
         <Label>{t('teacher.editor.picker.searchLabel')}</Label>
         <Input />
         <Description>{t('teacher.editor.picker.searchHelp')}</Description>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
-import { Button } from '@heroui/react';
+import { Button, Card, Chip, EmptyState } from '@heroui/react';
+import { Link as AriaLink } from 'react-aria-components';
 import { Icon } from '../../components/Icon';
 import { NewProjectModal } from '../../components/NewProjectModal';
 import { TeacherLayout } from '../../components/TeacherLayout';
@@ -42,10 +42,13 @@ export function MyProjects({ config }: { config: Config }) {
       {projects.status === 'error' && <p role="alert">{t('teacher.projects.loadError')}</p>}
       {projects.status === 'ready' &&
         (projects.data.length === 0 ? (
-          <button type="button" className="add-tile" onClick={() => setCreating(true)}>
-            <Icon name="plus" size={24} />
-            <span>{t('teacher.projects.empty')}</span>
-          </button>
+          <EmptyState className="projects-empty">
+            <p>{t('teacher.projects.empty')}</p>
+            <Button onPress={() => setCreating(true)}>
+              <Icon name="plus" />
+              {t('teacher.projects.newProject')}
+            </Button>
+          </EmptyState>
         ) : (
           <ul className="project-grid" aria-label={t('teacher.projects.listLabel')}>
             {projects.data.map((p) => (
@@ -63,26 +66,30 @@ export function MyProjects({ config }: { config: Config }) {
 
 function ProjectTile({ project }: { project: ProjectSummary }) {
   const title = project.title || t('teacher.projects.untitled');
-  const to = `/szerkeszto/${project.id}`;
   return (
-    <li className="project-tile">
-      <Link to={to} className="project-thumb" tabIndex={-1} aria-hidden="true">
-        {project.imagePath && <img src={assetUrl(project.imagePath)} alt="" loading="lazy" />}
-      </Link>
-      <div className="project-info">
-        <h2 className="project-title">
-          <Link to={to} aria-label={t('teacher.projects.editLabel', { title })}>
-            {title}
-          </Link>
-        </h2>
-        <p className="project-meta">
-          {t('teacher.projects.fieldCount', { count: project.fieldCount })} · {timeAgo(project.updatedAt)}
-        </p>
-        <div className="chips">
-          <span className="chip">{t(`teacher.projects.visibility.${project.visibility}`)}</span>
-          {project.isSample && <span className="chip chip--warning">{t('teacher.projects.sample')}</span>}
-        </div>
-      </div>
+    <li>
+      <Card className="project-card">
+        <div className="project-thumb">{project.imagePath && <img src={assetUrl(project.imagePath)} alt="" loading="lazy" />}</div>
+        <Card.Header>
+          <Card.Title render={(props) => <h2 {...props} />}>
+            {/* Az egész kártya egy link a szerkesztőbe. */}
+            <AriaLink href={`/szerkeszto/${project.id}`} className="card-link" aria-label={t('teacher.projects.editLabel', { title })}>
+              {title}
+            </AriaLink>
+          </Card.Title>
+          <Card.Description>
+            {t('teacher.projects.fieldCount', { count: project.fieldCount })} · {timeAgo(project.updatedAt)}
+          </Card.Description>
+        </Card.Header>
+        <Card.Footer className="chips">
+          <Chip size="sm">{t(`teacher.projects.visibility.${project.visibility}`)}</Chip>
+          {project.isSample && (
+            <Chip size="sm" color="warning" variant="soft">
+              {t('teacher.projects.sample')}
+            </Chip>
+          )}
+        </Card.Footer>
+      </Card>
     </li>
   );
 }

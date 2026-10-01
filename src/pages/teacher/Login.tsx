@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router';
-import { Button, Checkbox, Form } from '@heroui/react';
+import { Navigate, useNavigate } from 'react-router';
+import { Button, Checkbox, Form, Link } from '@heroui/react';
 import { AuthLayout } from '../../components/AuthLayout';
 import { authErrorMessage, EmailField, FormError, isEmail, PasswordField, focusFirstInvalid } from '../../components/AuthFields';
 import type { Config } from '../../lib/data';
@@ -52,12 +52,12 @@ export function Login({ config }: { config: Config }) {
           error={errors.password}
           autoComplete="current-password"
           labelAction={
-            <Link to="/elfelejtett-jelszo" className="text-link">
+            <Link href="/elfelejtett-jelszo" className="text-sm">
               {t('auth.login.forgot')}
             </Link>
           }
         />
-        <Checkbox isSelected={remember} onChange={setRemember} className="auth-checkbox">
+        <Checkbox isSelected={remember} onChange={setRemember}>
           <Checkbox.Content>
             <Checkbox.Control>
               <Checkbox.Indicator />
