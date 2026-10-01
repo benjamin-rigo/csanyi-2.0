@@ -1,5 +1,6 @@
 // Freesound keresés a hangválasztónak (12). A kulcs titokként a Supabase-ben van (FREESOUND_API_KEY),
-// a böngésző nem látja. Csak bejelentkezett pedagógus hívhatja (a Supabase ellenőrzi a belépést).
+// a böngésző nem látja. Csak bejelentkezett pedagógus hívhatja: a kérés belépési tokenjét a Supabase-szel ellenőrizzük,
+// így a nyilvános kulccsal nem lehet elhasználni a napi keretet.
 // Csak CC0 (Creative Commons 0) hangokat adunk vissza (döntésnapló).
 // A Freesound címkéi szinte mind angolok, ezért a keresőszót előbb angolra fordítjuk (MyMemory, ingyenes, kulcs nélkül).
 
@@ -12,6 +13,16 @@ const cors = {
 const PAGE_SIZE = 15;
 
 type Result = { id: number; name: string; duration: number; username: string; previews: Record<string, string> };
+
+/** Valódi, bejelentkezett felhasználó-e a kérés küldője (a nyilvános kulcs nem az). */
+async function isSignedIn(req: Request): Promise<boolean> {
+  const auth = req.headers.get('Authorization');
+  const url = Deno.env.get('SUPABASE_URL');
+  const anon = Deno.env.get('SUPABASE_ANON_KEY');
+  if (!auth?.startsWith('Bearer ') || !url || !anon) return false;
+  const res = await fetch(`${url}/auth/v1/user`, { headers: { Authorization: auth, apikey: anon } });
+  return res.ok;
+}
 
 // A függvény egy példánya több kérést is kiszolgál: ugyanazt a szót nem fordítjuk újra.
 const translations = new Map<string, string>();
@@ -53,6 +64,7 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
   const key = Deno.env.get('FREESOUND_API_KEY');
   if (!key) return Response.json({ error: 'missing_key' }, { status: 500, headers: cors });
+  if (!(await isSignedIn(req))) return Response.json({ error: 'unauthorized' }, { status: 401, headers: cors });
 
   const { query, page = 1 } = await req.json().catch(() => ({}));
   if (typeof query !== 'string' || !query.trim()) return Response.json({ count: 0, results: [], next: false }, { headers: cors });
