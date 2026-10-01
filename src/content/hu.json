@@ -307,7 +307,6 @@
         "select": "Kiválasztás",
         "selectLabel": "{title} kiválasztása",
         "playing": "szól",
-        "importError": "Nem sikerült átvenni a hangot. Próbáld újra.",
         "translated": "Angolul kerestük: {query}.",
         "loadingMore": "További találatok betöltése…",
         "loadedMore": "{n} további találat."

@@ -150,16 +150,40 @@ export function Editor({ config }: { config: Config }) {
     setHistory((h) => ({ done: [...h.done, stroke], undone: h.undone.slice(0, -1) }));
   }
 
-  function onPickSound(sound: EditorSound) {
+  /**
+   * Hang kiválasztása. A könyvtári hang azonnal megjelenik (a Freesound előhallgatásával), a saját tárhelyre
+   * másolat a háttérben készül; az adatbázisba csak a kész másolat kerül. Ha közben más hangot választanak,
+   * a késő másolat nem írja felül; ha a másolás nem sikerül, visszaáll az előző hang.
+   */
+  function onPickSound(sound: EditorSound, copy?: Promise<EditorSound>) {
     if (!project || !picker) return;
-    if (picker === 'background') {
-      setProject({ ...project, background: sound });
-      setSelection({ kind: 'background' });
-      void track(updateProject(project.id, { background_sound_id: sound.id })).catch(() => undefined);
-    } else {
-      patchField(picker, { sound });
-      void track(updateField(picker, { sound_id: sound.id })).catch(() => undefined);
+    const target = picker;
+    const projectId = project.id;
+    const current = (): EditorSound | null =>
+      target === 'background'
+        ? (projectRef.current?.background ?? null)
+        : (projectRef.current?.fields.find((f) => f.id === target)?.sound ?? null);
+    const previous = current();
+    const show = (s: EditorSound | null) =>
+      target === 'background' ? setProject((p) => p && { ...p, background: s }) : patchField(target, { sound: s });
+    const save = (s: EditorSound) =>
+      target === 'background' ? updateProject(projectId, { background_sound_id: s.id }) : updateField(target, { sound_id: s.id });
+
+    show(sound);
+    if (target === 'background') setSelection({ kind: 'background' });
+    if (!copy) {
+      void track(save(sound)).catch(() => undefined);
+      return;
     }
+    void track(
+      copy.then(async (copied) => {
+        if (current()?.id !== sound.id) return;
+        show(copied);
+        await save(copied);
+      }),
+    ).catch(() => {
+      if (current()?.id === sound.id) show(previous);
+    });
   }
 
   useEffect(() => {

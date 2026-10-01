@@ -6,7 +6,7 @@ import { formatDuration, PlayButton, stopPreview, usePreview } from './SoundCard
 
 const SEARCH_DELAY_MS = 400;
 
-function ResultRow({ result, busy, onSelect }: { result: LibraryResult; busy: boolean; onSelect: () => void }) {
+function ResultRow({ result, onSelect }: { result: LibraryResult; onSelect: () => void }) {
   const title = libraryTitle(result.name);
   const { playing } = usePreview(result.preview);
   return (
@@ -22,7 +22,6 @@ function ResultRow({ result, busy, onSelect }: { result: LibraryResult; busy: bo
       <Button
         size="sm"
         variant={playing ? 'primary' : 'outline'}
-        isPending={busy}
         aria-label={t('teacher.editor.picker.selectLabel', { title })}
         onPress={onSelect}
       >
@@ -40,7 +39,8 @@ export function LibraryTab({
 }: {
   initialQuery: string;
   userId: string;
-  onPick: (sound: EditorSound) => void;
+  /** Azonnal a Freesound előhallgatásával, a saját tárhelyre másolás (copy) a háttérben fut. */
+  onPick: (sound: EditorSound, copy: Promise<EditorSound>) => void;
 }) {
   const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState<LibraryResult[]>([]);
@@ -49,8 +49,6 @@ export function LibraryTab({
   const [next, setNext] = useState(false);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
-  const [busyId, setBusyId] = useState<number | null>(null);
-  const [importError, setImportError] = useState(false);
   const request = useRef(0);
   const sentinel = useRef<HTMLDivElement>(null);
   const [announce, setAnnounce] = useState('');
@@ -95,17 +93,17 @@ export function LibraryTab({
     }
   }
 
-  async function select(result: LibraryResult) {
+  function select(result: LibraryResult) {
     stopPreview();
-    setBusyId(result.id);
-    setImportError(false);
-    try {
-      onPick(await importLibrarySound(userId, result));
-    } catch {
-      setImportError(true);
-    } finally {
-      setBusyId(null);
-    }
+    const preview: EditorSound = {
+      id: `freesound:${result.id}`,
+      title: libraryTitle(result.name),
+      path: result.preview,
+      source: 'library',
+      license: 'CC0',
+      durationMs: result.durationMs,
+    };
+    onPick(preview, importLibrarySound(userId, result));
   }
 
   // A lista aljára érve (görgetéssel vagy Tabbal) magától jön a következő oldal.
@@ -153,15 +151,10 @@ export function LibraryTab({
                       .join(' ')
                   : ''}
       </p>
-      {importError && (
-        <p className="field-error-text" role="alert">
-          {t('teacher.editor.picker.importError')}
-        </p>
-      )}
       {shown.length > 0 && (
         <ul className="library-list" aria-label={t('teacher.editor.picker.resultsLabel')}>
           {shown.map((r) => (
-            <ResultRow key={r.id} result={r} busy={busyId === r.id} onSelect={() => void select(r)} />
+            <ResultRow key={r.id} result={r} onSelect={() => select(r)} />
           ))}
         </ul>
       )}

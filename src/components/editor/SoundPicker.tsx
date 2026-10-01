@@ -28,7 +28,8 @@ export function SoundPicker({
   initialQuery: string;
   userId: string;
   maxMb: number;
-  onPick: (sound: EditorSound) => void;
+  /** A könyvtári hangnál a másolat (copy) a háttérben készül; saját feltöltésnél nincs ilyen. */
+  onPick: (sound: EditorSound, copy?: Promise<EditorSound>) => void;
 }) {
   const [picked, setPicked] = useState<{ file: File; url: string } | null>(null);
   const [name, setName] = useState('');
@@ -124,8 +125,8 @@ export function SoundPicker({
                     <LibraryTab
                       initialQuery={initialQuery}
                       userId={userId}
-                      onPick={(sound) => {
-                        onPick(sound);
+                      onPick={(sound, copy) => {
+                        onPick(sound, copy);
                         close(false);
                       }}
                     />
