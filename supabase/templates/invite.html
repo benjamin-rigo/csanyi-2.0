@@ -1,0 +1,16 @@
+<!-- Tárgy: Meghívó a Hangösvénybe -->
+<!-- Supabase → Authentication → Email Templates → Invite user -->
+<div style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.5; color: #18181b; max-width: 520px;">
+  <h1 style="font-size: 22px; margin: 0 0 16px;">Meghívót kaptál a Hangösvénybe</h1>
+  <p style="margin: 0 0 16px;">
+    {{ .Data.invited_by_name }} meghívott a Hangösvénybe. Itt képekhez hangmezőket és hangokat társíthatsz, hogy a vak,
+    gyengénlátó és látó gyerekek hallgatva fedezhessék fel a képeket.
+  </p>
+  <p style="margin: 0 0 24px;">A fiókod beállításához kattints az alábbi gombra. A link 24 óráig érvényes.</p>
+  <p style="margin: 0 0 24px;">
+    <a href="{{ .ConfirmationURL }}" style="display: inline-block; padding: 12px 24px; border-radius: 999px; background: #005fcd; color: #ffffff; font-weight: bold; text-decoration: none;">Fiók beállítása</a>
+  </p>
+  <p style="margin: 0 0 8px; font-size: 14px; color: #63636b;">Ha a gomb nem működik, másold be ezt a címet a böngésződbe:</p>
+  <p style="margin: 0 0 24px; font-size: 14px; word-break: break-all;"><a href="{{ .ConfirmationURL }}" style="color: #005fcd;">{{ .ConfirmationURL }}</a></p>
+  <p style="margin: 0; font-size: 14px; color: #63636b;">Ha nem számítottál erre a levélre, nyugodtan hagyd figyelmen kívül.</p>
+</div>

@@ -52,7 +52,7 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 src/
   pages/Gallery.tsx      galéria (1)
   pages/Viewer.tsx       képnézet (2–4)
-  pages/teacher/         pedagógus oldal: Login (6), ForgotPassword (6b), NewPassword (6c), AccountSetup (7), MyProjects (8), Editor (11, 11b, 11c, 13); Placeholders (profil)
+  pages/teacher/         pedagógus oldal: Login (6), ForgotPassword (6b), NewPassword (6c), AccountSetup (7), MyProjects (8), Editor (11, 11b, 11c, 13), Profile (14)
   components/            SiteHeader (Logo, ButtonLink, SiteFooter), AuthLayout, AuthFields, TeacherLayout, NewProjectModal (10), Icon
   components/editor/     DrawingCanvas (ecset, radír), SoundsPanel (Hangok fül), ProjectPanel (Projekt fül), SharePanel (Megosztás fül), SoundPicker (12), LibraryTab, SoundCard, VoiceRecorder (leíró hang)
   lib/                   data, supabase, teacher, editor (betöltés, automatikus mentés, hangfeltöltés), contour (maszk ↔ sokszög), geometry, i18n, audio, device
@@ -61,6 +61,8 @@ src/
 public/data/config.json      beállítások
 public/media, sounds         a kezdő projektek képei és hangjai (az adatbázis relatív úttal hivatkozik rájuk)
 supabase/migrations/         adatbázis séma és kezdő adatok
+supabase/functions/          Edge Functions: freesound (hangkönyvtár), teacher-account (meghívás, fiók törlése)
+supabase/templates/          magyar levélsablonok (meghívó, új jelszó), a Supabase felületére kell bemásolni
 docs/dontesnaplo.md      döntésnapló (fő példány)
 docs/design/             a képernyők tervei
 ```
@@ -74,15 +76,16 @@ docs/design/             a képernyők tervei
 - Lágy szél: `fields.edge_softness`; a képnézet `edgeGain` szerint több hangmezőt szólaltat egyszerre (`SceneAudio.setFields`).
 - Freesound: `supabase/functions/freesound` (Edge Function, titok: `FREESOUND_API_KEY`); csak CC0, a keresőszót MyMemory fordítja angolra, a kiválasztott hang a saját tárhelyre másolódik.
 - Kísérlet folyamatban: töltelék az üres részen (`?mod=kitoltes`, `kitoltes2`, `kitoltes3`); iPaden a „kép” szó eltűnt-e még nem derült ki a szerep-változatokkal.
-- Meghívás: Supabase → Authentication → Users → Invite user. A beépített levélküldés csak teszthez jó; élesben ingyenes SMTP kell (nyitott).
+- Meghívás: a Profilból bármelyik pedagógus (teacher-account függvény, napi 10), vagy Supabase → Authentication → Users → Invite user. **Levélküldés (SMTP) még nincs beállítva**: a beépített küldő csak a projekt tagjainak kézbesít; ez élesítés előtt kell (napló, nyitott témák).
 - A `@heroui/styles` most minden komponens stílusát betölti; később csak a használtakat importáljuk. A JS csomag 500 kB fölött van (figyelmeztetés); a pedagógus oldal külön betöltésével csökkenthető.
 
 ## Következő lépések
 
 1. A `freesound` függvény csak bejelentkezett pedagógust enged: kész és telepítve (2026-10-01), élesben ellenőrizve (token nélkül és nyilvános kulccsal 401).
 2. Projekt fül (11c) és Megosztás (13): kész (2026-10-01). A galériába kerülés feltételeit a kliens (`projectMissing`) és az adatbázis (`project_missing()`) is ellenőrzi; a kettőt együtt kell módosítani.
-3. Tesztelni iPaden: lágy szél felolvasó nélkül, leíró hang (gépen felvett m4a lejátszása), töltelék szerep-változatai felolvasóval.
-4. Később: Pontok rajzeszköz (WCAG 2.5.7), csippentéses nagyítás érintőképernyőn, visszavonás a festésen túl (törlés, hangcsere, szöveg), Első lépések (9a, 9b), Profil (14), SMTP a meghívókhoz.
+3. Profil (14) kész (2026-10-02). Következő: Első lépések (9a, 9b), az Új projekt zárolásával.
+4. Tesztelni iPaden: lágy szél felolvasó nélkül, leíró hang (gépen felvett m4a lejátszása), töltelék szerep-változatai felolvasóval.
+5. Később: Pontok rajzeszköz (WCAG 2.5.7), csippentéses nagyítás érintőképernyőn, visszavonás a festésen túl (törlés, hangcsere, szöveg), SMTP a levelekhez.
 - A nyitott témák listája a napló végén.
 
 ## Parancsok

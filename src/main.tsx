@@ -14,7 +14,7 @@ import { Login } from './pages/teacher/Login';
 import { MyProjects } from './pages/teacher/MyProjects';
 import { NewPassword } from './pages/teacher/NewPassword';
 import { Editor } from './pages/teacher/Editor';
-import { ProfilePlaceholder } from './pages/teacher/Placeholders';
+import { Profile } from './pages/teacher/Profile';
 
 function StatusPage({ error }: { error?: boolean }) {
   return error ? (
@@ -94,7 +94,7 @@ function App() {
           path="/profil"
           element={
             <RequireAuth>
-              <ProfilePlaceholder />
+              <Profile />
             </RequireAuth>
           }
         />

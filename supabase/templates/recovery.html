@@ -1,0 +1,12 @@
+<!-- Tárgy: Új jelszó a Hangösvényhez -->
+<!-- Supabase → Authentication → Email Templates → Reset password -->
+<div style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.5; color: #18181b; max-width: 520px;">
+  <h1 style="font-size: 22px; margin: 0 0 16px;">Új jelszó beállítása</h1>
+  <p style="margin: 0 0 24px;">Új jelszót kértél a Hangösvény fiókodhoz ({{ .Email }}). Az alábbi gombbal állíthatod be. A link 1 óráig érvényes.</p>
+  <p style="margin: 0 0 24px;">
+    <a href="{{ .ConfirmationURL }}" style="display: inline-block; padding: 12px 24px; border-radius: 999px; background: #005fcd; color: #ffffff; font-weight: bold; text-decoration: none;">Új jelszó beállítása</a>
+  </p>
+  <p style="margin: 0 0 8px; font-size: 14px; color: #63636b;">Ha a gomb nem működik, másold be ezt a címet a böngésződbe:</p>
+  <p style="margin: 0 0 24px; font-size: 14px; word-break: break-all;"><a href="{{ .ConfirmationURL }}" style="color: #005fcd;">{{ .ConfirmationURL }}</a></p>
+  <p style="margin: 0; font-size: 14px; color: #63636b;">Ha nem te kérted, hagyd figyelmen kívül ezt a levelet, a jelszavad nem változik.</p>
+</div>

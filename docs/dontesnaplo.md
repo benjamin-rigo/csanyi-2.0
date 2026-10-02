@@ -33,7 +33,7 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 - Betű: nincs eldöntve, parkolva; addig Inter. Szempont: teljes magyar ékezetkészlet (ő, ű), gyengénlátó-barát szövegtörzs, mégis legyen stílusa. Nem tetszett: Fraunces, Young Serif, Literata + Atkinson Hyperlegible Next / Lexend. Lustria + Lato tetszik, de mindkettőből hiányzik az ő/ű (Lustria kiegészíthető, Lato 2.0 saját tárhelyről).
 
 ## Pedagógus oldal
-- Regisztráció egyelőre meghívásos.
+- Regisztráció egyelőre meghívásos. Bármelyik pedagógus meghívhat kollégát a Profilból (2026-10-02): naponta legfeljebb 10 meghívó, naplózva, ki kit hívott meg; a meghívó levélben szerepel a meghívó neve. A fiók törlése a projekteket, képeket és hangokat is törli.
 - Belépés: e-mail és jelszó (megjelenítés gomb, „Elfelejtetted a jelszavad?”, „Maradjak bejelentkezve”). Meghívó után fiók beállítása: e-mail (a meghívóból), név, jelszó, ÁSZF. Elfelejtett jelszó: link e-mailben, a válasz nem árulja el, létezik-e a fiók; új jelszó egy mezővel.
 - Social login: egyelőre nincs. Előbb megkérdezzük az intézményt, milyen fiókot használnak (Vakok Iskolája: Gmail/Outlook, Teams/Classroom is). Ha Google: ingyenes (Supabase free), kb. fél nap beállítás; a meghívott e-mailnek egyeznie kell.
 - Onboarding: kötelező. 1) Kész minta megnyitása a szerkesztőben (csak megtekintés): háttérhang, hangmezők, nevek, leírások, hangok. 2) „Most te”: ugyanazon a képen újraalkot 1 hangmezőt és a háttérhangot, lépésenként; a minta bármikor megnyitható. „Később folytatom” a Projektjeim oldalra visz; az Új projekt addig nem aktív.
@@ -108,6 +108,7 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 - Építés: a gyerek oldal (galéria + kép nézet) frontendje kész, backend nélkül, adatfájlból (Code/csanyi-2.0). React + Vite + HeroUI v3 + Tailwind 4. Build rendben, axe 0 hiba (galéria, kép nézet), keskeny képernyőn egy oszlop. Következő: GitHub Pages deploy, majd táblagépes teszt.
 
 ## Nyitott témák (sorrendben)
+- Levélküldés (SMTP): a Supabase beépített küldője csak a projekt tagjainak és óránként 2–3 levelet küld, ezért a kollégák meghívója és az elfelejtett jelszó levele élesben nem érkezik meg. Kell egy ingyenes SMTP (pl. Gmail alkalmazásjelszóval vagy Brevo; saját domainnel megbízhatóbb). Addig az e-mail cím módosítása is letiltva.
 0. Töltelék kísérlet (`?mod=kitoltes`): néma elem az üres részen, hogy a VoiceOver ne ugorjon a hangmezőkre. Kilépés kikapcsolt felolvasónál (a kétujjas Z csak VoiceOverrel működik). Kötelező-e a leíró hang a galériához.
 1. A felolvasós simogatás tesztje táblagépen (iPad, Android): kétujjas Z kilépés, az üres rész valóban néma marad-e, a teljes leírás és a hangmező hangja együtt jól hallható-e, az emlékeztető nem zavaró-e.
 2. WCAG a pedagógus oldalon: „Pontok” rajzolóeszköz húzás nélkül (2.5.7); a kiválasztott állapot és a mezőhatárok kontrasztja (1.4.11).

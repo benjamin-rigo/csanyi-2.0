@@ -345,8 +345,45 @@
     "profile": {
       "documentTitle": "Profil · Hangösvény",
       "title": "Profil",
-      "comingSoon": "A profil oldal később készül el.",
-      "signOut": "Kijelentkezés"
+      "subtitle": "A fiókod és a beállításaid.",
+      "dataTitle": "Adataid",
+      "dataHelp": "A neved megjelenik a megosztott képeiden.",
+      "name": "Név",
+      "email": "E-mail cím",
+      "emailLocked": "Az e-mail cím módosítása a levélküldés beállítása után lesz elérhető.",
+      "save": "Mentés",
+      "saved": "Elmentve.",
+      "saveError": "Nem sikerült menteni. Próbáld újra.",
+      "nameRequired": "Add meg a neved.",
+      "inviteTitle": "Kolléga meghívása",
+      "inviteHelp": "Hívj meg egy pedagógust: e-mailben kap egy linket, amellyel beállíthatja a fiókját. Naponta legfeljebb 10 meghívót küldhetsz.",
+      "inviteEmail": "A kolléga e-mail címe",
+      "inviteSend": "Meghívó küldése",
+      "inviteSent": "Meghívót küldtünk ide: {email}",
+      "inviteErrors": {
+        "invalid_email": "Ez nem tűnik e-mail címnek.",
+        "email_exists": "Ezzel a címmel már van fiók.",
+        "limit": "Ma már elküldtél 10 meghívót. Holnap újra próbálhatod.",
+        "unauthorized": "Lépj be újra, és próbáld meg még egyszer.",
+        "other": "Nem sikerült elküldeni a meghívót. Próbáld újra később."
+      },
+      "smtpNote": "Átmenetileg a meghívó levél csak a projekt rendszergazdájának címére érkezik meg; a kollégák a levélküldés beállítása után kapják meg.",
+      "invitedTitle": "Meghívottjaid",
+      "onboardingTitle": "Első lépések",
+      "onboardingHelp": "A gyakorló projektet bármikor újra végigjárhatod.",
+      "onboardingButton": "Első lépések újra",
+      "onboardingSoon": "Az Első lépések hamarosan elkészül.",
+      "signOutTitle": "Kijelentkezés",
+      "signOutHelp": "Ezen az eszközön kijelentkezel.",
+      "signOut": "Kijelentkezés",
+      "deleteTitle": "Fiók törlése",
+      "deleteHelp": "A projektjeid és a megosztott linkjeid véglegesen törlődnek.",
+      "deleteButton": "Fiók törlése",
+      "deleteConfirmTitle": "Törlöd a fiókodat?",
+      "deleteConfirmText": "A fiókod, minden projekted, hangmeződ, feltöltött képed és hangod véglegesen törlődik. Ezt nem lehet visszavonni.",
+      "deleteConfirm": "Végleges törlés",
+      "deleteError": "Nem sikerült törölni a fiókot. Próbáld újra később.",
+      "cancel": "Mégse"
     }
   }
 }

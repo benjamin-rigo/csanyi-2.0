@@ -106,3 +106,58 @@ export async function createProject(userId: string, image: File, title: string):
   if (error) throw error;
   return data.id;
 }
+
+export interface Invitation {
+  id: string;
+  email: string;
+  createdAt: string;
+}
+
+/** A saját meghívások, legújabb elöl. */
+export function useInvitations(): [Invitation[], () => void] {
+  const session = useSession();
+  const userId = session?.user.id;
+  const [list, setList] = useState<Invitation[]>([]);
+  const [version, setVersion] = useState(0);
+  const reload = useCallback(() => setVersion((v) => v + 1), []);
+  useEffect(() => {
+    if (!userId) return;
+    let alive = true;
+    void supabase
+      .from('invitations')
+      .select('id, email, created_at')
+      .order('created_at', { ascending: false })
+      .then(({ data }) => alive && data && setList(data.map((r) => ({ id: r.id, email: r.email, createdAt: r.created_at }))));
+    return () => {
+      alive = false;
+    };
+  }, [userId, version]);
+  return [list, reload];
+}
+
+export async function updateProfileName(userId: string, name: string) {
+  const { error } = await supabase.from('profiles').update({ name: name.trim() }).eq('id', userId);
+  if (error) throw error;
+  await supabase.auth.updateUser({ data: { name: name.trim() } });
+}
+
+export type AccountError = 'invalid_email' | 'email_exists' | 'limit' | 'unauthorized' | 'other';
+
+/** Fiókműveletek a teacher-account függvényen át (a rendszergazdai kulcs ott marad). */
+async function accountAction(body: Record<string, unknown>): Promise<AccountError | null> {
+  const { error } = await supabase.functions.invoke('teacher-account', { body });
+  if (!error) return null;
+  // A függvény hibakódját a válasz törzse hordozza.
+  const context = (error as { context?: Response }).context;
+  const code = await context?.json().then((b: { error?: string }) => b.error).catch(() => undefined);
+  return (['invalid_email', 'email_exists', 'limit', 'unauthorized'] as const).find((c) => c === code) ?? 'other';
+}
+
+/** Kolléga meghívása: a levélben kapott link a Fiók beállítására visz. */
+export function inviteTeacher(email: string) {
+  return accountAction({ action: 'invite', email, redirectTo: new URL(import.meta.env.BASE_URL, window.location.origin).href });
+}
+
+export function deleteAccount() {
+  return accountAction({ action: 'delete' });
+}

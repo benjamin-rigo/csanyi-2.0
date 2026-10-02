@@ -23,7 +23,7 @@ Ha a terv és a `docs/dontesnaplo.md` eltér, a döntésnapló az érvényes.
 | 11b · Szerkesztő, háttérhang kijelölve | `SzerkesztoHatter.png` · `html/SzerkesztoHatter.html` | 1440×900 | kész (Editor.tsx) |
 | 12 · Hang kiválasztása | `Hangvalaszto.png` · `html/Hangvalaszto.html` | 1440×900 | kész (Freesound CC0 és saját feltöltés) |
 | 13 · Megosztás | `Megosztas.png` · `html/Megosztas.html` | 1440×900 | kész (Megosztás fül) |
-| 14 · Profil | `Profil.png` · `html/Profil.html` | 1440×900 | még nincs |
+| 14 · Profil | `Profil.png` · `html/Profil.html` | 1440×900 | kész (kolléga meghívásával) |
 | 6b · Elfelejtett jelszó (link elküldve) | `ElfelejtettJelszo.png` · `html/ElfelejtettJelszo.html` | 1440×900 | kész (src/pages/teacher) |
 | 6c · Új jelszó (a levélben kapott linkről) | `UjJelszo.png` · `html/UjJelszo.html` | 1440×900 | kész (src/pages/teacher) |
 | 11c · Szerkesztő, Projekt fül | `SzerkesztoProjekt.png` · `html/SzerkesztoProjekt.html` | 1440×1220 | kész (Projekt fül, Bevezető nélkül, Alkotó mezővel) |
