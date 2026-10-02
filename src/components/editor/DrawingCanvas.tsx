@@ -43,6 +43,7 @@ export function DrawingCanvas({
   view,
   onView,
   zoomLimits,
+  readOnly = false,
 }: {
   imagePath: string;
   imageWidth: number;
@@ -56,6 +57,8 @@ export function DrawingCanvas({
   view: View;
   onView: (view: View) => void;
   zoomLimits: { min: number; max: number };
+  /** Minta: csak kijelölni lehet, festeni nem. */
+  readOnly?: boolean;
 }) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
@@ -180,6 +183,11 @@ export function DrawingCanvas({
       panning.current = { sx: e.clientX, sy: e.clientY, x: view.x, y: view.y };
       return;
     }
+    if (readOnly) {
+      const hit = e.button === 0 ? hitField(e) : undefined;
+      if (hit) onSelectField(hit.id);
+      return;
+    }
     if (e.button !== 0 || (tool === 'eraser' && !canErase)) return;
     e.currentTarget.setPointerCapture(e.pointerId);
     start.current = { sx: e.clientX, sy: e.clientY, moved: false };
@@ -233,7 +241,7 @@ export function DrawingCanvas({
     <div ref={viewportRef} className={`draw-viewport${spaceDown ? ' is-panning' : ''}`}>
       <div
         ref={frameRef}
-        className={`draw-frame${tool === 'eraser' && !canErase ? ' is-disabled' : ''}`}
+        className={`draw-frame${readOnly ? ' is-readonly' : tool === 'eraser' && !canErase ? ' is-disabled' : ''}`}
         style={
           {
             '--ratio': `${imageWidth} / ${imageHeight}`,
@@ -263,7 +271,7 @@ export function DrawingCanvas({
           )}
         </svg>
         <canvas ref={previewRef} width={w} height={h} className={painting ? '' : 'is-hidden'} aria-hidden="true" />
-        {cursor && !spaceDown && (
+        {cursor && !spaceDown && !readOnly && (
           <span
             className="brush-cursor"
             aria-hidden="true"

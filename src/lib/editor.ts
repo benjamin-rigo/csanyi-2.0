@@ -33,6 +33,10 @@ export interface EditorProject {
   author: string;
   visibility: Visibility;
   categories: string[];
+  /** A minta (más projektje): csak megtekinthető. */
+  readOnly: boolean;
+  /** Az Első lépések gyakorló projektje. */
+  isPractice: boolean;
   imagePath: string;
   imageWidth: number;
   imageHeight: number;
@@ -66,7 +70,7 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
   const { data, error } = await supabase
     .from('projects')
     .select(
-      `id, title, short_description, author, visibility, image_path, image_width, image_height, background_volume, owner_id,
+      `id, title, short_description, author, visibility, image_path, image_width, image_height, background_volume, owner_id, is_practice,
        project_categories(category_id),
        background:sounds!projects_background_sound_id_fkey(${SOUND}),
        fields(id, sort, name, description, shape, volume, edge_softness,
@@ -74,7 +78,6 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
          description_sound:sounds!fields_description_sound_id_fkey(${SOUND}))`,
     )
     .eq('id', id)
-    .eq('owner_id', userId)
     .maybeSingle();
   if (error) throw error;
   if (!data) return null;
@@ -84,6 +87,8 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
     short_description: string;
     author: string;
     visibility: Visibility;
+    owner_id: string | null;
+    is_practice: boolean;
     project_categories: { category_id: string }[];
     image_path: string;
     image_width: number;
@@ -109,6 +114,8 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
     author: row.author,
     visibility: row.visibility,
     categories: row.project_categories.map((c) => c.category_id),
+    readOnly: row.owner_id !== userId,
+    isPractice: row.is_practice,
     imagePath: row.image_path,
     imageWidth: row.image_width,
     imageHeight: row.image_height,

@@ -174,12 +174,9 @@ export function Profile() {
 
         <Section id="profile-onboarding" title={t('teacher.profile.onboardingTitle')} help={t('teacher.profile.onboardingHelp')}>
           <div className="profile-actions">
-            <Button variant="secondary" isDisabled aria-describedby="onboarding-soon">
+            <Button variant="secondary" onPress={() => navigate('/minta')}>
               {t('teacher.profile.onboardingButton')}
             </Button>
-            <span id="onboarding-soon" className="panel-help">
-              {t('teacher.profile.onboardingSoon')}
-            </span>
           </div>
         </Section>
 

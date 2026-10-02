@@ -1,8 +1,11 @@
-import { useState } from 'react';
-import { Button, Card, Chip, EmptyState } from '@heroui/react';
+import { useEffect, useState } from 'react';
+import { Button, Card, Chip, EmptyState, ProgressBar } from '@heroui/react';
 import { Link as AriaLink } from 'react-aria-components';
 import { Icon } from '../../components/Icon';
 import { NewProjectModal } from '../../components/NewProjectModal';
+import { ButtonLink } from '../../components/SiteHeader';
+import { loadProject } from '../../lib/editor';
+import { practiceSteps, useOnboarding } from '../../lib/onboarding';
 import { TeacherLayout } from '../../components/TeacherLayout';
 import { assetUrl, type Config } from '../../lib/data';
 import { t } from '../../lib/i18n';
@@ -25,6 +28,22 @@ export function MyProjects({ config }: { config: Config }) {
   const session = useSession();
   const [projects] = useMyProjects();
   const [creating, setCreating] = useState(false);
+  const [onboarding] = useOnboarding();
+  const [practiceDone, setPracticeDone] = useState(0);
+  // Az Új projekt az Első lépések után aktív (döntésnapló); addig letiltva, mellette az ok.
+  const locked = !onboarding?.done;
+
+  // A kártya haladása a gyakorló projekt állapotából.
+  const practiceId = onboarding?.practiceProjectId;
+  const userId = session?.user.id;
+  useEffect(() => {
+    if (!practiceId || !userId) return;
+    let alive = true;
+    void loadProject(practiceId, userId).then((p) => alive && p && setPracticeDone(practiceSteps(p, false).filter(Boolean).length));
+    return () => {
+      alive = false;
+    };
+  }, [practiceId, userId]);
 
   return (
     <TeacherLayout documentTitle={t('teacher.projects.documentTitle')}>
@@ -33,21 +52,66 @@ export function MyProjects({ config }: { config: Config }) {
           <h1>{t('teacher.projects.title')}</h1>
           <p>{t('teacher.projects.subtitle')}</p>
         </div>
-        <Button variant="secondary" size="lg" onPress={() => setCreating(true)}>
-          <Icon name="plus" />
-          {t('teacher.projects.newProject')}
-        </Button>
+        <div className="new-project-action">
+          <Button
+            variant="secondary"
+            size="lg"
+            onPress={() => setCreating(true)}
+            isDisabled={locked}
+            aria-describedby={locked ? 'new-locked' : undefined}
+          >
+            <Icon name="plus" />
+            {t('teacher.projects.newProject')}
+          </Button>
+          {locked && (
+            <span id="new-locked" className="panel-help">
+              {t('teacher.onboarding.newProjectLocked')}
+            </span>
+          )}
+        </div>
       </div>
+
+      {onboarding && !onboarding.done && (
+        <Card variant="secondary" className="onboarding-card">
+          <div className="onboarding-card-text">
+            <div className="onboarding-head-row">
+              <Chip size="sm" variant="primary">
+                {t('teacher.onboarding.cardBadge')}
+              </Chip>
+              <span className="panel-help">
+                {t('teacher.onboarding.cardProgress', { done: practiceDone, total: config.onboarding.steps })}
+              </span>
+            </div>
+            <Card.Title render={(props) => <h2 {...props} />}>{t('teacher.onboarding.cardTitle')}</Card.Title>
+            <Card.Description>{t('teacher.onboarding.cardText')}</Card.Description>
+            <ProgressBar
+              aria-label={t('teacher.onboarding.progressLabel')}
+              value={(practiceDone / config.onboarding.steps) * 100}
+              size="sm"
+            >
+              <ProgressBar.Track>
+                <ProgressBar.Fill />
+              </ProgressBar.Track>
+            </ProgressBar>
+          </div>
+          <ButtonLink href={practiceId ? `/szerkeszto/${practiceId}` : '/minta'} variant="primary" className="button--lg">
+            {practiceId ? t('teacher.onboarding.cardContinue') : t('teacher.onboarding.cardStart')}
+            <Icon name="forward" size={16} />
+          </ButtonLink>
+        </Card>
+      )}
 
       {projects.status === 'error' && <p role="alert">{t('teacher.projects.loadError')}</p>}
       {projects.status === 'ready' &&
         (projects.data.length === 0 ? (
           <EmptyState className="projects-empty">
-            <p>{t('teacher.projects.empty')}</p>
-            <Button onPress={() => setCreating(true)}>
-              <Icon name="plus" />
-              {t('teacher.projects.newProject')}
-            </Button>
+            <p>{locked ? t('teacher.onboarding.newProjectLocked') : t('teacher.projects.empty')}</p>
+            {!locked && (
+              <Button onPress={() => setCreating(true)}>
+                <Icon name="plus" />
+                {t('teacher.projects.newProject')}
+              </Button>
+            )}
           </EmptyState>
         ) : (
           <ul className="project-grid" aria-label={t('teacher.projects.listLabel')}>
@@ -83,7 +147,7 @@ function ProjectTile({ project }: { project: ProjectSummary }) {
         </Card.Header>
         <Card.Footer className="chips">
           <Chip size="sm">{t(`teacher.projects.visibility.${project.visibility}`)}</Chip>
-          {project.isSample && (
+          {project.isPractice && (
             <Chip size="sm" color="warning" variant="soft">
               {t('teacher.projects.sample')}
             </Chip>

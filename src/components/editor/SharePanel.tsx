@@ -21,11 +21,14 @@ export function SharePanel({
   onVisibility,
   onGoToMissing,
   error,
+  readOnly = false,
 }: {
   project: EditorProject;
   onVisibility: (v: Visibility) => void;
   onGoToMissing: (m: Missing) => void;
   error: boolean;
+  /** Minta: a megosztás nem módosítható. */
+  readOnly?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
   const missing = projectMissing(project);
@@ -39,7 +42,7 @@ export function SharePanel({
   }
 
   return (
-    <div className="panel-sections">
+    <fieldset disabled={readOnly} className="plain-fieldset panel-sections">
       <RadioGroup value={project.visibility} onChange={(v) => onVisibility(v as Visibility)} className="share-options">
         <Label>{t('teacher.editor.share.title')}</Label>
         {OPTIONS.map(({ value, icon }) => (
@@ -109,6 +112,6 @@ export function SharePanel({
           {copied ? t('teacher.editor.share.copied') : ''}
         </p>
       </div>
-    </div>
+    </fieldset>
   );
 }

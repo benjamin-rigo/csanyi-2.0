@@ -8,7 +8,8 @@ export interface ProjectSummary {
   title: string;
   imagePath: string | null;
   visibility: Visibility;
-  isSample: boolean;
+  /** Az Első lépések gyakorló projektje. */
+  isPractice: boolean;
   fieldCount: number;
   updatedAt: string;
 }
@@ -55,7 +56,7 @@ export function useMyProjects(): [Load<ProjectSummary[]>, () => void] {
     let alive = true;
     void supabase
       .from('projects')
-      .select('id, title, image_path, visibility, is_sample, updated_at, fields(count)')
+      .select('id, title, image_path, visibility, is_practice, updated_at, fields(count)')
       .eq('owner_id', userId)
       .order('updated_at', { ascending: false })
       .then(({ data, error }) => {
@@ -68,7 +69,7 @@ export function useMyProjects(): [Load<ProjectSummary[]>, () => void] {
             title: p.title,
             imagePath: p.image_path,
             visibility: p.visibility,
-            isSample: p.is_sample,
+            isPractice: p.is_practice,
             fieldCount: (p.fields as unknown as { count: number }[])[0]?.count ?? 0,
             updatedAt: p.updated_at,
           })),

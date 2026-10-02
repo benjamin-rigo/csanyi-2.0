@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { Breadcrumbs, Button, Link, Modal, Separator, Slider, Tabs, ToggleButton, ToggleButtonGroup, Toolbar } from '@heroui/react';
+import { Breadcrumbs, Button, Chip, Link, Modal, Separator, Slider, Tabs, ToggleButton, ToggleButtonGroup, Toolbar } from '@heroui/react';
 import { DrawingCanvas, FIT, zoomAt, type Tool, type View } from '../../components/editor/DrawingCanvas';
 import { SoundPicker } from '../../components/editor/SoundPicker';
 import { SoundsPanel, type Selection } from '../../components/editor/SoundsPanel';
 import { stopPreview } from '../../components/editor/SoundCard';
 import { Icon } from '../../components/Icon';
 import type { Config, Point } from '../../lib/data';
+import { OnboardingPanel } from '../../components/editor/OnboardingPanel';
 import { ProjectPanel, type ProjectTextPatch } from '../../components/editor/ProjectPanel';
 import { SharePanel } from '../../components/editor/SharePanel';
 import {
@@ -27,14 +28,20 @@ import {
   type Missing,
   type Visibility,
 } from '../../lib/editor';
+import { completeOnboarding, practiceSteps, startPractice, useOnboarding } from '../../lib/onboarding';
 import { uploadFile } from '../../lib/teacher';
 import { t } from '../../lib/i18n';
 import { useSession } from '../../lib/supabase';
 
 type Stroke = { fieldId: string; before: Point[][]; after: Point[][] };
 
-export function Editor({ config }: { config: Config }) {
-  const { id } = useParams();
+/** Szerkesztő (11). projectId nélkül a címből jön; a minta (/minta) csak megtekinthető, mellette az Első lépések. */
+export function Editor({ config, projectId }: { config: Config; projectId?: string }) {
+  const params = useParams();
+  const id = projectId ?? params.id;
+  const [onboarding, reloadOnboarding] = useOnboarding();
+  const [starting, setStarting] = useState(false);
+  const [startError, setStartError] = useState(false);
   const navigate = useNavigate();
   const session = useSession();
   const userId = session?.user.id;
@@ -329,31 +336,82 @@ export function Editor({ config }: { config: Config }) {
           name: project.fields.find((f) => f.id === picker)?.name.trim() || t('teacher.editor.fields.untitled'),
         });
 
+  const readOnly = project.readOnly;
+  const sampleMode = readOnly && project.id === config.onboarding.sampleProjectId;
+  const steps = project.isPractice ? practiceSteps(project, Boolean(onboarding?.done)) : [];
+  const showOnboarding = sampleMode || project.isPractice;
+
+  // Minta → „Most te jössz”: a pedagógus saját gyakorló projektje a minta képével.
+  async function startOwnPractice() {
+    if (!userId) return;
+    setStarting(true);
+    setStartError(false);
+    try {
+      const practiceId = await startPractice(userId, config.onboarding.sampleProjectId);
+      navigate(`/szerkeszto/${practiceId}`);
+    } catch {
+      setStartError(true);
+      setStarting(false);
+    }
+  }
+
+  // Előnézet; a gyakorló projektben az utolsó lépés: ha a többi kész, az Első lépések teljesül.
+  async function openPreview() {
+    if (project && userId && project.isPractice && !onboarding?.done && steps.slice(0, -1).every(Boolean)) {
+      await completeOnboarding(userId);
+      reloadOnboarding();
+    }
+    navigate(`/kep/${project!.id}`);
+  }
+
+  const title = sampleMode
+    ? t('teacher.onboarding.sampleTitle', { title: project.title })
+    : project.isPractice
+      ? t('teacher.onboarding.practiceTitle', { title: project.title })
+      : project.title;
+
   return (
     <div className="editor-page">
       <header className="editor-header">
-        <h1 className="sr-only">{project.title}</h1>
+        <h1 className="sr-only">{title}</h1>
         <Breadcrumbs aria-label={t('teacher.editor.breadcrumbLabel')} className="editor-breadcrumb">
           <Breadcrumbs.Item href="/projektjeim">{t('teacher.editor.backToProjects')}</Breadcrumbs.Item>
-          <Breadcrumbs.Item>{project.title}</Breadcrumbs.Item>
+          <Breadcrumbs.Item>{title}</Breadcrumbs.Item>
         </Breadcrumbs>
-        <span role="status" className={`save-status save-status--${status}`}>
-          <Icon name="cloud" size={16} />
-          {t(`teacher.editor.status.${status}`)}
-        </span>
-        <div className="editor-actions">
-          <Button variant="secondary" onPress={() => navigate(`/kep/${project.id}`)}>
-            <Icon name="eye" size={16} />
-            {t('teacher.editor.preview')}
-          </Button>
-          <Button onPress={() => setTab('share')}>
-            <Icon name="link" size={16} />
-            {t('teacher.editor.shareButton')}
-          </Button>
-        </div>
+        {readOnly ? (
+          // Minta: a Megosztás helyén „Csak megtekintés” címke (döntésnapló).
+          <Chip>{t('teacher.onboarding.readOnly')}</Chip>
+        ) : (
+          <>
+            <span role="status" className={`save-status save-status--${status}`}>
+              <Icon name="cloud" size={16} />
+              {t(`teacher.editor.status.${status}`)}
+            </span>
+            <div className="editor-actions">
+              <Button variant="secondary" onPress={() => void openPreview()}>
+                <Icon name="eye" size={16} />
+                {t('teacher.editor.preview')}
+              </Button>
+              <Button onPress={() => setTab('share')}>
+                <Icon name="link" size={16} />
+                {t('teacher.editor.shareButton')}
+              </Button>
+            </div>
+          </>
+        )}
       </header>
 
       <div className="editor-body">
+        {showOnboarding && (
+          <OnboardingPanel
+            mode={sampleMode ? 'sample' : 'practice'}
+            steps={sampleMode ? Array(config.onboarding.steps).fill(false) : steps}
+            finished={project.isPractice && Boolean(onboarding?.done)}
+            onStart={() => void startOwnPractice()}
+            starting={starting}
+            startError={startError}
+          />
+        )}
         <main className="editor-stage">
           <Toolbar aria-label={t('teacher.editor.toolbarLabel')} className="draw-toolbar">
             <ToggleButtonGroup
@@ -362,6 +420,7 @@ export function Editor({ config }: { config: Config }) {
               disallowEmptySelection
               selectedKeys={new Set([tool])}
               onSelectionChange={(keys) => setTool([...keys][0] as Tool)}
+              isDisabled={readOnly}
             >
               <ToggleButton id="brush">
                 <Icon name="brush" size={16} />
@@ -380,6 +439,7 @@ export function Editor({ config }: { config: Config }) {
               onChange={(v) => setSize(v as number)}
               aria-label={t('teacher.editor.sizeLabel')}
               className="size-slider"
+              isDisabled={readOnly}
             >
               <Slider.Track>
                 <Slider.Fill />
@@ -422,7 +482,7 @@ export function Editor({ config }: { config: Config }) {
               <Icon name="redo" />
             </Button>
           </Toolbar>
-          <p className="canvas-hint">
+          <p className="canvas-hint" hidden={readOnly}>
             {selectedField ? t('teacher.editor.canvasHintSelected') : t('teacher.editor.canvasHintNew')}
             <span id="zoom-hint" className="canvas-hint-zoom">
               {t('teacher.editor.zoom.hint')}
@@ -442,6 +502,7 @@ export function Editor({ config }: { config: Config }) {
               view={view}
               onView={setView}
               zoomLimits={{ min: config.editor.zoomMin, max: config.editor.zoomMax }}
+              readOnly={readOnly}
             />
           </div>
         </main>
@@ -469,6 +530,7 @@ export function Editor({ config }: { config: Config }) {
             </div>
             <Tabs.Panel id="project">
               <ProjectPanel
+                readOnly={readOnly}
                 project={project}
                 categories={categories}
                 onChange={onProjectText}
@@ -479,6 +541,7 @@ export function Editor({ config }: { config: Config }) {
             </Tabs.Panel>
             <Tabs.Panel id="sounds">
               <SoundsPanel
+                readOnly={readOnly}
                 project={project}
                 selection={selection}
                 onSelect={setSelection}
@@ -508,7 +571,13 @@ export function Editor({ config }: { config: Config }) {
               />
             </Tabs.Panel>
             <Tabs.Panel id="share">
-              <SharePanel project={project} onVisibility={onVisibility} onGoToMissing={goToMissing} error={shareError} />
+              <SharePanel
+                readOnly={readOnly}
+                project={project}
+                onVisibility={onVisibility}
+                onGoToMissing={goToMissing}
+                error={shareError}
+              />
             </Tabs.Panel>
           </Tabs>
         </aside>

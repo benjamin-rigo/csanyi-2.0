@@ -45,7 +45,8 @@ export function AccountSetup({ config }: { config: Config }) {
       .eq('id', session.user.id);
     setPending(false);
     if (profileError) setErrors({ form: t('auth.errors.generic') });
-    else navigate('/projektjeim', { replace: true });
+    // Az új pedagógus az Első lépésekkel kezd: a mintával (döntésnapló).
+    else navigate('/minta', { replace: true });
   }
 
   if (session === undefined) return null;

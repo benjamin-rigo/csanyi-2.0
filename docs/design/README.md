@@ -16,8 +16,8 @@ Ha a terv és a `docs/dontesnaplo.md` eltér, a döntésnapló az érvényes.
 | 6 · Belépés | `Belepes.png` · `html/Belepes.html` | 1440×900 | kész (src/pages/teacher) |
 | 7 · Fiók beállítása (meghívó után) | `Fiok.png` · `html/Fiok.html` | 1440×900 | kész (src/pages/teacher) |
 | 8 · Projektjeim | `Projektjeim.png` · `html/Projektjeim.html` | 1440×900 | kész (src/pages/teacher) |
-| 9a · Első lépések: minta a szerkesztőben | `OnboardingMinta.png` · `html/OnboardingMinta.html` | 1440×900 | még nincs |
-| 9b · Első lépések: most te | `Onboarding.png` · `html/Onboarding.html` | 1440×900 | még nincs |
+| 9a · Első lépések: minta a szerkesztőben | `OnboardingMinta.png` · `html/OnboardingMinta.html` | 1440×900 | kész (/minta) |
+| 9b · Első lépések: most te | `Onboarding.png` · `html/Onboarding.html` | 1440×900 | kész (gyakorló projekt) |
 | 10 · Új projekt | `UjProjekt.png` · `html/UjProjekt.html` | 1440×900 | kész (src/pages/teacher) |
 | 11 · Szerkesztő | `Szerkeszto.png` · `html/Szerkeszto.html` | 1440×900 | kész, Hangok fül (src/pages/teacher/Editor.tsx) |
 | 11b · Szerkesztő, háttérhang kijelölve | `SzerkesztoHatter.png` · `html/SzerkesztoHatter.html` | 1440×900 | kész (Editor.tsx) |

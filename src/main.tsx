@@ -83,6 +83,14 @@ function App() {
           }
         />
         <Route
+          path="/minta"
+          element={
+            <RequireAuth>
+              <Editor config={config} projectId={config.onboarding.sampleProjectId} />
+            </RequireAuth>
+          }
+        />
+        <Route
           path="/szerkeszto/:id"
           element={
             <RequireAuth>

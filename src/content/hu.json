@@ -372,7 +372,6 @@
       "onboardingTitle": "Első lépések",
       "onboardingHelp": "A gyakorló projektet bármikor újra végigjárhatod.",
       "onboardingButton": "Első lépések újra",
-      "onboardingSoon": "Az Első lépések hamarosan elkészül.",
       "signOutTitle": "Kijelentkezés",
       "signOutHelp": "Ezen az eszközön kijelentkezel.",
       "signOut": "Kijelentkezés",
@@ -384,6 +383,67 @@
       "deleteConfirm": "Végleges törlés",
       "deleteError": "Nem sikerült törölni a fiókot. Próbáld újra később.",
       "cancel": "Mégse"
+    },
+    "onboarding": {
+      "label": "Első lépések",
+      "title": "Tanuld meg egy mintán",
+      "progress": "{done} / {total}",
+      "progressLabel": "Első lépések haladása",
+      "readOnly": "Csak megtekintés",
+      "sampleTitle": "Minta: {title}",
+      "practiceTitle": "Gyakorló projekt: {title}",
+      "steps": [
+        {
+          "title": "Nézd meg a mintát",
+          "text": "Kattints a hangmezőkre a jobb oldalon vagy a képen, és hallgasd meg a hangjukat. Ezt figyeld:",
+          "points": [
+            "Egy háttérhang adja a hangulatot.",
+            "4 hangmező, mindegyiknek rövid neve van.",
+            "A leírás egy-két mondat, a legfontosabb szóval kezdve, és benne van, hol van a képen.",
+            "Minden hangmezőnek saját hangja van."
+          ]
+        },
+        {
+          "title": "Rajzolj egy hangmezőt",
+          "text": "Válaszd az Ecsetet, és fesd ki a házat a képen. Ha mellément, a Radírral javíthatsz."
+        },
+        {
+          "title": "Nevezd el és írj leírást",
+          "text": "A jobb oldalon add meg a nevét (Ház) és egy rövid leírást, például: „Kék ház piros tetővel, lent, a kép közepén.”",
+          "hint": "A felolvasó ezt mondja el, amikor a gyerek ujja a házhoz ér."
+        },
+        {
+          "title": "Válassz hangot",
+          "text": "Kattints a Hang hozzáadása gombra, és keress rá: ajtó. Hallgass bele a találatokba, és válassz egyet.",
+          "hint": "A gyerek ezt hallja, amikor az ujja a házhoz ér."
+        },
+        {
+          "title": "Adj háttérhangot",
+          "text": "Válts vissza a listára, és a Háttérhangnál kattints a Háttérhang hozzáadása gombra. Keress rá: tücsök.",
+          "hint": "Végig szól, így a gyerek mindig hall valamit."
+        },
+        {
+          "title": "Próbáld ki előnézetben",
+          "text": "Kattints a fejlécben az Előnézet gombra, és fedezd fel a képet úgy, ahogy a gyerek fogja."
+        }
+      ],
+      "start": "Most te jössz",
+      "starting": "Gyakorló projekt létrehozása…",
+      "startError": "Nem sikerült létrehozni a gyakorló projektet. Próbáld újra.",
+      "openSample": "Minta megnyitása",
+      "later": "Később folytatom",
+      "doneTitle": "Kész vagy!",
+      "doneText": "Végigjártad az első lépéseket. Most már létrehozhatod a saját projektjeidet.",
+      "doneButton": "Projektjeim",
+      "stepDone": "kész",
+      "stepCurrent": "aktuális lépés",
+      "cardBadge": "Első lépések",
+      "cardProgress": "{done} / {total} lépés kész",
+      "cardTitle": "Fejezd be a gyakorló projektet",
+      "cardText": "Megnézel egy kész mintát, és újraalkotod a lényegét. Utána hozhatsz létre saját projektet.",
+      "cardStart": "Kezdés",
+      "cardContinue": "Folytatás",
+      "newProjectLocked": "Az első lépések után elérhető"
     }
   }
 }

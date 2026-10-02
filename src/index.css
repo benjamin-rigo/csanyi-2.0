@@ -535,6 +535,29 @@ body {
   color: var(--hs-muted);
 }
 
+.new-project-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.onboarding-card {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  padding: var(--space-6);
+}
+
+.onboarding-card-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: calc(var(--intro-max) - var(--space-16));
+}
+
 .projects-empty {
   gap: var(--space-4);
 }
@@ -1101,6 +1124,162 @@ body {
 .share-link-row .input {
   flex: 1;
   min-width: 0;
+}
+
+/* ---------- Minta (csak megtekintés) és Első lépések (9a, 9b) ---------- */
+
+/* Letiltott mezőcsoport a mintában: a böngésző saját kerete és margója nélkül */
+.plain-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.panel-fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.plain-fieldset:disabled .button,
+.plain-fieldset:disabled .input,
+.plain-fieldset:disabled .textarea {
+  opacity: var(--disabled-opacity);
+}
+
+.draw-frame.is-readonly {
+  cursor: default;
+}
+
+.onboarding {
+  width: calc(var(--sidebar-w) + var(--space-16));
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  background: var(--hs-surface);
+  border-right: var(--border-thin) solid var(--hs-border);
+  overflow-y: auto;
+}
+
+.onboarding-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.onboarding-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.onboarding-head h2 {
+  margin: 0;
+  font-size: var(--text-h2);
+  font-weight: 700;
+}
+
+.onboarding-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.onboarding-step,
+.onboarding-current {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+
+/* Az aktuális lépés kiemelve, kártyaszerűen (terv) */
+.onboarding-current {
+  padding: var(--space-4);
+  border-radius: var(--radius-content);
+  background: var(--hs-default);
+}
+
+div.onboarding-current {
+  flex-direction: column;
+}
+
+.onboarding-current h3 {
+  margin: 0;
+  font-size: var(--text-base);
+}
+
+.onboarding-current p {
+  margin: 0;
+  font-size: var(--text-md);
+}
+
+.onboarding-step h3 {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: 500;
+  color: var(--hs-muted);
+}
+
+.onboarding-step-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.onboarding-num {
+  width: var(--space-6);
+  height: var(--space-6);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  border: var(--border-thin) solid var(--hs-border);
+  font-size: var(--text-caption);
+  font-weight: 600;
+}
+
+.onboarding-num.is-done {
+  background: var(--hs-fg);
+  border-color: var(--hs-fg);
+  color: var(--hs-surface);
+}
+
+.onboarding-points {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--text-md);
+}
+
+.onboarding-points li {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.onboarding-points svg {
+  flex-shrink: 0;
+  margin-top: var(--space-1);
+}
+
+.onboarding-foot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
 }
 
 /* ---------- Profil (14) ---------- */

@@ -49,7 +49,7 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 - Előnézet gomb: a kép nézetet nyitja meg.
 - Hangmező rajzolása: Ecset és Radír (a terv szerint), mentéskor körvonallá (sokszöggé) alakítva, így a kép nézet nem változik. A húzás nélküli „Pontok” eszköz (WCAG 2.5.7) a következő körben.
 - Leíró hang a szerkesztőben: a hangmező panelén a Leírás alatt; Felvétel (mikrofonnal, a böngészőben) vagy Feltöltés, visszajátszás, törlés.
-- Új projekt: amíg az Első lépések nincs kész, átmenetileg aktív; a zárolás az onboardinggal együtt kerül be.
+- Új projekt: az Első lépések befejezéséig letiltva látszik („Az első lépések után elérhető”); 2026-10-02 óta be van kapcsolva.
 
 ## Gyerek oldal
 - Gyerek flow: galéria → kép nézet. Nincs külön leírás oldal (látó gyerekeknek sem).

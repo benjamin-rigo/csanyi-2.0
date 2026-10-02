@@ -47,9 +47,9 @@ function VolumeSlider({
   );
 }
 
-function AddTile({ label, onPress }: { label: string; onPress: () => void }) {
+function AddTile({ label, onPress, isDisabled }: { label: string; onPress: () => void; isDisabled?: boolean }) {
   return (
-    <Button variant="tertiary" fullWidth onPress={onPress}>
+    <Button variant="tertiary" fullWidth onPress={onPress} isDisabled={isDisabled}>
       <Icon name="plus" />
       {label}
     </Button>
@@ -72,6 +72,7 @@ export function SoundsPanel({
   onFieldChange,
   onFieldVoice,
   onDeleteField,
+  readOnly = false,
 }: {
   project: EditorProject;
   selection: Selection;
@@ -84,6 +85,8 @@ export function SoundsPanel({
   onFieldChange: (id: string, patch: Partial<Pick<EditorField, 'name' | 'description' | 'volume' | 'softness'>>) => void;
   onFieldVoice: (id: string, sound: EditorSound | null) => void;
   onDeleteField: (field: EditorField) => void;
+  /** Minta: a listák és részletek megnézhetők, de nem módosíthatók. */
+  readOnly?: boolean;
 }) {
   const bg = project.background;
   const field = selection?.kind === 'field' ? (project.fields.find((f) => f.id === selection.id) ?? null) : null;
@@ -132,29 +135,31 @@ export function SoundsPanel({
           </span>
           {t('teacher.editor.background.detailTitle')}
         </h2>
-        <div className="panel-field">
-          <span className="panel-label">{t('teacher.editor.fields.sound')}</span>
-          <SoundCard
-            sound={bg}
-            loops
-            action={
-              <Button size="sm" variant="secondary" onPress={() => onPickSound('background')}>
-                {t('teacher.editor.sound.replace')}
-              </Button>
-            }
+        <fieldset disabled={readOnly} className="plain-fieldset panel-fieldset">
+          <div className="panel-field">
+            <span className="panel-label">{t('teacher.editor.fields.sound')}</span>
+            <SoundCard
+              sound={bg}
+              loops
+              action={
+                <Button size="sm" variant="secondary" onPress={() => onPickSound('background')}>
+                  {t('teacher.editor.sound.replace')}
+                </Button>
+              }
+            />
+          </div>
+          <VolumeSlider
+            id="bg-volume"
+            value={project.backgroundVolume}
+            onChange={onBackgroundVolume}
+            help={t('teacher.editor.background.help')}
           />
-        </div>
-        <VolumeSlider
-          id="bg-volume"
-          value={project.backgroundVolume}
-          onChange={onBackgroundVolume}
-          help={t('teacher.editor.background.help')}
-        />
-        <div className="panel-danger-zone">
-          <Button size="sm" variant="danger-soft" onPress={onRemoveBackground}>
-            {t('teacher.editor.background.removeLong')}
-          </Button>
-        </div>
+          <div className="panel-danger-zone">
+            <Button size="sm" variant="danger-soft" onPress={onRemoveBackground}>
+              {t('teacher.editor.background.removeLong')}
+            </Button>
+          </div>
+        </fieldset>
       </section>
     );
   }
@@ -168,59 +173,61 @@ export function SoundsPanel({
         <h2 id="field-detail" className="sr-only">
           {t('teacher.editor.fields.detailTitle')}
         </h2>
-        <TextField value={field.name} onChange={(name) => onFieldChange(field.id, { name })} className="title-field">
-          <Label className="sr-only">{t('teacher.editor.fields.nameLabel')}</Label>
-          <div className="title-field-row">
-            <span className="field-swatch" style={{ '--c': fieldColorVar(index) } as CSSProperties} aria-hidden="true" />
-            <Input
-              ref={detailHeading as RefObject<HTMLInputElement>}
-              placeholder={t('teacher.editor.fields.untitled')}
-              className="title-input"
-            />
+        <fieldset disabled={readOnly} className="plain-fieldset panel-fieldset">
+          <TextField value={field.name} onChange={(name) => onFieldChange(field.id, { name })} className="title-field">
+            <Label className="sr-only">{t('teacher.editor.fields.nameLabel')}</Label>
+            <div className="title-field-row">
+              <span className="field-swatch" style={{ '--c': fieldColorVar(index) } as CSSProperties} aria-hidden="true" />
+              <Input
+                ref={detailHeading as RefObject<HTMLInputElement>}
+                placeholder={t('teacher.editor.fields.untitled')}
+                className="title-input"
+              />
+            </div>
+            <Description>{t('teacher.editor.fields.nameHelp')}</Description>
+          </TextField>
+          {field.polygons.length === 0 && <p className="panel-hint">{t('teacher.editor.fields.shapeHint')}</p>}
+          <div className="panel-field">
+            <span className="panel-label">{t('teacher.editor.fields.sound')}</span>
+            {field.sound ? (
+              <SoundCard
+                sound={field.sound}
+                action={
+                  <Button size="sm" variant="secondary" onPress={() => onPickSound(field.id)}>
+                    {t('teacher.editor.sound.replace')}
+                  </Button>
+                }
+              />
+            ) : (
+              <AddTile label={t('teacher.editor.fields.addSound')} onPress={() => onPickSound(field.id)} />
+            )}
           </div>
-          <Description>{t('teacher.editor.fields.nameHelp')}</Description>
-        </TextField>
-        {field.polygons.length === 0 && <p className="panel-hint">{t('teacher.editor.fields.shapeHint')}</p>}
-        <div className="panel-field">
-          <span className="panel-label">{t('teacher.editor.fields.sound')}</span>
-          {field.sound ? (
-            <SoundCard
-              sound={field.sound}
-              action={
-                <Button size="sm" variant="secondary" onPress={() => onPickSound(field.id)}>
-                  {t('teacher.editor.sound.replace')}
-                </Button>
-              }
-            />
-          ) : (
-            <AddTile label={t('teacher.editor.fields.addSound')} onPress={() => onPickSound(field.id)} />
-          )}
-        </div>
-        <VolumeSlider id="field-volume" value={field.volume} onChange={(volume) => onFieldChange(field.id, { volume })} />
-        <TextField value={field.description} onChange={(description) => onFieldChange(field.id, { description })} fullWidth>
-          <Label>{t('teacher.editor.fields.description')}</Label>
-          <TextArea rows={3} />
-          <Description>{t('teacher.editor.fields.descriptionHelp')}</Description>
-        </TextField>
-        <VoiceRecorder
-          key={field.id}
-          sound={field.descriptionSound}
-          fieldName={field.name}
-          userId={userId}
-          onChange={(s) => onFieldVoice(field.id, s)}
-        />
-        <VolumeSlider
-          id="field-softness"
-          label={t('teacher.editor.fields.softness')}
-          value={field.softness}
-          onChange={(softness) => onFieldChange(field.id, { softness })}
-          help={t('teacher.editor.fields.softnessHelp')}
-        />
-        <div className="panel-danger-zone">
-          <Button size="sm" variant="danger-soft" onPress={() => onDeleteField(field)}>
-            {t('teacher.editor.fields.deleteField')}
-          </Button>
-        </div>
+          <VolumeSlider id="field-volume" value={field.volume} onChange={(volume) => onFieldChange(field.id, { volume })} />
+          <TextField value={field.description} onChange={(description) => onFieldChange(field.id, { description })} fullWidth>
+            <Label>{t('teacher.editor.fields.description')}</Label>
+            <TextArea rows={3} />
+            <Description>{t('teacher.editor.fields.descriptionHelp')}</Description>
+          </TextField>
+          <VoiceRecorder
+            key={field.id}
+            sound={field.descriptionSound}
+            fieldName={field.name}
+            userId={userId}
+            onChange={(s) => onFieldVoice(field.id, s)}
+          />
+          <VolumeSlider
+            id="field-softness"
+            label={t('teacher.editor.fields.softness')}
+            value={field.softness}
+            onChange={(softness) => onFieldChange(field.id, { softness })}
+            help={t('teacher.editor.fields.softnessHelp')}
+          />
+          <div className="panel-danger-zone">
+            <Button size="sm" variant="danger-soft" onPress={() => onDeleteField(field)}>
+              {t('teacher.editor.fields.deleteField')}
+            </Button>
+          </div>
+        </fieldset>
       </section>
     );
   }
@@ -248,7 +255,7 @@ export function SoundsPanel({
           </ListBox>
         ) : (
           <>
-            <AddTile label={t('teacher.editor.background.add')} onPress={() => onPickSound('background')} />
+            <AddTile label={t('teacher.editor.background.add')} onPress={() => onPickSound('background')} isDisabled={readOnly} />
             <p className="panel-help">{t('teacher.editor.background.required')}</p>
           </>
         )}
@@ -257,7 +264,7 @@ export function SoundsPanel({
       <section className="panel-section" aria-labelledby="fields-title">
         <div className="panel-section-head">
           <h2 id="fields-title">{t('teacher.editor.fields.title')}</h2>
-          <Button variant="secondary" size="sm" onPress={onAddField}>
+          <Button variant="secondary" size="sm" onPress={onAddField} isDisabled={readOnly}>
             <Icon name="plus" size={16} />
             {t('teacher.editor.fields.add')}
           </Button>

@@ -17,6 +17,7 @@ export function ProjectPanel({
   onCategories,
   onReplaceImage,
   onDelete,
+  readOnly = false,
 }: {
   project: EditorProject;
   categories: CategoryOption[];
@@ -24,6 +25,8 @@ export function ProjectPanel({
   onCategories: (ids: string[]) => void;
   onReplaceImage: (file: File) => Promise<void>;
   onDelete: () => void;
+  /** Minta: minden mező csak olvasható. */
+  readOnly?: boolean;
 }) {
   const [replacing, setReplacing] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -42,7 +45,7 @@ export function ProjectPanel({
   }
 
   return (
-    <div className="panel-sections">
+    <fieldset disabled={readOnly} className="plain-fieldset panel-sections">
       <TextField id="project-title" value={project.title} onChange={(title) => onChange({ title })} fullWidth>
         <Label>{t('teacher.editor.project.title')}</Label>
         <Input />
@@ -93,7 +96,7 @@ export function ProjectPanel({
       <TagGroup
         selectionMode="multiple"
         selectedKeys={new Set(project.categories)}
-        onSelectionChange={(keys) => onCategories([...keys].map(String))}
+        onSelectionChange={(keys) => !readOnly && onCategories([...keys].map(String))}
       >
         <Label>{t('teacher.editor.project.themes')}</Label>
         <TagGroup.List>
@@ -116,6 +119,6 @@ export function ProjectPanel({
           {t('teacher.editor.project.deleteButton')}
         </Button>
       </section>
-    </div>
+    </fieldset>
   );
 }
