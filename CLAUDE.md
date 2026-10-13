@@ -16,6 +16,7 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 - **Hálózati parancsoknál mondd el, mit csinálsz és miért** (telepítés, push, deploy, API-hívás).
 - **Csak ingyenes megoldások.** Fizetős API, havidíjas szolgáltatás nem.
 - A `docs/dontesnaplo.md`-t csak jóváhagyott döntéssel frissítsd, ne minden feladat után.
+- **A projektet átadjuk a Csányi Alapítványnak.** Minden új fiók, kulcs, titok, külső szolgáltatás vagy beégetett cím bekerül a `docs/atadas.md`-be (mi van most, és mit kell átállítani).
 
 ## Stack
 
@@ -64,6 +65,7 @@ supabase/migrations/         adatbázis séma és kezdő adatok
 supabase/functions/          Edge Functions: freesound (hangkönyvtár), teacher-account (meghívás, fiók törlése)
 supabase/templates/          magyar levélsablonok (meghívó, új jelszó), a Supabase felületére kell bemásolni
 docs/dontesnaplo.md      döntésnapló (fő példány)
+docs/atadas.md           átadási lista (fiókok, kulcsok, mit kell átállítani)
 docs/design/             a képernyők tervei
 ```
 
