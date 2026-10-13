@@ -16,6 +16,7 @@ const Login = lazy(() => import('./pages/teacher/Login').then((m) => ({ default:
 const MyProjects = lazy(() => import('./pages/teacher/MyProjects').then((m) => ({ default: m.MyProjects })));
 const NewPassword = lazy(() => import('./pages/teacher/NewPassword').then((m) => ({ default: m.NewPassword })));
 const Editor = lazy(() => import('./pages/teacher/Editor').then((m) => ({ default: m.Editor })));
+const GalleryAdmin = lazy(() => import('./pages/teacher/GalleryAdmin').then((m) => ({ default: m.GalleryAdmin })));
 const Profile = lazy(() => import('./pages/teacher/Profile').then((m) => ({ default: m.Profile })));
 
 function StatusPage({ error }: { error?: boolean }) {
@@ -98,6 +99,14 @@ function App() {
             element={
               <RequireAuth>
                 <Editor config={config} />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/galeria-kezelese"
+            element={
+              <RequireAuth>
+                <GalleryAdmin />
               </RequireAuth>
             }
           />

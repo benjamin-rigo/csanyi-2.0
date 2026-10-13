@@ -1,9 +1,16 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page } from '@playwright/test';
 
-/** WCAG 2.2 AA axe-ellenőrzés; a react-aria saját, üres bejelentő eleme kimarad. */
-export async function expectNoAxeViolations(page: Page) {
-  const result = await new AxeBuilder({ page })
+/**
+ * WCAG 2.2 AA axe-ellenőrzés; a react-aria saját, üres bejelentő eleme kimarad.
+ * `within`: csak ezen belül (nyitott párbeszédablaknál az ablak, mert az elsötétített háttér nem elérhető).
+ */
+export async function expectNoAxeViolations(page: Page, within?: string) {
+  // Beúszó ablak közben a szöveg még félig átlátszó: az animációk végét megvárjuk.
+  await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== 'running'));
+  const builder = new AxeBuilder({ page });
+  if (within) builder.include(within);
+  const result = await builder
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
     .exclude('[data-live-announcer]')
     .analyze();

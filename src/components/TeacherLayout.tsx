@@ -2,6 +2,7 @@ import { useEffect, type ReactNode } from 'react';
 import { useLocation } from 'react-router';
 import { Avatar } from '@heroui/react';
 import { t } from '../lib/i18n';
+import { useIsAdmin } from '../lib/admin';
 import { useProfile } from '../lib/teacher';
 import { Icon } from './Icon';
 import { ButtonLink, Logo } from './SiteHeader';
@@ -18,6 +19,7 @@ function initials(name: string): string {
 /** Pedagógus oldal: bal oldalsáv + tartalomfelület (döntésnapló). */
 export function TeacherLayout({ documentTitle, children }: { documentTitle: string; children: ReactNode }) {
   const profile = useProfile();
+  const isAdmin = useIsAdmin();
   const { pathname } = useLocation();
   // Az aktuális oldal kiemelve, és a felolvasó is bemondja.
   const current = (path: string) =>
@@ -38,6 +40,12 @@ export function TeacherLayout({ documentTitle, children }: { documentTitle: stri
             <Icon name="image" />
             <span className="nav-text">{t('teacher.nav.projects')}</span>
           </ButtonLink>
+          {isAdmin && (
+            <ButtonLink href="/galeria-kezelese" {...current('/galeria-kezelese')} className="button--full-width teacher-nav-link">
+              <Icon name="shield" />
+              <span className="nav-text">{t('teacher.nav.admin')}</span>
+            </ButtonLink>
+          )}
           <a
             href={import.meta.env.BASE_URL}
             target="_blank"

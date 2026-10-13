@@ -54,10 +54,10 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 src/
   pages/Gallery.tsx      galéria (1)
   pages/Viewer.tsx       képnézet (2–4)
-  pages/teacher/         pedagógus oldal: Login (6), ForgotPassword (6b), NewPassword (6c), AccountSetup (7), MyProjects (8), Editor (11, 11b, 11c, 13; a /minta csak megtekintés), Profile (14)
+  pages/teacher/         pedagógus oldal: Login (6), ForgotPassword (6b), NewPassword (6c), AccountSetup (7), MyProjects (8), Editor (11, 11b, 11c, 13; a /minta csak megtekintés), Profile (14), GalleryAdmin (Galéria kezelése, csak adminnak; terv nélkül)
   components/            SiteHeader (Logo, ButtonLink, SiteFooter), AuthLayout, AuthFields, TeacherLayout, NewProjectModal (10), Icon
   components/editor/     OnboardingPanel (Első lépések), DrawingCanvas (ecset, radír, pontok, csippentés), SoundsPanel (Hangok fül), ProjectPanel (Projekt fül), SharePanel (Megosztás fül), SoundPicker (12), LibraryTab, SoundCard, VoiceRecorder (leíró hang)
-  lib/                   data, supabase, teacher, onboarding, history (visszavonás), editor (betöltés, automatikus mentés, hangfeltöltés), contour (maszk ↔ sokszög), geometry, i18n, audio, device
+  lib/                   data, supabase, teacher, admin (galéria kezelése), onboarding, history (visszavonás), editor (betöltés, automatikus mentés, hangfeltöltés), contour (maszk ↔ sokszög), geometry, i18n, audio, device
   content/hu.json        felületi szövegek
   styles/tokens.css      design tokenek
 public/data/config.json      beállítások

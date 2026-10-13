@@ -110,6 +110,7 @@
     "nav": {
       "projects": "Projektjeim",
       "gallery": "Galéria",
+      "admin": "Galéria kezelése",
       "newTab": "(új lapon nyílik)"
     },
     "profileLink": "Profil",
@@ -181,6 +182,8 @@
         "gallery": "Galériában is",
         "galleryHelp": "Megjelenik a galériában, és linkkel is elérhető.",
         "notReady": "A galériába még nem kerülhet ki. Hiányzik:",
+        "moderated": "Az admin levette a galériáról",
+        "moderatedReason": "Az ok: {reason} Javítás után újra kiteheted a galériába.",
         "missing": {
           "image": "Kép (Projekt fül)",
           "title": "Cím (Projekt fül)",
@@ -452,5 +455,35 @@
       "cardStart": "Kezdés",
       "cardContinue": "Folytatás"
     }
+  },
+  "admin": {
+    "documentTitle": "Galéria kezelése · Hangösvény",
+    "title": "Galéria kezelése",
+    "subtitle": "A galéria képei. Levehetsz egy képet, ha nem odavaló, és javíthatod a kategóriáit.",
+    "notAdmin": "Ezt az oldalt csak adminok érik el.",
+    "loadError": "Nem sikerült betölteni a galériát. Próbáld újra később.",
+    "liveTitle": "A galériában ({count})",
+    "liveEmpty": "Még nincs kép a galériában.",
+    "removedTitle": "Levett képek ({count})",
+    "removedHelp": "A pedagógus a Megosztás fülön látja, hogy levetted, és az okát. Javítás után ő is visszateheti.",
+    "owner": "{name}",
+    "sample": "Kezdő kép",
+    "reasonShown": "Az ok: {reason}",
+    "categories": "Kategóriák",
+    "categoriesTitle": "Kategóriák: {title}",
+    "categoriesSaved": "A(z) {title} kategóriái mentve.",
+    "remove": "Levétel",
+    "removeTitle": "Leveszed a galériáról? ({title})",
+    "removeText": "A kép eltűnik a galériából, de linkkel továbbra is elérhető marad. A pedagógus projektje megmarad.",
+    "reason": "Az ok",
+    "reasonHelp": "A pedagógus ezt látja, írd le röviden, mit kellene javítania.",
+    "removeConfirm": "Levétel",
+    "removed": "A(z) {title} lekerült a galériáról.",
+    "restore": "Visszatétel",
+    "restored": "A(z) {title} visszakerült a galériába.",
+    "restoreError": "A(z) {title} nem tehető vissza: hiányzik valami a galériához. A pedagógusnak kell pótolnia.",
+    "actionError": "Nem sikerült. Próbáld újra.",
+    "cancel": "Mégse",
+    "save": "Mentés"
   }
 }

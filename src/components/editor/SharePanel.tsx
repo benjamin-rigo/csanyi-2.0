@@ -65,6 +65,16 @@ export function SharePanel({
         ))}
       </RadioGroup>
 
+      {project.moderationNote && project.visibility !== 'gallery' && (
+        <Alert status="warning">
+          <Alert.Indicator />
+          <Alert.Content>
+            <Alert.Title>{t('teacher.editor.share.moderated')}</Alert.Title>
+            <Alert.Description>{t('teacher.editor.share.moderatedReason', { reason: project.moderationNote })}</Alert.Description>
+          </Alert.Content>
+        </Alert>
+      )}
+
       {missing.length > 0 && (
         <Alert status="warning" id="share-missing">
           <Alert.Indicator />

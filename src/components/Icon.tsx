@@ -28,6 +28,7 @@ const PATHS: Record<string, string> = {
   stop: 'M7 7h10v10H7z',
   minus: 'M5 12h14',
   lock: 'M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6z',
+  shield: 'M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6z',
   city: 'M3 21h18M5 21V8l5-3v16M10 21V10h9v11M13 13h3M13 17h3M7 11h.01M7 15h.01',
   story: 'M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h13M8 7h7M8 11h5',
   season:

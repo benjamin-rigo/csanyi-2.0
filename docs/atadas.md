@@ -45,5 +45,6 @@ Jelölés: **most** = jelenlegi állapot, **átadáskor** = teendő.
 
 ## 7. Pedagógus fiókok
 
+- **Adminok** (Galéria kezelése): az `admins` táblában (Supabase → Table Editor → admins, egy sor = egy admin felhasználó azonosítója). Most: a fejlesztő (benjaminrigo.media@gmail.com) és a teszt-fiók. Átadáskor: a Csányi kijelölt embere kerüljön be, a fejlesztő és a teszt-fiók sora törlendő.
 - **Teszt-fiók** az automatikus tesztekhez (`npm run test:e2e`): `e2e-teszt@example.com`, a jelszava csak a fejlesztő gépén, a `.env.test.local` fájlban. Átadáskor törölni (Authentication → Users), vagy az átvevő újat hoz létre és a saját `.env.test.local`-jába írja.
 - Az első pedagógust a Supabase felületén kell meghívni (Authentication → Users → Invite user), utána bárki meghívhat kollégát a Profilból (napi 10).

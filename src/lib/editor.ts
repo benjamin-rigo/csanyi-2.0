@@ -32,6 +32,8 @@ export interface EditorProject {
   shortDescription: string;
   author: string;
   visibility: Visibility;
+  /** Ha az admin levette a galériáról: az oka (a Megosztás fülön látszik). */
+  moderationNote: string | null;
   categories: string[];
   /** A minta (más projektje): csak megtekinthető. */
   readOnly: boolean;
@@ -70,7 +72,7 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
   const { data, error } = await supabase
     .from('projects')
     .select(
-      `id, title, short_description, author, visibility, image_path, image_width, image_height, background_volume, owner_id, is_practice,
+      `id, title, short_description, author, visibility, moderation_note, image_path, image_width, image_height, background_volume, owner_id, is_practice,
        project_categories(category_id),
        background:sounds!projects_background_sound_id_fkey(${SOUND}),
        fields(id, sort, name, description, shape, volume, edge_softness,
@@ -87,6 +89,7 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
     short_description: string;
     author: string;
     visibility: Visibility;
+    moderation_note: string | null;
     owner_id: string | null;
     is_practice: boolean;
     project_categories: { category_id: string }[];
@@ -113,6 +116,7 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
     shortDescription: row.short_description,
     author: row.author,
     visibility: row.visibility,
+    moderationNote: row.moderation_note,
     categories: row.project_categories.map((c) => c.category_id),
     readOnly: row.owner_id !== userId,
     isPractice: row.is_practice,

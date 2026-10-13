@@ -310,7 +310,8 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
     if (!project) return;
     const previous = project.visibility;
     setShareError(false);
-    setProject({ ...project, visibility });
+    // Galériába tételkor az adatbázis törli az admin levételi megjegyzését.
+    setProject({ ...project, visibility, moderationNote: visibility === 'gallery' ? null : project.moderationNote });
     // A galériához az adatbázis is ellenőrzi a feltételeket; ha elutasítja, visszaállunk.
     track(updateProject(project.id, { visibility })).catch(() => {
       setShareError(true);
