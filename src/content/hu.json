@@ -442,8 +442,7 @@
       "cardTitle": "Fejezd be a gyakorló projektet",
       "cardText": "Megnézel egy kész mintát, és újraalkotod a lényegét. Utána hozhatsz létre saját projektet.",
       "cardStart": "Kezdés",
-      "cardContinue": "Folytatás",
-      "newProjectLocked": "Az első lépések után elérhető"
+      "cardContinue": "Folytatás"
     }
   }
 }

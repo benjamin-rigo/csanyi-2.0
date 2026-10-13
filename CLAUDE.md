@@ -84,7 +84,7 @@ docs/design/             a képernyők tervei
 
 1. A `freesound` függvény csak bejelentkezett pedagógust enged: kész és telepítve (2026-10-01), élesben ellenőrizve (token nélkül és nyilvános kulccsal 401).
 2. Projekt fül (11c) és Megosztás (13): kész (2026-10-01). A galériába kerülés feltételeit a kliens (`projectMissing`) és az adatbázis (`project_missing()`) is ellenőrzi; a kettőt együtt kell módosítani.
-3. Profil (14) és Első lépések (9a, 9b) kész (2026-10-02). Az onboarding: `/minta` a mintaprojekt csak megtekintésre (`config.json` onboarding.sampleProjectId), a „Most te jössz” gyakorló projektet hoz létre (`projects.is_practice`, `profiles.practice_project_id`); a lépések a gyakorló projekt állapotából teljesülnek (`practiceSteps`), az Előnézet zárja le (`profiles.onboarding_step = 6`); addig az Új projekt letiltva. A meghívott pedagógus a fiók beállítása után a mintára kerül.
+3. Profil (14) és Első lépések (9a, 9b) kész (2026-10-02). Az onboarding: `/minta` a mintaprojekt csak megtekintésre (`config.json` onboarding.sampleProjectId), a „Most te jössz” gyakorló projektet hoz létre (`projects.is_practice`, `profiles.practice_project_id`); a lépések a gyakorló projekt állapotából teljesülnek (`practiceSteps`), az Előnézet zárja le (`profiles.onboarding_step = 6`). Az Új projekt onboarding nélkül is elérhető (2026-10-13). A meghívott pedagógus a fiók beállítása után a mintára kerül.
 4. Tesztelni iPaden: lágy szél felolvasó nélkül, leíró hang (gépen felvett m4a lejátszása), töltelék szerep-változatai felolvasóval.
 5. Később: Pontok rajzeszköz (WCAG 2.5.7), csippentéses nagyítás érintőképernyőn, visszavonás a festésen túl (törlés, hangcsere, szöveg), SMTP a levelekhez.
 - A nyitott témák listája a napló végén.

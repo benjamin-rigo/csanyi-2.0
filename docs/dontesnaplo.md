@@ -36,7 +36,7 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 - Regisztráció egyelőre meghívásos. Bármelyik pedagógus meghívhat kollégát a Profilból (2026-10-02): naponta legfeljebb 10 meghívó, naplózva, ki kit hívott meg; a meghívó levélben szerepel a meghívó neve. A fiók törlése a projekteket, képeket és hangokat is törli.
 - Belépés: e-mail és jelszó (megjelenítés gomb, „Elfelejtetted a jelszavad?”, „Maradjak bejelentkezve”). Meghívó után fiók beállítása: e-mail (a meghívóból), név, jelszó, ÁSZF. Elfelejtett jelszó: link e-mailben, a válasz nem árulja el, létezik-e a fiók; új jelszó egy mezővel.
 - Social login: egyelőre nincs. Előbb megkérdezzük az intézményt, milyen fiókot használnak (Vakok Iskolája: Gmail/Outlook, Teams/Classroom is). Ha Google: ingyenes (Supabase free), kb. fél nap beállítás; a meghívott e-mailnek egyeznie kell.
-- Onboarding: kötelező. 1) Kész minta megnyitása a szerkesztőben (csak megtekintés): háttérhang, hangmezők, nevek, leírások, hangok. 2) „Most te”: ugyanazon a képen újraalkot 1 hangmezőt és a háttérhangot, lépésenként; a minta bármikor megnyitható. „Később folytatom” a Projektjeim oldalra visz; az Új projekt addig nem aktív.
+- Onboarding: kötelező. 1) Kész minta megnyitása a szerkesztőben (csak megtekintés): háttérhang, hangmezők, nevek, leírások, hangok. 2) „Most te”: ugyanazon a képen újraalkot 1 hangmezőt és a háttérhangot, lépésenként; a minta bármikor megnyitható. „Később folytatom” a Projektjeim oldalra visz. Az Új projekt onboarding nélkül is használható (2026-10-13).
 - Mintakép (helykitöltő): Reich Károly, „A macskának négy a lába”. Hangmezők: Macska, Ház (gyakorló hangmező), Madarak, Virágok; háttérhang: esti tücskök. Jogvédett, élesítés előtt engedély kell vagy csere.
 - Onboarding kiemelés (2026-10-13): a gyakorló projektben a következő teendő eleme kék keretet kap (`--accent` körvonal, megjelenéskor egyszer kitágul, mozgáscsökkentéskor nem). Ha a panel máshol áll, az odavezető elem kap keretet (Hangok fül, a hangmező sora, vissza gomb). A fókusz nem mozdul.
 - Minta nézet: eszköztár a helyén, letiltva; fejlécben a Megosztás helyén „Csak megtekintés” címke. A „Most te jössz” normál fő gomb az aktuális lépésben.
@@ -50,7 +50,7 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 - Előnézet gomb: a kép nézetet nyitja meg.
 - Hangmező rajzolása: Ecset és Radír (a terv szerint), mentéskor körvonallá (sokszöggé) alakítva, így a kép nézet nem változik. A húzás nélküli „Pontok” eszköz (WCAG 2.5.7) a következő körben.
 - Leíró hang a szerkesztőben: a hangmező panelén a Leírás alatt; Felvétel (mikrofonnal, a böngészőben) vagy Feltöltés, visszajátszás, törlés.
-- Új projekt: az Első lépések befejezéséig letiltva látszik („Az első lépések után elérhető”); 2026-10-02 óta be van kapcsolva.
+- Új projekt: 2026-10-02 és 10-13 között az Első lépések befejezéséig le volt tiltva; 2026-10-13 óta mindig elérhető, az Első lépések kártyája ajánlásként marad a Projektjeim tetején.
 
 ## Gyerek oldal
 - Gyerek flow: galéria → kép nézet. Nincs külön leírás oldal (látó gyerekeknek sem).

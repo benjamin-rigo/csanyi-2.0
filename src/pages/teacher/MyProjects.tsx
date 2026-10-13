@@ -23,15 +23,13 @@ function timeAgo(iso: string): string {
   return new Date(iso).toLocaleDateString('hu-HU', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
-/** Projektjeim (8). Az „Első lépések” kártya és az Új projekt zárolása az onboardinggal jön. */
+/** Projektjeim (8). Az „Első lépések” kártya, amíg az onboarding nincs kész. */
 export function MyProjects({ config }: { config: Config }) {
   const session = useSession();
   const [projects] = useMyProjects();
   const [creating, setCreating] = useState(false);
   const [onboarding] = useOnboarding();
   const [practiceDone, setPracticeDone] = useState(0);
-  // Az Új projekt az Első lépések után aktív (döntésnapló); addig letiltva, mellette az ok.
-  const locked = !onboarding?.done;
 
   // A kártya haladása a gyakorló projekt állapotából.
   const practiceId = onboarding?.practiceProjectId;
@@ -53,21 +51,10 @@ export function MyProjects({ config }: { config: Config }) {
           <p>{t('teacher.projects.subtitle')}</p>
         </div>
         <div className="new-project-action">
-          <Button
-            variant="secondary"
-            size="lg"
-            onPress={() => setCreating(true)}
-            isDisabled={locked}
-            aria-describedby={locked ? 'new-locked' : undefined}
-          >
+          <Button variant="secondary" size="lg" onPress={() => setCreating(true)}>
             <Icon name="plus" />
             {t('teacher.projects.newProject')}
           </Button>
-          {locked && (
-            <span id="new-locked" className="panel-help">
-              {t('teacher.onboarding.newProjectLocked')}
-            </span>
-          )}
         </div>
       </div>
 
@@ -105,13 +92,11 @@ export function MyProjects({ config }: { config: Config }) {
       {projects.status === 'ready' &&
         (projects.data.length === 0 ? (
           <EmptyState className="projects-empty">
-            <p>{locked ? t('teacher.onboarding.newProjectLocked') : t('teacher.projects.empty')}</p>
-            {!locked && (
-              <Button onPress={() => setCreating(true)}>
-                <Icon name="plus" />
-                {t('teacher.projects.newProject')}
-              </Button>
-            )}
+            <p>{t('teacher.projects.empty')}</p>
+            <Button onPress={() => setCreating(true)}>
+              <Icon name="plus" />
+              {t('teacher.projects.newProject')}
+            </Button>
           </EmptyState>
         ) : (
           <ul className="project-grid" aria-label={t('teacher.projects.listLabel')}>
