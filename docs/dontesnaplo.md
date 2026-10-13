@@ -117,7 +117,7 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 0. Töltelék kísérlet (`?mod=kitoltes`): néma elem az üres részen, hogy a VoiceOver ne ugorjon a hangmezőkre. Kilépés kikapcsolt felolvasónál (a kétujjas Z csak VoiceOverrel működik). Kötelező-e a leíró hang a galériához.
 1. A felolvasós simogatás tesztje táblagépen (iPad, Android): kétujjas Z kilépés, az üres rész valóban néma marad-e, a teljes leírás és a hangmező hangja együtt jól hallható-e, az emlékeztető nem zavaró-e.
 2. WCAG a pedagógus oldalon: a Pontok eszköz (2.5.7) és a hangmezőhatárok kontrasztja (1.4.11) kész (2026-10-13); élesben, teszt-fiókkal ellenőrizni.
-3. Billentyűzetes fókusz: élőben újranézni a prototípuson.
+3. Billentyűzetes fókusz: kész (2026-10-13). A pedagógus oldal Tab-sorrendje, a látható fókusz minden lépésnél, a párbeszédablakok fókusza és a szerkesztő lefúrós panelje automatikus tesztben (`e2e/keyboard.spec.ts`).
 4. Címkézés (tagek) és kategóriák: a Téma már a galéria kategóriáiból választ; hogyan bővüljön a lista skálázhatóan, mégis moderáltan, még nyitott.
 6. Jogok: a Reich-kép engedélye (HUNGART vagy örökösök; szóba jöhet az Szjt. oktatási és fogyatékos személyek javára szóló kivétele, jogi ellenőrzés kell).
 7. Jogok: a pedagógusok által feltöltött képek és hangok legyenek jogtiszták (feltöltéskor nyilatkozat, ÁSZF, a hangkönyvtár csak CC0).
