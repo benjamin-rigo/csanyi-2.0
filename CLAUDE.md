@@ -79,7 +79,7 @@ docs/design/             a képernyők tervei
 - Lágy szél: `fields.edge_softness`; a képnézet `edgeGain` szerint több hangmezőt szólaltat egyszerre (`SceneAudio.setFields`).
 - Freesound: `supabase/functions/freesound` (Edge Function, titok: `FREESOUND_API_KEY`); csak CC0, a keresőszót MyMemory fordítja angolra, a kiválasztott hang a saját tárhelyre másolódik.
 - Kísérlet folyamatban: töltelék az üres részen (`?mod=kitoltes`, `kitoltes2`, `kitoltes3`); iPaden a „kép” szó eltűnt-e még nem derült ki a szerep-változatokkal.
-- Meghívás: a Profilból bármelyik pedagógus (teacher-account függvény, napi 10), vagy Supabase → Authentication → Users → Invite user. **Levélküldés (SMTP) még nincs beállítva**: a beépített küldő csak a projekt tagjainak kézbesít; ez élesítés előtt kell (napló, nyitott témák).
+- Meghívás: a Profilból bármelyik pedagógus (teacher-account függvény, napi 10), vagy Supabase → Authentication → Users → Invite user. **Levélküldés (SMTP) még nincs beállítva**: a beépített küldő csak a projekt tagjainak kézbesít; az átvevő állítja be az átadáskor (`docs/atadas.md`).
 - A `@heroui/styles` most minden komponens stílusát betölti; később csak a használtakat importáljuk. A JS csomag 500 kB fölött van (figyelmeztetés); a pedagógus oldal külön betöltésével csökkenthető.
 
 ## Következő lépések

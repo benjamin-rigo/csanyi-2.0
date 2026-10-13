@@ -24,8 +24,8 @@ Jelölés: **most** = jelenlegi állapot, **átadáskor** = teendő.
 
 ## 3. Levélküldés (SMTP)
 
-- **Most:** Gmail fiók alkalmazásjelszóval (Supabase → Authentication → Emails → SMTP Settings). A fiók és a jelszó a fejlesztőnél.
-- **Átadáskor:** az alapítvány saját levelezése vagy szolgáltatója (domainnel ajánlott a Brevo vagy a Resend, ingyenes csomag). Az SMTP adatokat a Supabase-ben kell átírni; a feladó neve és címe is ott van.
+- **Most:** nincs beállítva. A Supabase beépített küldője csak a projekt tagjainak kézbesít, óránként néhány levelet, ezért a meghívók és az elfelejtett jelszó levelei másnak nem érkeznek meg.
+- **Átadáskor (az átvevő dönti el):** saját SMTP a Supabase-ben (Authentication → Emails → SMTP Settings). Ingyenes lehetőségek: Gmail alkalmazásjelszóval (napi kb. 500, domain nélkül), Brevo (napi 300) vagy Resend (napi 100, domain kell); saját domainnel megbízhatóbb a kézbesítés. Utána: a magyar levélsablonok bemásolása (`supabase/templates/`, Authentication → Emails → Templates), az óránkénti levélkorlát emelése (Authentication → Rate Limits), és az e-mail cím módosításának engedélyezése a Profilban.
 
 ## 4. Külső szolgáltatások
 
