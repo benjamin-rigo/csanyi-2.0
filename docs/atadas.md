@@ -4,6 +4,14 @@ A Hangösvény a Csányi Alapítványé lesz. Ez a lista mutatja, mely fiókok, 
 
 Jelölés: **most** = jelenlegi állapot, **átadáskor** = teendő.
 
+## 0. Élesítés előtt (tartalom)
+
+A felületen még helykitöltők vannak; ezeket az alapítvány adja meg (`public/data/config.json`):
+
+- `contactEmail`: most „[KAPCSOLATI E-MAIL]”, a láblécben és a belépésnél látszik.
+- `links.help` (Súgó), `links.accessibility` (Akadálymentességi nyilatkozat), `links.privacy` (Adatvédelem), `links.terms` (ÁSZF): most `#`, nem visznek sehova. Az ÁSZF-et a fiók beállításakor el is kell fogadni.
+- A mintakép jogai (5. pont).
+
 ## 1. Kód és közzététel
 
 - **GitHub repó:** most `benjamin-rigo/csanyi-2.0`. Átadáskor: átruházás az alapítvány GitHub szervezetére (Settings → Transfer ownership), vagy ők forkolják.

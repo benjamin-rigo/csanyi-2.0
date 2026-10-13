@@ -104,6 +104,21 @@ body {
   --button-bg-pressed: var(--surface-hover);
 }
 
+/* A Menü gomb csak telefonon látszik; nagyobb kijelzőn a menü mindig nyitva. */
+.teacher-menu-button {
+  display: none;
+}
+
+.teacher-menu {
+  display: contents;
+}
+
+@media (max-width: 720px) {
+  .teacher-menu-button {
+    display: inline-flex;
+  }
+}
+
 /* ---------- Oldalváz ---------- */
 
 .kid-page {
@@ -1049,7 +1064,7 @@ body {
 
 .panel-section-head h2 {
   margin: 0;
-  font-size: var(--text-base);
+  font-size: var(--type-panel);
   font-weight: 600;
 }
 
@@ -1271,7 +1286,7 @@ body {
 
 .panel-section-title {
   margin: 0 0 var(--space-2);
-  font-size: var(--text-base);
+  font-size: var(--type-panel);
   font-weight: 600;
 }
 
@@ -1478,7 +1493,7 @@ div.onboarding-current {
 
 .profile-section-text h2 {
   margin: 0 0 var(--space-2);
-  font-size: var(--text-base);
+  font-size: var(--type-section);
   font-weight: 600;
 }
 
@@ -1568,6 +1583,23 @@ div.onboarding-current {
     gap: var(--space-4);
   }
 
+  /* Telefonon: logó és Menü gomb egy sorban, a menüpontok lenyitva. */
+  .teacher-logo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .teacher-menu {
+    display: none;
+  }
+
+  .teacher-sidebar.is-open .teacher-menu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
   .teacher-content {
     padding: 0 var(--space-3) var(--space-3);
   }
@@ -1608,7 +1640,8 @@ div.onboarding-current {
 
 .admin-section h2 {
   margin: 0;
-  font-size: var(--text-lg);
+  font-size: var(--type-section);
+  font-weight: 600;
 }
 
 .admin-actions {

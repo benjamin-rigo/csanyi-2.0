@@ -89,13 +89,16 @@
   --text-sm: 14px;
   --text-md: 15px;
   --text-base: 16px;
-  --text-body: 17px;
   --text-lg: 18px;
   --text-h1: 36px;
   --text-h1-narrow: 28px;
   --text-h1-card: 26px;
   --text-h1-page: 30px;
   --text-h2: 20px;
+  /* Címsorok szintjei (döntésnapló): oldalcím (h1) --text-h1-page; szakaszcím az oldalon (h2) --type-section, félkövér;
+     panel- és kártyaszakasz címe --type-panel, félkövér; szövegtörzs --text-base; kiegészítő szöveg --text-sm. */
+  --type-section: var(--text-lg);
+  --type-panel: var(--text-base);
   --leading-body: 1.5;
   --leading-snug: 1.3;
   --leading-tight: 1.15;

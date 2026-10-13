@@ -45,6 +45,7 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 ## Akadálymentesség
 
 - Cél: **WCAG 2.2 AA**. Minden képernyő után futtass axe-core ellenőrzést (pl. Playwrighttal), és nézd meg billentyűzettel is.
+- **Minden képernyőt négy szélességben nézz meg** (1440, 1024, 768, 390; képernyőképpel is), és vedd fel az `e2e/layout.spec.ts`-be (nincs vízszintes görgetés, egymásra csúszó vagy a saját területéből kilógó elem). Felületi rétegek: szürke elem csak fehér felületen (napló, Vizuális rendszer).
 - A gyerek oldal felolvasós viselkedése (üdvözlés, indító hangjel, hangmezők, emlékeztető, kilépés) pontosan a naplóban van leírva, attól ne térj el. A hangmezők SVG `polygon role="img"` elemek, a fókusz indítja a hangot; az üres rész nem fókuszálható és néma.
 - A hang Web Audio API-val szól (`src/lib/audio.ts`). A feloldás a galéria kártyájára koppintáskor történik, mert felolvasóval a képnézetben már nincs koppintás.
 
