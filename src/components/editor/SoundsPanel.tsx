@@ -1,6 +1,7 @@
 import { useEffect, useRef, type CSSProperties, type RefObject } from 'react';
 import { Button, Chip, Description, Input, Label, ListBox, Slider, TextArea, TextField } from '@heroui/react';
 import type { EditorField, EditorProject, EditorSound } from '../../lib/editor';
+import type { Guide } from '../../lib/onboarding';
 import { t } from '../../lib/i18n';
 import { Icon } from '../Icon';
 import { fieldColorVar } from './DrawingCanvas';
@@ -47,9 +48,19 @@ function VolumeSlider({
   );
 }
 
-function AddTile({ label, onPress, isDisabled }: { label: string; onPress: () => void; isDisabled?: boolean }) {
+function AddTile({
+  label,
+  onPress,
+  isDisabled,
+  className,
+}: {
+  label: string;
+  onPress: () => void;
+  isDisabled?: boolean;
+  className?: string;
+}) {
   return (
-    <Button variant="tertiary" fullWidth onPress={onPress} isDisabled={isDisabled}>
+    <Button variant="tertiary" fullWidth onPress={onPress} isDisabled={isDisabled} className={className}>
       <Icon name="plus" />
       {label}
     </Button>
@@ -73,6 +84,7 @@ export function SoundsPanel({
   onFieldVoice,
   onDeleteField,
   readOnly = false,
+  guide = null,
 }: {
   project: EditorProject;
   selection: Selection;
@@ -87,10 +99,13 @@ export function SoundsPanel({
   onDeleteField: (field: EditorField) => void;
   /** Minta: a listák és részletek megnézhetők, de nem módosíthatók. */
   readOnly?: boolean;
+  /** Első lépések: a kék kerettel kiemelt elem. */
+  guide?: { guide: Guide; field?: string } | null;
 }) {
   const bg = project.background;
   const field = selection?.kind === 'field' ? (project.fields.find((f) => f.id === selection.id) ?? null) : null;
   const fieldName = (f: EditorField) => f.name.trim() || t('teacher.editor.fields.untitled');
+  const guideClass = (g: Guide) => (guide?.guide === g ? 'guide-target' : undefined);
 
   const detailHeading = useRef<HTMLElement>(null);
   const lastRow = useRef<string | null>(null);
@@ -115,7 +130,7 @@ export function SoundsPanel({
       <Button
         variant="ghost"
         size="sm"
-        className="panel-back"
+        className={`panel-back ${guideClass('back') ?? ''}`}
         aria-label={t('teacher.editor.panelBackLabel')}
         onPress={() => onSelect(null)}
       >
@@ -181,7 +196,7 @@ export function SoundsPanel({
               <Input
                 ref={detailHeading as RefObject<HTMLInputElement>}
                 placeholder={t('teacher.editor.fields.untitled')}
-                className="title-input"
+                className={`title-input ${guideClass('name') ?? ''}`}
               />
             </div>
             <Description>{t('teacher.editor.fields.nameHelp')}</Description>
@@ -199,13 +214,17 @@ export function SoundsPanel({
                 }
               />
             ) : (
-              <AddTile label={t('teacher.editor.fields.addSound')} onPress={() => onPickSound(field.id)} />
+              <AddTile
+                label={t('teacher.editor.fields.addSound')}
+                onPress={() => onPickSound(field.id)}
+                className={guideClass('add-sound')}
+              />
             )}
           </div>
           <VolumeSlider id="field-volume" value={field.volume} onChange={(volume) => onFieldChange(field.id, { volume })} />
           <TextField value={field.description} onChange={(description) => onFieldChange(field.id, { description })} fullWidth>
             <Label>{t('teacher.editor.fields.description')}</Label>
-            <TextArea rows={3} />
+            <TextArea rows={3} className={guideClass('description')} />
             <Description>{t('teacher.editor.fields.descriptionHelp')}</Description>
           </TextField>
           <VoiceRecorder
@@ -255,7 +274,12 @@ export function SoundsPanel({
           </ListBox>
         ) : (
           <>
-            <AddTile label={t('teacher.editor.background.add')} onPress={() => onPickSound('background')} isDisabled={readOnly} />
+            <AddTile
+              label={t('teacher.editor.background.add')}
+              onPress={() => onPickSound('background')}
+              isDisabled={readOnly}
+              className={guideClass('add-background')}
+            />
             <p className="panel-help">{t('teacher.editor.background.required')}</p>
           </>
         )}
@@ -279,7 +303,12 @@ export function SoundsPanel({
             className="panel-list"
           >
             {project.fields.map((f, i) => (
-              <ListBox.Item key={f.id} id={f.id} textValue={fieldName(f)}>
+              <ListBox.Item
+                key={f.id}
+                id={f.id}
+                textValue={fieldName(f)}
+                className={guide?.guide === 'row' && guide.field === f.id ? 'guide-target' : undefined}
+              >
                 <span className="field-swatch" style={{ '--c': fieldColorVar(i) } as CSSProperties} aria-hidden="true" />
                 <span className="panel-row-text">
                   <span className="panel-row-title">{fieldName(f)}</span>

@@ -28,7 +28,7 @@ import {
   type Missing,
   type Visibility,
 } from '../../lib/editor';
-import { completeOnboarding, practiceSteps, startPractice, useOnboarding } from '../../lib/onboarding';
+import { completeOnboarding, guideTarget, practiceSteps, startPractice, useOnboarding } from '../../lib/onboarding';
 import { uploadFile } from '../../lib/teacher';
 import { t } from '../../lib/i18n';
 import { useSession } from '../../lib/supabase';
@@ -340,6 +340,9 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
   const sampleMode = readOnly && project.id === config.onboarding.sampleProjectId;
   const steps = project.isPractice ? practiceSteps(project, Boolean(onboarding?.done)) : [];
   const showOnboarding = sampleMode || project.isPractice;
+  // Első lépések: a következő teendő eleme kék keretet kap; a fókusz nem mozdul.
+  const guide = project.isPractice && !onboarding?.done ? guideTarget(project, steps, tab, selection) : null;
+  const guideClass = (g: string) => (guide?.guide === g ? 'guide-target' : undefined);
 
   // Minta → „Most te jössz”: a pedagógus saját gyakorló projektje a minta képével.
   async function startOwnPractice() {
@@ -388,7 +391,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
               {t(`teacher.editor.status.${status}`)}
             </span>
             <div className="editor-actions">
-              <Button variant="secondary" onPress={() => void openPreview()}>
+              <Button variant="secondary" className={guideClass('preview')} onPress={() => void openPreview()}>
                 <Icon name="eye" size={16} />
                 {t('teacher.editor.preview')}
               </Button>
@@ -488,7 +491,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
               {t('teacher.editor.zoom.hint')}
             </span>
           </p>
-          <div className="draw-area">
+          <div className={`draw-area ${guideClass('canvas') ?? ''}`}>
             <DrawingCanvas
               imagePath={project.imagePath}
               imageWidth={project.imageWidth}
@@ -517,7 +520,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
                     {t('teacher.editor.tabs.project')}
                     <Tabs.Indicator />
                   </Tabs.Tab>
-                  <Tabs.Tab id="sounds">
+                  <Tabs.Tab id="sounds" className={guideClass('tab-sounds')}>
                     {t('teacher.editor.tabs.sounds')}
                     <Tabs.Indicator />
                   </Tabs.Tab>
@@ -545,6 +548,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
                 project={project}
                 selection={selection}
                 onSelect={setSelection}
+                guide={guide}
                 userId={userId}
                 onAddField={() => void addField().catch(() => undefined)}
                 onPickSound={setPicker}

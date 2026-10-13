@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import type { Selection } from '../components/editor/SoundsPanel';
 import type { EditorProject } from './editor';
 import { supabase, useSession } from './supabase';
 
@@ -51,6 +52,31 @@ export function practiceSteps(project: EditorProject, previewed: boolean): boole
     Boolean(project.background),
     previewed,
   ];
+}
+
+/** A szerkesztő eleme, amely az Első lépésekben kék keretet kap. */
+export type Guide = 'canvas' | 'tab-sounds' | 'back' | 'row' | 'name' | 'description' | 'add-sound' | 'add-background' | 'preview';
+
+/**
+ * A következő teendő eleme. Ha a panel máshol áll, az odavezető elemet adja (Hangok fül, a hangmező sora, vissza gomb).
+ * `field`: a gyakorló hangmező (az első megrajzolt), a `row` kiemelés ennek a sorára vonatkozik.
+ */
+export function guideTarget(
+  project: EditorProject,
+  steps: boolean[],
+  tab: string,
+  selection: Selection,
+): { guide: Guide; field?: string } | null {
+  const step = steps.findIndex((s) => !s);
+  if (step === 1) return { guide: 'canvas' };
+  if (step === 5) return { guide: 'preview' };
+  if (step < 0) return null;
+  if (tab !== 'sounds') return { guide: 'tab-sounds' };
+  if (step === 4) return { guide: selection ? 'back' : 'add-background' };
+  const field = project.fields.find((f) => f.polygons.length > 0)!;
+  if (selection?.kind !== 'field' || selection.id !== field.id) return { guide: selection ? 'back' : 'row', field: field.id };
+  if (step === 2) return { guide: field.name.trim() ? 'description' : 'name' };
+  return { guide: 'add-sound' };
 }
 
 /** Gyakorló projekt a minta képével; a profil megjegyzi. Ha már van, azt adja vissza. */

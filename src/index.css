@@ -1404,6 +1404,19 @@ div.onboarding-current {
   }
 }
 
+/* Első lépések: a következő teendő eleme. A HeroUI fókuszgyűrűje árnyék, ez körvonal, így egymás mellett is látszanak. */
+.guide-target {
+  outline: var(--focus-ring-width) solid var(--accent);
+  outline-offset: var(--space-0-5);
+  animation: guide-pulse 1.2s ease-out;
+}
+
+@keyframes guide-pulse {
+  50% {
+    outline-offset: var(--space-2);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
