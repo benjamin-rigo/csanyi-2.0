@@ -16,6 +16,7 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 - **Hálózati parancsoknál mondd el, mit csinálsz és miért** (telepítés, push, deploy, API-hívás).
 - **Csak ingyenes megoldások.** Fizetős API, havidíjas szolgáltatás nem.
 - A `docs/dontesnaplo.md`-t csak jóváhagyott döntéssel frissítsd, ne minden feladat után.
+- **Ha új hely hivatkozik képre vagy hangra a tárhelyen** (pl. profilkép, saját hangok listája), a `cleanup_orphans()` függvényt is bővíteni kell, különben a napi takarítás 7 nap után törli a fájlt.
 - **A projektet átadjuk a Csányi Alapítványnak.** Minden új fiók, kulcs, titok, külső szolgáltatás vagy beégetett cím bekerül a `docs/atadas.md`-be (mi van most, és mit kell átállítani).
 
 ## Stack
