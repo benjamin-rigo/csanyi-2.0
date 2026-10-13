@@ -23,6 +23,11 @@ export function Gallery({ gallery, config }: { gallery: GalleryData; config: Con
     (card || titleRef.current)?.focus();
   }, []);
 
+  // Üres kategóriát nem mutatunk: a lista rögzített, de amelyikben még nincs kép, az csak a szerkesztőben látszik.
+  const categories = useMemo(
+    () => gallery.categories.filter((c) => c.id === ALL_CATEGORY || gallery.projects.some((p) => p.categories.includes(c.id))),
+    [gallery],
+  );
   const projects = useMemo(
     () => (category === ALL_CATEGORY ? gallery.projects : gallery.projects.filter((p) => p.categories.includes(category))),
     [category, gallery.projects],
@@ -58,7 +63,7 @@ export function Gallery({ gallery, config }: { gallery: GalleryData; config: Con
             isDetached
             className="category-group"
           >
-            {gallery.categories.map((c) => (
+            {categories.map((c) => (
               <ToggleButton key={c.id} id={c.id}>
                 {c.icon && <Icon name={c.icon} />}
                 {c.label}

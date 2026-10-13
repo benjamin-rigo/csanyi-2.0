@@ -4,6 +4,7 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 
 ## Alapok
 - Cél: pedagógusok képekhez hangmezőket és hangokat társítanak; vak és gyengénlátó (és látó) gyerekek felfedezik a képet.
+- Név: egyelőre Hangösvény (2026-10-13). Jelöltek a végleges névre: Képzelő (alcímmel, pl. „hallgasd meg a képet”), Hangképzelő; a Csányi Alapítvánnyal egyeztetni. A kepzelo.hu foglalt, a hangkepzelo.hu és a kepzelo.eu szabad volt.
 - Terminológia: a kép hangos területe a felületen „hangmező” (nem „zóna”). A gyerekek ezt a szót nem hallják.
 - Eszközök: táblagép (érintés) és asztali gép (egér, billentyűzet) egyenrangú.
 - Csak web, natív burok nincs.
@@ -41,12 +42,12 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 - Onboarding kiemelés (2026-10-13): a gyakorló projektben a következő teendő eleme kék keretet kap (`--accent` körvonal, megjelenéskor egyszer kitágul, mozgáscsökkentéskor nem). Ha a panel máshol áll, az odavezető elem kap keretet (Hangok fül, a hangmező sora, vissza gomb). A fókusz nem mozdul.
 - Minta nézet: eszköztár a helyén, letiltva; fejlécben a Megosztás helyén „Csak megtekintés” címke. A „Most te jössz” normál fő gomb az aktuális lépésben.
 - Megosztás: Privát / Linkkel elérhető / Galériában. A link a publikus kép nézetre visz, ugyanarra, ami a galériából nyílik. A link bármikor működik, hiányzó adat mellett is.
-- Galériába (nyilvánosba) csak akkor kerülhet, ha minden kötelező megvan: kép, cím, kép rövid leírása, háttérhang, legalább egy hangmező, minden hangmezőnek neve, leírása és hangja. Addig a „Galériában is” opció letiltva látszik, alatta a hiányzó tételek listája, mindegyik odavisz, ahol pótolni lehet. A Megosztás gomb mindig kattintható.
+- Galériába (nyilvánosba) csak akkor kerülhet, ha minden kötelező megvan: kép, cím, kép rövid leírása, háttérhang, legalább egy hangmező, minden hangmezőnek neve, leírása, hangja és leíró hangja (a leíró hang 2026-10-13 óta: érintős eszközön a felolvasó kikapcsolását javasoljuk, és felolvasó nélkül a leírást csak a leíró hang mondja el). Linkes megosztáshoz egyik sem kell. Addig a „Galériában is” opció letiltva látszik, alatta a hiányzó tételek listája, mindegyik odavisz, ahol pótolni lehet. A Megosztás gomb mindig kattintható.
 - Hangmező mezői: Név (a hangmezők listájában és a feliratban látszik, 1–2 szó); Leírás (ezt mondja el a felolvasó érintéskor; egy-két rövid mondat, a legfontosabb szóval kezdve). A hangmező helyét a képen a pedagógus írja bele a leírásba (pl. „Fent, a tetőn…”), a szerkesztő segítő szövege erre emlékeztet; automatikus hely-előtag nincs.
 - Hangkönyvtár: Freesound, csak CC0 hangok. A keresés egy Supabase függvényen át megy (a kulcs titokként a Supabase-ben, a böngésző nem látja). A kiválasztott hangot a saját tárhelyünkre másoljuk, a Freesound azonosítóval és a szerzővel. A keresés a hangmező nevével indul. A keresőszót a függvény automatikusan angolra fordítja (MyMemory, ingyenes, kulcs nélkül), mert a hangok címkéi angolok; ha a fordítással nincs találat, az eredetivel keres. A felület kiírja, mire keresett.
 - Szerkesztő panel fülei: Projekt / Hangok / Megosztás. A Hangok fül tetején a Háttérhang (kötelező) rögzített sorként, alatta a hangmezők. Üresen: „+ Háttérhang hozzáadása” mező, alatta: „Minden képhez kell háttérhang: végig szól, így a gyerek mindig hall valamit.”
 - Projekt fül (11c): Cím; Kép (előnézet + Csere); Rövid leírás (a galéria kártyáján látszik és a felolvasó is felolvassa); Alkotó (nem kötelező; a galéria kártyáján és a felolvasónál: „[Alkotó] alkotása”, üresen nem jelenik meg); Téma; legalul külön blokkban Projekt törlése. A Bevezető mező kimarad (2026-10-01).
-- Téma = a galéria kategóriái (2026-10-01): a pedagógus ezek közül választ, többet is; új kategóriát nem hoz létre, a listát az adatbázisban bővítjük, moderálva.
+- Téma = a galéria kategóriái (2026-10-01): a pedagógus ezek közül választ, többet is; új kategóriát nem hoz létre. A lista egyelőre rögzített (2026-10-13): Híres képek, Állatos képek, Tájképek, Városi képek, Mesés képek, Évszakok és ünnepek, Gyerekrajzok. A galéria csak azt a kategóriát mutatja, amelyikben van kép.
 - Előnézet gomb: a kép nézetet nyitja meg.
 - Hangmező rajzolása: Ecset és Radír (a terv szerint), mentéskor körvonallá (sokszöggé) alakítva, így a kép nézet nem változik. Pontok eszköz (2026-10-13, WCAG 2.5.7): kattintásonként egy sarokpont, lezárás az első pontra kattintva vagy a Lezárás gombbal; billentyűzettel nyilak, Enter, Backspace, Esc. A lezárt alakzat a kijelölt hangmezőhöz adódik (kijelölés nélkül új hangmező), a sarkai megmaradnak (nincs simítás).
 - Tárhely takarítása (2026-10-13): a gazdátlan fájlokat (kép projekt nélkül, hang hangmező és háttérhang nélkül) naponta 3:00-kor (UTC) törli a `storage-cleanup` függvény, a pg_cron hívja. Csak a legalább 7 napja gazdátlant (2026-10-13, korábban 1 nap), így a napokig nyitva hagyott szerkesztőben is visszavonható a hangmező törlése vagy a hangcsere.
@@ -59,7 +60,7 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 ## Gyerek oldal
 - Gyerek flow: galéria → kép nézet. Nincs külön leírás oldal (látó gyerekeknek sem).
 - Nincs külön bevezetés, bemutató vagy gyakorló kép. A gyerek csinálva tanul.
-- Galéria: a fejléc egyben bevezető: „Üdvözöllek a Hangösvény galériájában! Ezen az oldalon képek hangjait fedezheted fel. Válassz egy kategóriát, hogy milyen képet szeretnél felfedezni.” Utána kategóriák (Összes kép, Híres képek, Állatos képek, Tájképek; ikonnal), a sor jobb szélén a képek száma. Kategória választásakor a fókusz a kategórián marad, a felolvasó csak bemondja: „[Kategória], N kép” (WCAG 3.2.2).
+- Galéria: a fejléc egyben bevezető: „Üdvözöllek a Hangösvény galériájában! Ezen az oldalon képek hangjait fedezheted fel. Válassz egy kategóriát, hogy milyen képet szeretnél felfedezni.” Utána kategóriák (Összes kép és a nem üres kategóriák, ikonnal), a sor jobb szélén a képek száma. Kategória választásakor a fókusz a kategórián marad, a felolvasó csak bemondja: „[Kategória], N kép” (WCAG 3.2.2).
 - Galéria kártya: a teljes kép levágás nélkül, alatta cím, rövid leírás, kisebben alkotó és hangmezők száma. Az egész kártya egy link a kép nézetre, más művelet nincs rajta (nincs előhallgatás). Felolvasóval: „[Cím], link”, szünet, „[Alkotó] alkotása. [Rövid leírás]”. Nincs „Legutóbb megnyitott”, nincs keresés.
 - Táblagépen felolvasóval húzással lép elemről elemre, asztali gépen Tabbal.
 - A kép felfedezése teljes képernyőn történik; a hangkép és a belemerülés a lényeg.
@@ -114,11 +115,11 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 
 ## Nyitott témák (sorrendben)
 - Levélküldés (SMTP): az átvevő állítja be az átadáskor (2026-10-13, lásd `docs/atadas.md`). A Supabase beépített küldője csak a projekt tagjainak és óránként 2–3 levelet küld, ezért a kollégák meghívója és az elfelejtett jelszó levele élesben nem érkezik meg. Kell egy ingyenes SMTP (pl. Gmail alkalmazásjelszóval vagy Brevo; saját domainnel megbízhatóbb). Addig az e-mail cím módosítása is letiltva.
-0. Töltelék kísérlet (`?mod=kitoltes`): néma elem az üres részen, hogy a VoiceOver ne ugorjon a hangmezőkre. Kilépés kikapcsolt felolvasónál (a kétujjas Z csak VoiceOverrel működik). Kötelező-e a leíró hang a galériához.
+0. Töltelék kísérlet (`?mod=kitoltes`): néma elem az üres részen, hogy a VoiceOver ne ugorjon a hangmezőkre. Kilépés kikapcsolt felolvasónál (a kétujjas Z csak VoiceOverrel működik).
 1. A felolvasós simogatás tesztje táblagépen (iPad, Android): kétujjas Z kilépés, az üres rész valóban néma marad-e, a teljes leírás és a hangmező hangja együtt jól hallható-e, az emlékeztető nem zavaró-e.
 2. WCAG a pedagógus oldalon: a Pontok eszköz (2.5.7) és a hangmezőhatárok kontrasztja (1.4.11) kész (2026-10-13); élesben, teszt-fiókkal ellenőrizni.
 3. Billentyűzetes fókusz: kész (2026-10-13). A pedagógus oldal Tab-sorrendje, a látható fókusz minden lépésnél, a párbeszédablakok fókusza és a szerkesztő lefúrós panelje automatikus tesztben (`e2e/keyboard.spec.ts`).
-4. Címkézés (tagek) és kategóriák: a Téma már a galéria kategóriáiból választ; hogyan bővüljön a lista skálázhatóan, mégis moderáltan, még nyitott.
+4. Címkézés (tagek) és kategóriák: egyelőre rögzített lista (2026-10-13); később dönteni, hogyan bővüljön skálázhatóan, mégis moderáltan.
 6. Jogok: a Reich-kép engedélye (HUNGART vagy örökösök; szóba jöhet az Szjt. oktatási és fogyatékos személyek javára szóló kivétele, jogi ellenőrzés kell).
 7. Jogok: a pedagógusok által feltöltött képek és hangok legyenek jogtiszták (feltöltéskor nyilatkozat, ÁSZF, a hangkönyvtár csak CC0).
 8. Később: „Kijelölés kattintással” eszköz a szerkesztőben (SlimSAM a böngészőben, Transformers.js, ingyenes, a modell csak első használatkor töltődik le). Egyelőre parkolva.

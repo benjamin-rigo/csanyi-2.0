@@ -189,7 +189,8 @@
           "fields": "Legalább egy hangmező (Hangok fül)",
           "fieldName": "{name}: nincs neve (Hangok fül)",
           "fieldDescription": "{name}: nincs leírása (Hangok fül)",
-          "fieldSound": "{name}: nincs hang (Hangok fül)"
+          "fieldSound": "{name}: nincs hang (Hangok fül)",
+          "fieldDescriptionSound": "{name}: nincs leíró hang (Hangok fül)"
         },
         "linkLabel": "Link",
         "copy": "Másolás",
@@ -263,7 +264,7 @@
       },
       "voice": {
         "title": "Leíró hang",
-        "help": "Felolvasó nélkül ez szól, amikor a gyerek ujja a hangmezőhöz ér. Mondd fel a leírást nyugodtan, tisztán.",
+        "help": "Felolvasó nélkül ez szól, amikor a gyerek ujja a hangmezőhöz ér. Mondd fel a leírást nyugodtan, tisztán. A galériába kerüléshez kötelező.",
         "record": "Felvétel",
         "stop": "Leállítás",
         "recording": "Felvétel folyamatban: {time}",

@@ -375,7 +375,7 @@ export const deleteProject = (id: string) => check(supabase.from('projects').del
 /** A galériába kerülés feltételei (döntésnapló), ugyanaz, mint az adatbázis project_missing() függvénye. */
 export type Missing =
   | { kind: 'image' | 'title' | 'shortDescription' | 'background' | 'fields' }
-  | { kind: 'fieldName' | 'fieldDescription' | 'fieldSound'; fieldId: string };
+  | { kind: 'fieldName' | 'fieldDescription' | 'fieldSound' | 'fieldDescriptionSound'; fieldId: string };
 
 export function projectMissing(p: EditorProject): Missing[] {
   const out: Missing[] = [];
@@ -388,6 +388,7 @@ export function projectMissing(p: EditorProject): Missing[] {
     if (!f.name.trim()) out.push({ kind: 'fieldName', fieldId: f.id });
     if (!f.description.trim()) out.push({ kind: 'fieldDescription', fieldId: f.id });
     if (!f.sound) out.push({ kind: 'fieldSound', fieldId: f.id });
+    if (!f.descriptionSound) out.push({ kind: 'fieldDescriptionSound', fieldId: f.id });
   }
   return out;
 }

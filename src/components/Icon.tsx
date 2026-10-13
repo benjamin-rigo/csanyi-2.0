@@ -28,6 +28,10 @@ const PATHS: Record<string, string> = {
   stop: 'M7 7h10v10H7z',
   minus: 'M5 12h14',
   lock: 'M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6z',
+  city: 'M3 21h18M5 21V8l5-3v16M10 21V10h9v11M13 13h3M13 17h3M7 11h.01M7 15h.01',
+  story: 'M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h13M8 7h7M8 11h5',
+  season:
+    'M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4',
   music: 'M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM21 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
 };
 
