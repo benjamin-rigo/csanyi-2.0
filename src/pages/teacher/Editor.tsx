@@ -495,17 +495,17 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
               onSelectionChange={(keys) => setTool([...keys][0] as Tool)}
               isDisabled={readOnly}
             >
-              <ToggleButton id="brush">
+              <ToggleButton id="brush" aria-label={t('teacher.editor.brush')}>
                 <Icon name="brush" size={16} />
-                {t('teacher.editor.brush')}
+                <span className="tool-label">{t('teacher.editor.brush')}</span>
               </ToggleButton>
-              <ToggleButton id="eraser">
+              <ToggleButton id="eraser" aria-label={t('teacher.editor.eraser')}>
                 <Icon name="eraser" size={16} />
-                {t('teacher.editor.eraser')}
+                <span className="tool-label">{t('teacher.editor.eraser')}</span>
               </ToggleButton>
-              <ToggleButton id="points">
+              <ToggleButton id="points" aria-label={t('teacher.editor.points.tool')}>
                 <Icon name="points" size={16} />
-                {t('teacher.editor.points.tool')}
+                <span className="tool-label">{t('teacher.editor.points.tool')}</span>
               </ToggleButton>
             </ToggleButtonGroup>
             <Separator orientation="vertical" />

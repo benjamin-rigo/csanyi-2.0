@@ -102,7 +102,8 @@ test('admin: levétel okkal, a pedagógus látja, visszatétel, kategóriák', a
   await page.goto('/galeria-kezelese');
   const removed = page.locator('.project-card', { hasText: TITLE });
   await removed.getByRole('button', { name: 'Visszatétel' }).click();
-  await expect(page.getByRole('heading', { name: /Levett képek/ })).toBeHidden();
+  // Visszakerült a galériás képek közé (ott Levétel gomb van, nem Visszatétel).
+  await expect(page.locator('.project-card', { hasText: TITLE }).getByRole('button', { name: 'Levétel' })).toBeVisible();
   await page.locator('.project-card', { hasText: TITLE }).getByRole('button', { name: 'Kategóriák' }).click();
   const cats = page.getByRole('dialog');
   await cats.getByRole('row', { name: 'Gyerekrajzok' }).or(cats.getByText('Gyerekrajzok')).first().click();

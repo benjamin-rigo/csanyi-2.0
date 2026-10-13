@@ -10,6 +10,10 @@
   --accent: oklch(0.5 0.195 253.83);
   --muted: #63636b;
   --danger: #c01a1f;
+  /* Mezők, rádiógombok, jelölőnégyzetek kerete (WCAG 1.4.11, mérve): a HeroUI-ban alapból nincs keret, a fehér mező fehér
+     kártyán eltűnt. #828289: fehéren 3,82:1, az oldalháttéren 3,47:1, szürke kártyán 3,29:1, a szürke elemeken 3,2:1. */
+  --field-border: #828289;
+  --field-border-width: 1px;
 
   /* A saját elrendezés színei a HeroUI témából */
   --hs-bg: var(--background);

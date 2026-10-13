@@ -59,32 +59,28 @@ export function MyProjects({ config }: { config: Config }) {
       </div>
 
       {onboarding && !onboarding.done && (
-        <Card variant="secondary" className="onboarding-card">
-          <div className="onboarding-card-text">
-            <div className="onboarding-head-row">
-              <Chip size="sm" variant="primary">
-                {t('teacher.onboarding.cardBadge')}
-              </Chip>
-              <span className="panel-help">
-                {t('teacher.onboarding.cardProgress', { done: practiceDone, total: config.onboarding.steps })}
-              </span>
-            </div>
-            <Card.Title render={(props) => <h2 {...props} />}>{t('teacher.onboarding.cardTitle')}</Card.Title>
-            <Card.Description>{t('teacher.onboarding.cardText')}</Card.Description>
-            <ProgressBar
-              aria-label={t('teacher.onboarding.progressLabel')}
-              value={(practiceDone / config.onboarding.steps) * 100}
-              size="sm"
-            >
-              <ProgressBar.Track>
-                <ProgressBar.Fill />
-              </ProgressBar.Track>
-            </ProgressBar>
+        <Card className="onboarding-card">
+          <div className="onboarding-head-row">
+            <Chip size="sm" color="accent" variant="soft">
+              {t('teacher.onboarding.cardBadge')}
+            </Chip>
+            <span className="panel-help">{t('teacher.onboarding.cardProgress', { done: practiceDone, total: config.onboarding.steps })}</span>
           </div>
-          <ButtonLink href={practiceId ? `/szerkeszto/${practiceId}` : '/minta'} variant="primary" className="button--lg">
-            {practiceId ? t('teacher.onboarding.cardContinue') : t('teacher.onboarding.cardStart')}
-            <Icon name="forward" size={16} />
-          </ButtonLink>
+          <div className="onboarding-card-body">
+            <div className="onboarding-card-text">
+              <Card.Title render={(props) => <h2 {...props} />}>{t('teacher.onboarding.cardTitle')}</Card.Title>
+              <Card.Description>{t('teacher.onboarding.cardText')}</Card.Description>
+            </div>
+            <ButtonLink href={practiceId ? `/szerkeszto/${practiceId}` : '/minta'} variant="primary" className="button--lg">
+              {practiceId ? t('teacher.onboarding.cardContinue') : t('teacher.onboarding.cardStart')}
+              <Icon name="forward" size={16} />
+            </ButtonLink>
+          </div>
+          <ProgressBar aria-label={t('teacher.onboarding.progressLabel')} value={(practiceDone / config.onboarding.steps) * 100} size="sm">
+            <ProgressBar.Track>
+              <ProgressBar.Fill />
+            </ProgressBar.Track>
+          </ProgressBar>
         </Card>
       )}
 

@@ -32,7 +32,7 @@ export function OnboardingPanel({
     <aside className="onboarding" aria-labelledby="onboarding-title">
       <div className="onboarding-head">
         <div className="onboarding-head-row">
-          <Chip size="sm" variant="primary">
+          <Chip size="sm" color="accent" variant="soft">
             {t('teacher.onboarding.label')}
           </Chip>
           <span className="panel-help">{t('teacher.onboarding.progress', { done, total: steps.length })}</span>
