@@ -62,7 +62,7 @@ src/
 public/data/config.json      beállítások
 public/media, sounds         a kezdő projektek képei és hangjai (az adatbázis relatív úttal hivatkozik rájuk)
 supabase/migrations/         adatbázis séma és kezdő adatok
-supabase/functions/          Edge Functions: freesound (hangkönyvtár), teacher-account (meghívás, fiók törlése)
+supabase/functions/          Edge Functions: freesound (hangkönyvtár), teacher-account (meghívás, fiók törlése), storage-cleanup (gazdátlan fájlok napi törlése, pg_cron hívja)
 supabase/templates/          magyar levélsablonok (meghívó, új jelszó), a Supabase felületére kell bemásolni
 docs/dontesnaplo.md      döntésnapló (fő példány)
 docs/atadas.md           átadási lista (fiókok, kulcsok, mit kell átállítani)
@@ -73,7 +73,7 @@ docs/design/             a képernyők tervei
 
 - Kész: gyerek oldal (galéria + képnézet) Supabase-ből; belépés (6, 6b, 6c, 7); Projektjeim (8), Új projekt (10); Szerkesztő Hangok füle (11, 11b): ecset, radír, nagyítás, visszavonás (Cmd/Ctrl+Z), lefúrós panel rögzített fülsorral, a cím maga a szerkeszthető név; hangválasztó (12): Freesound CC0 automatikus fordítással és továbbtöltéssel, saját feltöltés; leíró hang felvétele; lágy szél. Build rendben, axe 0 hiba (a react-aria saját bejelentő elemén kívül).
 - Élő teszt: https://benjamin-rigo.github.io/csanyi-2.0/ (minden main pushra frissül). Élesben lefutott mind az öt migráció, a `freesound` függvény telepítve, a `FREESOUND_API_KEY` titok beállítva (ellenőrizve: „macska” → cat, 7530 találat).
-- Supabase MCP (`.mcp.json`) bekötve: migráció (`apply_migration`), SQL, függvénytelepítés és biztonsági ellenőrzés (`get_advisors`) innen megy, élesben írni csak jóváhagyással. Új migrációt előbb PGlite-tal helyben kipróbálunk (a GitHub-integráció nem futtatja).
+- Supabase MCP (`.mcp.json`) bekötve: migráció (`apply_migration`), SQL, függvénytelepítés és biztonsági ellenőrzés (`get_advisors`) innen megy, élesben írni csak jóváhagyással. Új migrációt előbb PGlite-tal helyben kipróbálunk (a GitHub-integráció nem futtatja); a Vaultot és pg_cront használó `…storage_cleanup_schedule` PGlite-ban nem fut, azt ki kell hagyni. Ha az MCP írása „declined”-ot ad megerősítő kérdés nélkül, kézzel a SQL Editorban.
 - Biztonsági ellenőrző (2026-10-13): a `gallery()` és `shared_project()` szándékosan nyilvános; a kiszivárgott jelszavak szűrése csak fizetős csomagban van, kihagyva.
 - A hangmező alakja `multipolygon` (több rész, lyukak, páros-páratlan kitöltés); a régi `polygon` is érvényes.
 - Lágy szél: `fields.edge_softness`; a képnézet `edgeGain` szerint több hangmezőt szólaltat egyszerre (`SceneAudio.setFields`).

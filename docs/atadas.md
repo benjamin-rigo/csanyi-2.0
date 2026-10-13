@@ -17,7 +17,8 @@ Jelölés: **most** = jelenlegi állapot, **átadáskor** = teendő.
 - **Titkok az Edge Functions-ben** (Edge Functions → Secrets):
   - `FREESOUND_API_KEY`: a hangkönyvtárhoz (lásd 4.).
   - `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`: ezeket a Supabase magától adja.
-- **Függvények:** `freesound`, `teacher-account` (`supabase/functions/`). Új projektnél újra kell telepíteni őket.
+- **Függvények:** `freesound`, `teacher-account`, `storage-cleanup` (`supabase/functions/`). Új projektnél újra kell telepíteni őket; a `storage-cleanup`-nál a „Verify JWT” kikapcsolva (a hívást a Vaultban tárolt titok védi), és a név a telepítés előtt legyen `storage-cleanup`, mert ez lesz a címe.
+- **Napi takarítás (pg_cron):** `storage-cleanup` feladat, 3:00 UTC (Integrations → Cron). A Vaultban két titok: `project_url` (a projekt címe) és `storage_cleanup_secret` (a migráció generálja). Új projektben a `project_url`-t az új címre kell írni (Integrations → Vault).
 - **Adatbázis séma:** `supabase/migrations/`, időrendben lefuttatva egy új projektben is felépíti az egészet.
 - **Auth beállítások:** Site URL és Redirect URLs a weboldal címére (domainváltáskor frissíteni). Levélsablonok: `supabase/templates/` (Authentication → Emails → Templates).
 - **MCP kapcsolat (fejlesztői eszköz):** `.mcp.json` a projekt azonosítójával; új projektnél átírni vagy törölni.
