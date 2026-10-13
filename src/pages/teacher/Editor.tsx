@@ -6,6 +6,7 @@ import { SoundPicker } from '../../components/editor/SoundPicker';
 import { SoundsPanel, type Selection } from '../../components/editor/SoundsPanel';
 import { stopPreview } from '../../components/editor/SoundCard';
 import { Icon } from '../../components/Icon';
+import { ButtonLink } from '../../components/SiteHeader';
 import type { Config, Point } from '../../lib/data';
 import { OnboardingPanel } from '../../components/editor/OnboardingPanel';
 import { ProjectPanel, type ProjectTextPatch } from '../../components/editor/ProjectPanel';
@@ -473,6 +474,16 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
           </>
         )}
       </header>
+
+      {/* Telefonon a szerkesztő nem használható (döntésnapló): csak ez az üzenet látszik. */}
+      <div className="editor-unsupported">
+        <h2>{t('teacher.editor.unsupported.title')}</h2>
+        <p>{t('teacher.editor.unsupported.text')}</p>
+        <ButtonLink href="/projektjeim" variant="secondary">
+          <Icon name="back" size={16} />
+          {t('teacher.editor.backToProjects')}
+        </ButtonLink>
+      </div>
 
       <div className="editor-body">
         {showOnboarding && (

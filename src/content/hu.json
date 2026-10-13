@@ -204,6 +204,10 @@
         "saveError": "Nem sikerült menteni a megosztást. Próbáld újra."
       },
       "canvasLabel": "Rajzterület",
+      "unsupported": {
+        "title": "A szerkesztő táblagépen vagy számítógépen használható",
+        "text": "Telefonon túl kicsi a kép a hangmezők megrajzolásához. Nyisd meg a projektet táblagépen vagy számítógépen."
+      },
       "toolbarLabel": "Rajzeszközök",
       "brush": "Ecset",
       "eraser": "Radír",

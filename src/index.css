@@ -738,6 +738,18 @@ body {
   min-width: 0;
 }
 
+/* Hosszú projektcímnél az utolsó elem rövidül (…), nem csúszik a mentés jelzőre. */
+.editor-breadcrumb .breadcrumbs__item:last-child {
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.editor-breadcrumb .breadcrumbs__item:last-child > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .save-status {
   display: flex;
   align-items: center;
@@ -778,7 +790,9 @@ body {
   gap: var(--space-4);
 }
 
+/* A HeroUI eszköztár rácsként sorakoztat, ami nem törik: rugalmas sorrá tesszük, hogy szükség esetén két sorba férjen. */
 .draw-toolbar {
+  display: flex;
   max-width: 100%;
   flex-wrap: wrap;
   justify-content: center;
@@ -790,6 +804,12 @@ body {
 }
 
 /* Keskeny rajzterületen (pl. az Első lépések sávja mellett) az eszközöknek csak az ikonja látszik; a nevük a felolvasónak és egérrel a gomb címében megmarad. */
+@container (max-width: 520px) {
+  .draw-toolbar .size-slider {
+    width: var(--space-16);
+  }
+}
+
 @container (max-width: 760px) {
   .draw-toolbar .tool-label {
     position: absolute;
@@ -1595,6 +1615,96 @@ div.onboarding-current {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
+}
+
+/* Szerkesztő táblagépen (1280 px alatt): az Első lépések sáv a rajzterület fölé kerül, és csak az aktuális lépés
+   látszik (a többi a felolvasónak megmarad); a jobb panel teljes magasságú marad. */
+.editor-unsupported {
+  display: none;
+}
+
+@media (max-width: 1279px) {
+  .editor-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--editor-panel-w);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .onboarding {
+    grid-column: 1;
+    grid-row: 1;
+    width: auto;
+    max-height: 40dvh;
+    padding: var(--space-4) var(--space-6);
+    gap: var(--space-3);
+    border-right: none;
+    border-bottom: var(--border-thin) solid var(--hs-border);
+  }
+
+  .onboarding-steps > li:not(.onboarding-current) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .onboarding-foot {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .editor-stage {
+    grid-column: 1;
+    grid-row: 2;
+    min-height: 0;
+    padding: var(--space-4);
+  }
+
+  .editor-panel {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    width: auto;
+  }
+}
+
+@media (max-width: 899px) {
+  .editor-body {
+    grid-template-columns: minmax(0, 1fr) var(--editor-panel-w-narrow);
+  }
+
+  .editor-panel {
+    padding: var(--space-4);
+  }
+}
+
+/* Telefonon a szerkesztő helyett egy üzenet (döntésnapló). */
+@media (max-width: 719px) {
+  .editor-body,
+  .editor-actions,
+  .save-status,
+  .editor-header .chip {
+    display: none;
+  }
+
+  .editor-unsupported {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .editor-unsupported h2 {
+    margin: 0;
+    font-size: var(--text-h2);
+  }
+
+  .editor-unsupported p {
+    margin: 0;
+    color: var(--hs-muted);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
