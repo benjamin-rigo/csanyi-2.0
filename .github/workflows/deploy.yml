@@ -15,7 +15,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Lint és a nyilvános oldalak tesztjei (Playwright + axe, asztali Chrome és iPad WebKit); csak ha zöld, frissül az oldal.
+  # A pedagógus tesztek itt kimaradnak, mert a teszt-fiók adatai nincsenek fent (.env.test.local).
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-eredmenyek
+          path: test-results
+          retention-days: 7
+
   build:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
