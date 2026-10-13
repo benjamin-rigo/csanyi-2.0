@@ -9,14 +9,17 @@ test.skip(!email || !password, 'nincs teszt-fiók (.env.test.local)');
 
 const PREFIX = 'E2E ';
 
-/** A tesztek által létrehozott projektek törlése a teszt-fiók jogaival. */
+/** A tesztek által létrehozott projektek és a teszt-fiók feltöltött képeinek törlése, a teszt-fiók jogaival. */
 async function cleanup() {
   const env = Object.fromEntries(
     (await import('node:fs')).readFileSync('.env', 'utf8').split('\n').filter((l) => l.startsWith('VITE_')).map((l) => l.split('=')),
   );
   const db = createClient(env.VITE_SUPABASE_URL, env.VITE_SUPABASE_PUBLISHABLE_KEY, { auth: { persistSession: false } });
-  await db.auth.signInWithPassword({ email: email!, password: password! });
+  const { data } = await db.auth.signInWithPassword({ email: email!, password: password! });
   await db.from('projects').delete().like('title', `${PREFIX}%`);
+  const userId = data.user!.id;
+  const { data: files } = await db.storage.from('images').list(userId);
+  if (files?.length) await db.storage.from('images').remove(files.map((f) => `${userId}/${f.name}`));
   await db.auth.signOut();
 }
 
