@@ -38,6 +38,9 @@
   --field-color-7: #ea580c;
   --field-color-8: #dc2626;
   --field-fill-alpha: 22%;
+  /* A hangmező vonala a szerkesztőben (a fekete és fehér kontúr ezen felül), kijelölve vastagabb */
+  --field-stroke: 2;
+  --field-stroke-selected: 4;
 
   /* Térköz: csak a konvencionális skála */
   --space-0-5: 2px;

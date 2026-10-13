@@ -183,6 +183,23 @@ export const updateProject = (id: string, patch: ProjectPatch) => check(supabase
 export const updateField = (id: string, patch: FieldPatch) => check(supabase.from('fields').update(patch).eq('id', id));
 export const deleteField = (id: string) => check(supabase.from('fields').delete().eq('id', id));
 
+/** Törölt hangmező visszaállítása ugyanazzal az azonosítóval (visszavonás). */
+export const restoreField = (projectId: string, f: EditorField) =>
+  check(
+    supabase.from('fields').insert({
+      id: f.id,
+      project_id: projectId,
+      sort: f.sort,
+      name: f.name,
+      description: f.description,
+      shape: shapeOf(f.polygons),
+      sound_id: f.sound?.id ?? null,
+      volume: f.volume,
+      edge_softness: f.softness,
+      description_sound_id: f.descriptionSound?.id ?? null,
+    }),
+  );
+
 async function durationMs(blob: Blob): Promise<number | null> {
   try {
     const ctx = new OfflineAudioContext(1, 1, 44100);

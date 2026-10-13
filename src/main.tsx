@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useRef, type ReactNode } from 'react';
+import { lazy, StrictMode, Suspense, useEffect, useRef, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Route, Routes, useHref, useNavigate } from 'react-router';
 import { RouterProvider } from 'react-aria-components';
@@ -8,13 +8,15 @@ import { t } from './lib/i18n';
 import { authLinkType, useSession } from './lib/supabase';
 import { Gallery } from './pages/Gallery';
 import { Viewer } from './pages/Viewer';
-import { AccountSetup } from './pages/teacher/AccountSetup';
-import { ForgotPassword } from './pages/teacher/ForgotPassword';
-import { Login } from './pages/teacher/Login';
-import { MyProjects } from './pages/teacher/MyProjects';
-import { NewPassword } from './pages/teacher/NewPassword';
-import { Editor } from './pages/teacher/Editor';
-import { Profile } from './pages/teacher/Profile';
+
+// A pedagógus oldal külön töltődik be, így a galéria és a képnézet gyorsabban nyílik.
+const AccountSetup = lazy(() => import('./pages/teacher/AccountSetup').then((m) => ({ default: m.AccountSetup })));
+const ForgotPassword = lazy(() => import('./pages/teacher/ForgotPassword').then((m) => ({ default: m.ForgotPassword })));
+const Login = lazy(() => import('./pages/teacher/Login').then((m) => ({ default: m.Login })));
+const MyProjects = lazy(() => import('./pages/teacher/MyProjects').then((m) => ({ default: m.MyProjects })));
+const NewPassword = lazy(() => import('./pages/teacher/NewPassword').then((m) => ({ default: m.NewPassword })));
+const Editor = lazy(() => import('./pages/teacher/Editor').then((m) => ({ default: m.Editor })));
+const Profile = lazy(() => import('./pages/teacher/Profile').then((m) => ({ default: m.Profile })));
 
 function StatusPage({ error }: { error?: boolean }) {
   return error ? (
@@ -69,45 +71,47 @@ function App() {
   return (
     <RouterProvider navigate={navigate} useHref={useHref}>
       <AuthLinkRedirect />
-      <Routes>
-        <Route path="/belepes" element={<Login config={config} />} />
-        <Route path="/elfelejtett-jelszo" element={<ForgotPassword />} />
-        <Route path="/uj-jelszo" element={<NewPassword config={config} />} />
-        <Route path="/fiok-beallitasa" element={<AccountSetup config={config} />} />
-        <Route
-          path="/projektjeim"
-          element={
-            <RequireAuth>
-              <MyProjects config={config} />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/minta"
-          element={
-            <RequireAuth>
-              <Editor config={config} projectId={config.onboarding.sampleProjectId} />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/szerkeszto/:id"
-          element={
-            <RequireAuth>
-              <Editor config={config} />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/profil"
-          element={
-            <RequireAuth>
-              <Profile />
-            </RequireAuth>
-          }
-        />
-        <Route path="*" element={<KidApp />} />
-      </Routes>
+      <Suspense fallback={<StatusPage />}>
+        <Routes>
+          <Route path="/belepes" element={<Login config={config} />} />
+          <Route path="/elfelejtett-jelszo" element={<ForgotPassword />} />
+          <Route path="/uj-jelszo" element={<NewPassword config={config} />} />
+          <Route path="/fiok-beallitasa" element={<AccountSetup config={config} />} />
+          <Route
+            path="/projektjeim"
+            element={
+              <RequireAuth>
+                <MyProjects config={config} />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/minta"
+            element={
+              <RequireAuth>
+                <Editor config={config} projectId={config.onboarding.sampleProjectId} />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/szerkeszto/:id"
+            element={
+              <RequireAuth>
+                <Editor config={config} />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/profil"
+            element={
+              <RequireAuth>
+                <Profile />
+              </RequireAuth>
+            }
+          />
+          <Route path="*" element={<KidApp />} />
+        </Routes>
+      </Suspense>
     </RouterProvider>
   );
 }

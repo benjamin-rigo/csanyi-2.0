@@ -17,6 +17,7 @@ import {
   loadCategories,
   loadProject,
   setProjectCategories,
+  restoreField,
   shapeOf,
   updateField,
   updateProject,
@@ -28,12 +29,22 @@ import {
   type Missing,
   type Visibility,
 } from '../../lib/editor';
+import {
+  EMPTY_HISTORY,
+  fieldPatch,
+  pickField,
+  pickProject,
+  projectPatch,
+  record,
+  type Change,
+  type FieldValues,
+  type History,
+  type ProjectValues,
+} from '../../lib/history';
 import { completeOnboarding, guideTarget, practiceSteps, startPractice, useOnboarding } from '../../lib/onboarding';
 import { uploadFile } from '../../lib/teacher';
 import { t } from '../../lib/i18n';
 import { useSession } from '../../lib/supabase';
-
-type Stroke = { fieldId: string; before: Point[][]; after: Point[][] };
 
 /** Szerkesztő (11). projectId nélkül a címből jön; a minta (/minta) csak megtekinthető, mellette az Első lépések. */
 export function Editor({ config, projectId }: { config: Config; projectId?: string }) {
@@ -57,7 +68,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
   const [tab, setTab] = useState<'project' | 'sounds' | 'share'>('sounds');
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [shareError, setShareError] = useState(false);
-  const [history, setHistory] = useState<{ done: Stroke[]; undone: Stroke[] }>({ done: [], undone: [] });
+  const [history, setHistory] = useState<History>(EMPTY_HISTORY);
   const { status, schedule, track } = useAutosave(config.editor.autosaveDelayMs);
 
   // A késleltetett mentés mindig a legfrissebb állapotot küldi.
@@ -127,9 +138,55 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
     };
     setProject((p) => p && { ...p, fields: [...p.fields, field] });
     setSelection({ kind: 'field', id: fieldId });
-    setTool('brush');
+    setTool((t) => (t === 'eraser' ? 'brush' : t));
     if (polygons.length) setShape(fieldId, polygons);
+    setHistory((h) => record(h, { kind: 'create', field, at: Date.now() }));
     return fieldId;
+  }
+
+  /** Visszavonható módosítás egy hangmezőn; a mentést a hívó végzi (azonnal vagy késleltetve). */
+  function recordField(fieldId: string, after: FieldValues) {
+    const f = projectRef.current?.fields.find((x) => x.id === fieldId);
+    if (!f) return;
+    const before = pickField(f, Object.keys(after) as (keyof FieldValues)[]);
+    setHistory((h) => record(h, { kind: 'field', fieldId, before, after, at: Date.now() }));
+  }
+
+  function recordProject(after: ProjectValues) {
+    const p = projectRef.current;
+    if (!p) return;
+    const before = pickProject(p, Object.keys(after) as (keyof ProjectValues)[]);
+    setHistory((h) => record(h, { kind: 'project', before, after, at: Date.now() }));
+  }
+
+  function applyField(fieldId: string, values: FieldValues) {
+    patchField(fieldId, values);
+    void track(updateField(fieldId, fieldPatch(values))).catch(() => undefined);
+  }
+
+  function applyProject(values: ProjectValues) {
+    setProject((p) => p && { ...p, ...values });
+    void track(updateProject(project!.id, projectPatch(values))).catch(() => undefined);
+  }
+
+  function dropField(fieldId: string) {
+    setProject((p) => p && { ...p, fields: p.fields.filter((f) => f.id !== fieldId) });
+    setSelection((s) => (s?.kind === 'field' && s.id === fieldId ? null : s));
+    void track(deleteField(fieldId)).catch(() => undefined);
+  }
+
+  function bringBackField(field: EditorField) {
+    setProject((p) => p && { ...p, fields: [...p.fields, field].sort((a, b) => a.sort - b.sort) });
+    setSelection({ kind: 'field', id: field.id });
+    void track(restoreField(project!.id, field)).catch(() => undefined);
+  }
+
+  function applyChange(change: Change, direction: 'undo' | 'redo') {
+    const values = direction === 'undo' ? 'before' : 'after';
+    if (change.kind === 'field') applyField(change.fieldId, change[values]);
+    else if (change.kind === 'project') applyProject(change[values]);
+    else if ((change.kind === 'create') === (direction === 'undo')) dropField(change.field.id);
+    else bringBackField(change.field);
   }
 
   async function onStroke(fieldId: string | null, polygons: Point[][]) {
@@ -138,23 +195,22 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
       if (polygons.length) await addField(polygons).catch(() => null);
       return;
     }
-    const before = project.fields.find((f) => f.id === fieldId)?.polygons ?? [];
+    recordField(fieldId, { polygons });
     setShape(fieldId, polygons);
-    setHistory((h) => ({ done: [...h.done, { fieldId, before, after: polygons }], undone: [] }));
   }
 
   function undo() {
-    const stroke = history.done.at(-1);
-    if (!stroke) return;
-    setShape(stroke.fieldId, stroke.before);
-    setHistory((h) => ({ done: h.done.slice(0, -1), undone: [...h.undone, stroke] }));
+    const change = history.done.at(-1);
+    if (!change) return;
+    applyChange(change, 'undo');
+    setHistory((h) => ({ done: h.done.slice(0, -1), undone: [...h.undone, change] }));
   }
 
   function redo() {
-    const stroke = history.undone.at(-1);
-    if (!stroke) return;
-    setShape(stroke.fieldId, stroke.after);
-    setHistory((h) => ({ done: [...h.done, stroke], undone: h.undone.slice(0, -1) }));
+    const change = history.undone.at(-1);
+    if (!change) return;
+    applyChange(change, 'redo');
+    setHistory((h) => ({ done: [...h.done, change], undone: h.undone.slice(0, -1) }));
   }
 
   /**
@@ -176,9 +232,21 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
     const save = (s: EditorSound) =>
       target === 'background' ? updateProject(projectId, { background_sound_id: s.id }) : updateField(target, { sound_id: s.id });
 
+    // Visszavonható lépés a mentett (saját tárhelyen lévő) hanggal.
+    const remember = (s: EditorSound) =>
+      setHistory((h) =>
+        record(
+          h,
+          target === 'background'
+            ? { kind: 'project', before: { background: previous }, after: { background: s }, at: Date.now() }
+            : { kind: 'field', fieldId: target, before: { sound: previous }, after: { sound: s }, at: Date.now() },
+        ),
+      );
+
     show(sound);
     if (target === 'background') setSelection({ kind: 'background' });
     if (!copy) {
+      remember(sound);
       void track(save(sound)).catch(() => undefined);
       return;
     }
@@ -186,6 +254,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
       copy.then(async (copied) => {
         if (current()?.id !== sound.id) return;
         show(copied);
+        remember(copied);
         await save(copied);
       }),
     ).catch(() => {
@@ -200,6 +269,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
   }, []);
 
   function onProjectText(patch: ProjectTextPatch) {
+    recordProject(patch);
     setProject((p) => p && { ...p, ...patch });
     schedule('project-text', () => {
       const p = projectRef.current!;
@@ -227,7 +297,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
       polygons: f.polygons.map((pts) => pts.map(([x, y]) => [x * sx, y * sy] as Point)),
     }));
     setProject({ ...project, imagePath, imageWidth: width, imageHeight: height, fields });
-    setHistory({ done: [], undone: [] });
+    setHistory(EMPTY_HISTORY);
     await track(
       Promise.all([
         updateProject(project.id, { image_path: imagePath, image_width: width, image_height: height }),
@@ -275,10 +345,9 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
 
   async function removeField(field: EditorField) {
     setConfirmDelete(null);
-    setProject((p) => p && { ...p, fields: p.fields.filter((f) => f.id !== field.id) });
-    setSelection(null);
-    setHistory((h) => ({ done: h.done.filter((s) => s.fieldId !== field.id), undone: h.undone.filter((s) => s.fieldId !== field.id) }));
-    await track(deleteField(field.id)).catch(() => undefined);
+    const current = projectRef.current?.fields.find((f) => f.id === field.id) ?? field;
+    setHistory((h) => record(h, { kind: 'delete', field: current, at: Date.now() }));
+    dropField(field.id);
   }
 
   // Cmd/Ctrl + Z visszavon, Cmd/Ctrl + Shift + Z vagy Ctrl + Y újra. Szövegmezőben a szöveg saját visszavonása marad.
@@ -433,6 +502,10 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
                 <Icon name="eraser" size={16} />
                 {t('teacher.editor.eraser')}
               </ToggleButton>
+              <ToggleButton id="points">
+                <Icon name="points" size={16} />
+                {t('teacher.editor.points.tool')}
+              </ToggleButton>
             </ToggleButtonGroup>
             <Separator orientation="vertical" />
             <Slider
@@ -486,7 +559,13 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
             </Button>
           </Toolbar>
           <p className="canvas-hint" hidden={readOnly}>
-            {selectedField ? t('teacher.editor.canvasHintSelected') : t('teacher.editor.canvasHintNew')}
+            {tool === 'points' ? (
+              <span id="points-help">{t('teacher.editor.points.hint')}</span>
+            ) : selectedField ? (
+              t('teacher.editor.canvasHintSelected')
+            ) : (
+              t('teacher.editor.canvasHintNew')
+            )}
             <span id="zoom-hint" className="canvas-hint-zoom">
               {t('teacher.editor.zoom.hint')}
             </span>
@@ -553,21 +632,25 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
                 onAddField={() => void addField().catch(() => undefined)}
                 onPickSound={setPicker}
                 onBackgroundVolume={(v) => {
+                  recordProject({ backgroundVolume: v });
                   setProject((p) => p && { ...p, backgroundVolume: v });
                   schedule('background-volume', () =>
                     updateProject(project.id, { background_volume: projectRef.current!.backgroundVolume }),
                   );
                 }}
                 onRemoveBackground={() => {
+                  recordProject({ background: null });
                   setProject((p) => p && { ...p, background: null });
                   setSelection(null);
                   void track(updateProject(project.id, { background_sound_id: null })).catch(() => undefined);
                 }}
                 onFieldChange={(fid, patch) => {
+                  recordField(fid, patch);
                   patchField(fid, patch);
                   saveFieldLater(fid);
                 }}
                 onFieldVoice={(fid, sound) => {
+                  recordField(fid, { descriptionSound: sound });
                   patchField(fid, { descriptionSound: sound });
                   void track(updateField(fid, { description_sound_id: sound?.id ?? null })).catch(() => undefined);
                 }}

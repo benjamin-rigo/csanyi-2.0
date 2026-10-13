@@ -48,7 +48,10 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 - Projekt fül (11c): Cím; Kép (előnézet + Csere); Rövid leírás (a galéria kártyáján látszik és a felolvasó is felolvassa); Alkotó (nem kötelező; a galéria kártyáján és a felolvasónál: „[Alkotó] alkotása”, üresen nem jelenik meg); Téma; legalul külön blokkban Projekt törlése. A Bevezető mező kimarad (2026-10-01).
 - Téma = a galéria kategóriái (2026-10-01): a pedagógus ezek közül választ, többet is; új kategóriát nem hoz létre, a listát az adatbázisban bővítjük, moderálva.
 - Előnézet gomb: a kép nézetet nyitja meg.
-- Hangmező rajzolása: Ecset és Radír (a terv szerint), mentéskor körvonallá (sokszöggé) alakítva, így a kép nézet nem változik. A húzás nélküli „Pontok” eszköz (WCAG 2.5.7) a következő körben.
+- Hangmező rajzolása: Ecset és Radír (a terv szerint), mentéskor körvonallá (sokszöggé) alakítva, így a kép nézet nem változik. Pontok eszköz (2026-10-13, WCAG 2.5.7): kattintásonként egy sarokpont, lezárás az első pontra kattintva vagy a Lezárás gombbal; billentyűzettel nyilak, Enter, Backspace, Esc. A lezárt alakzat a kijelölt hangmezőhöz adódik (kijelölés nélkül új hangmező), a sarkai megmaradnak (nincs simítás).
+- Hangmezők határa a szerkesztőben (2026-10-13, WCAG 1.4.11): kéttónusú szegély, a színes vonal mellett fekete és fehér kontúr, így bármilyen képen látszik; a kijelölt hangmező vonala vastagabb. A lerakott pontok fehér kitöltésűek fekete kontúrral.
+- Visszavonás (2026-10-13): a rajz mellett a hangmező létrehozása és törlése, neve, leírása, hangereje, lágysága, hangja, leíró hangja, a háttérhang és hangereje, a projekt címe, rövid leírása és alkotója. A gyors gépelés vagy csúszkamozgatás egy lépés. Nem vonható vissza: képcsere, megosztás, kategóriák. Cmd/Ctrl+Z szövegmezőben a mező saját visszavonása marad.
+- Érintőképernyőn két ujjal nagyít és mozgat, egy ujjal fest. Ha festés közben leér a második ujj, a félbehagyott vonás elvész.
 - Leíró hang a szerkesztőben: a hangmező panelén a Leírás alatt; Felvétel (mikrofonnal, a böngészőben) vagy Feltöltés, visszajátszás, törlés.
 - Új projekt: 2026-10-02 és 10-13 között az Első lépések befejezéséig le volt tiltva; 2026-10-13 óta mindig elérhető, az Első lépések kártyája ajánlásként marad a Projektjeim tetején.
 
@@ -112,7 +115,7 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 - Levélküldés (SMTP): az átvevő állítja be az átadáskor (2026-10-13, lásd `docs/atadas.md`). A Supabase beépített küldője csak a projekt tagjainak és óránként 2–3 levelet küld, ezért a kollégák meghívója és az elfelejtett jelszó levele élesben nem érkezik meg. Kell egy ingyenes SMTP (pl. Gmail alkalmazásjelszóval vagy Brevo; saját domainnel megbízhatóbb). Addig az e-mail cím módosítása is letiltva.
 0. Töltelék kísérlet (`?mod=kitoltes`): néma elem az üres részen, hogy a VoiceOver ne ugorjon a hangmezőkre. Kilépés kikapcsolt felolvasónál (a kétujjas Z csak VoiceOverrel működik). Kötelező-e a leíró hang a galériához.
 1. A felolvasós simogatás tesztje táblagépen (iPad, Android): kétujjas Z kilépés, az üres rész valóban néma marad-e, a teljes leírás és a hangmező hangja együtt jól hallható-e, az emlékeztető nem zavaró-e.
-2. WCAG a pedagógus oldalon: „Pontok” rajzolóeszköz húzás nélkül (2.5.7); a kiválasztott állapot és a mezőhatárok kontrasztja (1.4.11).
+2. WCAG a pedagógus oldalon: a Pontok eszköz (2.5.7) és a hangmezőhatárok kontrasztja (1.4.11) kész (2026-10-13); élesben, teszt-fiókkal ellenőrizni.
 3. Billentyűzetes fókusz: élőben újranézni a prototípuson.
 4. Címkézés (tagek) és kategóriák: a Téma már a galéria kategóriáiból választ; hogyan bővüljön a lista skálázhatóan, mégis moderáltan, még nyitott.
 6. Jogok: a Reich-kép engedélye (HUNGART vagy örökösök; szóba jöhet az Szjt. oktatási és fogyatékos személyek javára szóló kivétele, jogi ellenőrzés kell).

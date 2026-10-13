@@ -55,8 +55,8 @@ src/
   pages/Viewer.tsx       képnézet (2–4)
   pages/teacher/         pedagógus oldal: Login (6), ForgotPassword (6b), NewPassword (6c), AccountSetup (7), MyProjects (8), Editor (11, 11b, 11c, 13; a /minta csak megtekintés), Profile (14)
   components/            SiteHeader (Logo, ButtonLink, SiteFooter), AuthLayout, AuthFields, TeacherLayout, NewProjectModal (10), Icon
-  components/editor/     OnboardingPanel (Első lépések), DrawingCanvas (ecset, radír), SoundsPanel (Hangok fül), ProjectPanel (Projekt fül), SharePanel (Megosztás fül), SoundPicker (12), LibraryTab, SoundCard, VoiceRecorder (leíró hang)
-  lib/                   data, supabase, teacher, onboarding, editor (betöltés, automatikus mentés, hangfeltöltés), contour (maszk ↔ sokszög), geometry, i18n, audio, device
+  components/editor/     OnboardingPanel (Első lépések), DrawingCanvas (ecset, radír, pontok, csippentés), SoundsPanel (Hangok fül), ProjectPanel (Projekt fül), SharePanel (Megosztás fül), SoundPicker (12), LibraryTab, SoundCard, VoiceRecorder (leíró hang)
+  lib/                   data, supabase, teacher, onboarding, history (visszavonás), editor (betöltés, automatikus mentés, hangfeltöltés), contour (maszk ↔ sokszög), geometry, i18n, audio, device
   content/hu.json        felületi szövegek
   styles/tokens.css      design tokenek
 public/data/config.json      beállítások
@@ -88,7 +88,7 @@ docs/design/             a képernyők tervei
 2. Projekt fül (11c) és Megosztás (13): kész (2026-10-01). A galériába kerülés feltételeit a kliens (`projectMissing`) és az adatbázis (`project_missing()`) is ellenőrzi; a kettőt együtt kell módosítani.
 3. Profil (14) és Első lépések (9a, 9b) kész (2026-10-02). Az onboarding: `/minta` a mintaprojekt csak megtekintésre (`config.json` onboarding.sampleProjectId), a „Most te jössz” gyakorló projektet hoz létre (`projects.is_practice`, `profiles.practice_project_id`); a lépések a gyakorló projekt állapotából teljesülnek (`practiceSteps`), az Előnézet zárja le (`profiles.onboarding_step = 6`). Az Új projekt onboarding nélkül is elérhető (2026-10-13). A meghívott pedagógus a fiók beállítása után a mintára kerül.
 4. Tesztelni iPaden: lágy szél felolvasó nélkül, leíró hang (gépen felvett m4a lejátszása), töltelék szerep-változatai felolvasóval.
-5. Később: Pontok rajzeszköz (WCAG 2.5.7), csippentéses nagyítás érintőképernyőn, visszavonás a festésen túl (törlés, hangcsere, szöveg), SMTP a levelekhez.
+5. Kész (2026-10-13): Pontok rajzeszköz (WCAG 2.5.7), kéttónusú hangmezőhatár (1.4.11), visszavonás a festésen túl (`src/lib/history.ts`), csippentéses nagyítás, a pedagógus oldal külön töltődik be (`React.lazy`). Hátra: a HeroUI stílusok komponensenkénti betöltése (képernyőképes ellenőrzéssel), SMTP az átadáskor.
 - A nyitott témák listája a napló végén.
 
 ## Parancsok

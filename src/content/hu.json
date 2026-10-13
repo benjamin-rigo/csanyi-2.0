@@ -203,6 +203,13 @@
       "toolbarLabel": "Rajzeszközök",
       "brush": "Ecset",
       "eraser": "Radír",
+      "points": {
+        "tool": "Pontok",
+        "hint": "Kattints a hangmező sarkaira, és zárd le az első pontra kattintva vagy a Lezárás gombbal. Billentyűzettel: nyilak, Enter a pont, Backspace az utolsó törlése, Esc az elvetés.",
+        "count": "{n} pont",
+        "cancel": "Elvetés",
+        "finish": "Lezárás"
+      },
       "size": "Méret",
       "sizeLabel": "Ecsetméret",
       "undo": "Visszavonás",

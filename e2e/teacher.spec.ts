@@ -77,3 +77,60 @@ test('új projekt: létrehozás, hangmező rajzolása, elnevezés, mentés', asy
   await expect(page.locator('.draw-field')).toHaveCount(1);
   await expect(page.getByRole('option', { name: /Ház/ })).toBeVisible();
 });
+
+test('Pontok eszköz és visszavonás (alak, név, törlés)', async ({ page }) => {
+  await login(page);
+  await page.goto('/projektjeim');
+  await page.getByRole('button', { name: 'Új projekt' }).first().click();
+  const dialog = page.getByRole('dialog');
+  const chooser = page.waitForEvent('filechooser');
+  await dialog.getByRole('button', { name: 'Tallózás' }).click();
+  await (await chooser).setFiles('e2e/fixtures/kep.png');
+  await dialog.getByLabel('Cím').fill(`${PREFIX}pontok`);
+  await dialog.getByRole('button', { name: 'Létrehozás' }).click();
+  await expect(page).toHaveURL(/szerkeszto\//);
+
+  // Pontok: három kattintás és lezárás az első pontra; új hangmező lesz belőle.
+  await page.getByRole('radio', { name: 'Pontok' }).or(page.getByRole('button', { name: 'Pontok' })).click();
+  const frame = page.locator('.draw-frame');
+  const b = (await frame.boundingBox())!;
+  const at = (fx: number, fy: number) => page.mouse.click(b.x + b.width * fx, b.y + b.height * fy);
+  await at(0.2, 0.2);
+  await at(0.6, 0.2);
+  await at(0.6, 0.7);
+  await expect(page.getByText('3 pont')).toBeVisible();
+  await expectNoAxeViolations(page);
+  await at(0.2, 0.2);
+  await expect(page.locator('.draw-field')).toHaveCount(1);
+
+  // Billentyűzettel egy második rész ugyanabba a hangmezőbe.
+  await frame.focus();
+  for (const k of ['Shift+ArrowLeft', 'Shift+ArrowLeft', 'Shift+ArrowLeft', 'Shift+ArrowDown', 'Enter', 'Shift+ArrowLeft', 'Enter', 'Shift+ArrowDown', 'Enter']) {
+    await page.keyboard.press(k);
+  }
+  await page.getByRole('button', { name: 'Lezárás' }).click();
+  const shape = page.locator('.draw-field-line');
+  const twoParts = await shape.getAttribute('d');
+  expect(twoParts!.match(/M/g)!.length).toBe(2);
+
+  // Visszavonás: a második rész eltűnik, újra: visszajön.
+  await page.getByRole('button', { name: 'Visszavonás' }).click();
+  await expect.poll(async () => (await shape.getAttribute('d'))!.match(/M/g)!.length).toBe(1);
+  await page.getByRole('button', { name: 'Újra' }).click();
+  await expect(shape).toHaveAttribute('d', twoParts!);
+
+  // Név: a gépelés egy lépés, visszavonva üres.
+  await page.getByLabel('Hangmező neve').fill('Ház');
+  await page.getByRole('button', { name: 'Visszavonás' }).click();
+  await expect(page.getByLabel('Hangmező neve')).toHaveValue('');
+
+  // Törlés és visszavonása: újratöltés után is megvan.
+  await page.getByRole('button', { name: 'Hangmező törlése' }).click();
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Törlés' }).click();
+  await expect(page.locator('.draw-field')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Visszavonás' }).click();
+  await expect(page.locator('.draw-field')).toHaveCount(1);
+  await expect(page.getByText('Automatikusan mentve')).toBeVisible({ timeout: 10_000 });
+  await page.reload();
+  await expect(page.locator('.draw-field-line')).toHaveAttribute('d', twoParts!);
+});

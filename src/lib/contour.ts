@@ -27,8 +27,21 @@ export function drawShape(ctx: CanvasRenderingContext2D, polygons: Point[][], sc
   ctx.fill(path, 'evenodd');
 }
 
-/** A maszk körvonalai sokszögként, a kép koordinátáiban. */
-export function traceMask(ctx: CanvasRenderingContext2D, scale: number): Point[][] {
+/** Egy sokszög hozzáadása a maszkhoz (unió, a meglévő rajz megmarad). */
+export function addPolygon(ctx: CanvasRenderingContext2D, pts: Point[], scale: number) {
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0] * scale, pts[0][1] * scale);
+  for (const [x, y] of pts.slice(1)) ctx.lineTo(x * scale, y * scale);
+  ctx.closePath();
+  ctx.fillStyle = '#000';
+  ctx.fill();
+}
+
+/**
+ * A maszk körvonalai sokszögként, a kép koordinátáiban.
+ * `smooth: false`: a sarkok megmaradnak (pontokkal rajzolt alakzat); az ecsetvonásé lekerekítve.
+ */
+export function traceMask(ctx: CanvasRenderingContext2D, scale: number, smooth = true): Point[][] {
   const { width: w, height: h } = ctx.canvas;
   const alpha = ctx.getImageData(0, 0, w, h).data;
   const inside = (x: number, y: number) => x >= 0 && y >= 0 && x < w && y < h && alpha[(y * w + x) * 4 + 3] > 127;
@@ -63,7 +76,8 @@ export function traceMask(ctx: CanvasRenderingContext2D, scale: number): Point[]
         v = out!.pop()!;
       } while (v !== start);
       // A pixelhatár lépcsős: előbb kiegyenesítjük, aztán a sarkokat lekerekítjük.
-      const simple = chaikin(simplifyLoop(loop, 1.2), 2);
+      const straight = simplifyLoop(loop, 1.2);
+      const simple = smooth ? chaikin(straight, 2) : straight;
       if (simple.length >= 3 && Math.abs(area(simple)) >= 4) {
         loops.push(simple.map(([x, y]) => [round(x / scale), round(y / scale)]));
       }
