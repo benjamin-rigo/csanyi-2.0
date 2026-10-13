@@ -98,4 +98,5 @@ npm install
 npm run dev      # fejlesztői szerver
 npm run build    # típusellenőrzés + build
 npm run lint
+npm run test:e2e # Playwright + axe (asztali Chrome és iPad WebKit); a pedagógus tesztekhez .env.test.local kell
 ```
