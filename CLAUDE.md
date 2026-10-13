@@ -80,7 +80,7 @@ docs/design/             a képernyők tervei
 - Freesound: `supabase/functions/freesound` (Edge Function, titok: `FREESOUND_API_KEY`); csak CC0, a keresőszót MyMemory fordítja angolra, a kiválasztott hang a saját tárhelyre másolódik.
 - Kísérlet folyamatban: töltelék az üres részen (`?mod=kitoltes`, `kitoltes2`, `kitoltes3`); iPaden a „kép” szó eltűnt-e még nem derült ki a szerep-változatokkal.
 - Meghívás: a Profilból bármelyik pedagógus (teacher-account függvény, napi 10), vagy Supabase → Authentication → Users → Invite user. **Levélküldés (SMTP) még nincs beállítva**: a beépített küldő csak a projekt tagjainak kézbesít; az átvevő állítja be az átadáskor (`docs/atadas.md`).
-- A `@heroui/styles` most minden komponens stílusát betölti; később csak a használtakat importáljuk. A JS csomag 500 kB fölött van (figyelmeztetés); a pedagógus oldal külön betöltésével csökkenthető.
+- A HeroUI stílusaiból csak a használt komponenseké töltődik be (`src/index.css` eleje): **új HeroUI komponens használatakor a CSS-ét is fel kell venni oda**, különben stílus nélkül jelenik meg. A pedagógus oldal külön töltődik be (`React.lazy`, `src/main.tsx`).
 
 ## Következő lépések
 
@@ -88,7 +88,7 @@ docs/design/             a képernyők tervei
 2. Projekt fül (11c) és Megosztás (13): kész (2026-10-01). A galériába kerülés feltételeit a kliens (`projectMissing`) és az adatbázis (`project_missing()`) is ellenőrzi; a kettőt együtt kell módosítani.
 3. Profil (14) és Első lépések (9a, 9b) kész (2026-10-02). Az onboarding: `/minta` a mintaprojekt csak megtekintésre (`config.json` onboarding.sampleProjectId), a „Most te jössz” gyakorló projektet hoz létre (`projects.is_practice`, `profiles.practice_project_id`); a lépések a gyakorló projekt állapotából teljesülnek (`practiceSteps`), az Előnézet zárja le (`profiles.onboarding_step = 6`). Az Új projekt onboarding nélkül is elérhető (2026-10-13). A meghívott pedagógus a fiók beállítása után a mintára kerül.
 4. Tesztelni iPaden: lágy szél felolvasó nélkül, leíró hang (gépen felvett m4a lejátszása), töltelék szerep-változatai felolvasóval.
-5. Kész (2026-10-13): Pontok rajzeszköz (WCAG 2.5.7), kéttónusú hangmezőhatár (1.4.11), visszavonás a festésen túl (`src/lib/history.ts`), csippentéses nagyítás, a pedagógus oldal külön töltődik be (`React.lazy`). Hátra: a HeroUI stílusok komponensenkénti betöltése (képernyőképes ellenőrzéssel), SMTP az átadáskor.
+5. Kész (2026-10-13): Pontok rajzeszköz (WCAG 2.5.7), kéttónusú hangmezőhatár (1.4.11), visszavonás a festésen túl (`src/lib/history.ts`), csippentéses nagyítás, a pedagógus oldal külön töltődik be (`React.lazy`). A HeroUI stílusok komponensenként töltődnek be (képernyőképekkel ellenőrizve, pixelre egyezik). Hátra: SMTP az átadáskor.
 - A nyitott témák listája a napló végén.
 
 ## Parancsok
