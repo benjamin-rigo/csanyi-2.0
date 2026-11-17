@@ -83,22 +83,24 @@
   --focus-ring-width: 2px; /* a HeroUI gyűrűjével azonos, nem HeroUI elemekhez */
   --field-focus-stroke: 3;
 
-  /* Betű (a végleges párosítás még nyitott) */
-  --font-sans: "Inter Variable", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --text-caption: 13px;
-  --text-sm: 14px;
-  --text-md: 15px;
-  --text-base: 16px;
-  --text-lg: 18px;
-  --text-h1: 36px;
-  --text-h1-narrow: 28px;
-  --text-h1-card: 26px;
-  --text-h1-page: 30px;
-  --text-h2: 20px;
-  /* Címsorok szintjei (döntésnapló): oldalcím (h1) --text-h1-page; szakaszcím az oldalon (h2) --type-section, félkövér;
-     panel- és kártyaszakasz címe --type-panel, félkövér; szövegtörzs --text-base; kiegészítő szöveg --text-sm. */
-  --type-section: var(--text-lg);
-  --type-panel: var(--text-base);
+  /* Betű (döntésnapló, 2026-11-17): Source Sans 3, teljes magyar ékezetkészlet; a címek is ezzel */
+  --font-sans: "Source Sans 3 Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Betűskála: hat fokozat. A Source Sans 3 ugyanakkora px-en kisebb az Internél, ezért egy fokkal nagyobb skála;
+     a legkisebb 15 px, a gyengénlátók miatt ennél kisebb szöveg nincs. A HeroUI is ezeket a változókat használja. */
+  --text-sm: 15px;
+  --text-base: 17px;
+  --text-lg: 19px;
+  --text-xl: 24px;
+  --text-2xl: 30px;
+  --text-3xl: 38px;
+  /* HeroUI eltérés (gyengénlátók): a komponensek legkisebb szövege (segítő szöveg, hibaüzenet, címke, chip) is --text-sm */
+  --text-xs: var(--text-sm);
+  /* Szerepek (döntésnapló, Címsorok szintjei): a CSS ezekre hivatkozik, nem a méretekre */
+  --type-display: var(--text-3xl); /* a galéria nyitócíme */
+  --type-title: var(--text-2xl); /* oldalcím (h1), belépő kártya címe, a galéria címe keskenyen */
+  --type-heading: var(--text-xl); /* panel részletcíme, Első lépések címe */
+  --type-section: var(--text-lg); /* szakaszcím az oldalon (h2), félkövér */
+  --type-panel: var(--text-base); /* panel- és kártyaszakasz címe, félkövér */
   --leading-body: 1.5;
   --leading-snug: 1.3;
   --leading-tight: 1.15;

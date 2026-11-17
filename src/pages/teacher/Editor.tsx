@@ -520,55 +520,63 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
               </ToggleButton>
             </ToggleButtonGroup>
             <Separator orientation="vertical" />
-            <Slider
-              value={size}
-              minValue={config.editor.brushMin}
-              maxValue={config.editor.brushMax}
-              onChange={(v) => setSize(v as number)}
-              aria-label={t('teacher.editor.sizeLabel')}
-              className="size-slider"
-              isDisabled={readOnly}
-            >
-              <Slider.Track>
-                <Slider.Fill />
-                <Slider.Thumb />
-              </Slider.Track>
-            </Slider>
+            <div className="toolbar-group">
+              <span className="size-dot size-dot-sm" aria-hidden="true" />
+              <Slider
+                value={size}
+                minValue={config.editor.brushMin}
+                maxValue={config.editor.brushMax}
+                onChange={(v) => setSize(v as number)}
+                aria-label={t('teacher.editor.sizeLabel')}
+                className="size-slider"
+                isDisabled={readOnly}
+              >
+                <Slider.Track>
+                  <Slider.Fill />
+                  <Slider.Thumb />
+                </Slider.Track>
+              </Slider>
+              <span className="size-dot size-dot-lg" aria-hidden="true" />
+            </div>
             <Separator orientation="vertical" />
-            <Button
-              isIconOnly
-              variant="ghost"
-              aria-label={t('teacher.editor.zoom.out')}
-              isDisabled={view.zoom <= config.editor.zoomMin}
-              onPress={() => zoomBy(1 / config.editor.zoomStep)}
-            >
-              <Icon name="minus" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-label={t('teacher.editor.zoom.fit', { n: Math.round(view.zoom * 100) })}
-              aria-describedby="zoom-hint"
-              onPress={() => setView(FIT)}
-            >
-              {Math.round(view.zoom * 100)}%
-            </Button>
-            <Button
-              isIconOnly
-              variant="ghost"
-              aria-label={t('teacher.editor.zoom.in')}
-              isDisabled={view.zoom >= config.editor.zoomMax}
-              onPress={() => zoomBy(config.editor.zoomStep)}
-            >
-              <Icon name="plus" />
-            </Button>
+            <div className="toolbar-group">
+              <Button
+                isIconOnly
+                variant="ghost"
+                aria-label={t('teacher.editor.zoom.out')}
+                isDisabled={view.zoom <= config.editor.zoomMin}
+                onPress={() => zoomBy(1 / config.editor.zoomStep)}
+              >
+                <Icon name="minus" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-label={t('teacher.editor.zoom.fit', { n: Math.round(view.zoom * 100) })}
+                aria-describedby="zoom-hint"
+                onPress={() => setView(FIT)}
+              >
+                {Math.round(view.zoom * 100)}%
+              </Button>
+              <Button
+                isIconOnly
+                variant="ghost"
+                aria-label={t('teacher.editor.zoom.in')}
+                isDisabled={view.zoom >= config.editor.zoomMax}
+                onPress={() => zoomBy(config.editor.zoomStep)}
+              >
+                <Icon name="plus" />
+              </Button>
+            </div>
             <Separator orientation="vertical" />
-            <Button isIconOnly variant="ghost" aria-label={t('teacher.editor.undo')} isDisabled={!history.done.length} onPress={undo}>
-              <Icon name="undo" />
-            </Button>
-            <Button isIconOnly variant="ghost" aria-label={t('teacher.editor.redo')} isDisabled={!history.undone.length} onPress={redo}>
-              <Icon name="redo" />
-            </Button>
+            <div className="toolbar-group">
+              <Button isIconOnly variant="ghost" aria-label={t('teacher.editor.undo')} isDisabled={!history.done.length} onPress={undo}>
+                <Icon name="undo" />
+              </Button>
+              <Button isIconOnly variant="ghost" aria-label={t('teacher.editor.redo')} isDisabled={!history.undone.length} onPress={redo}>
+                <Icon name="redo" />
+              </Button>
+            </div>
           </Toolbar>
           <p className="canvas-hint" hidden={readOnly}>
             {tool === 'points' ? (

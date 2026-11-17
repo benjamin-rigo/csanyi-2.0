@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Button, Card, Chip, Description, EmptyState, Label, Link, Modal, Tag, TagGroup, TextArea, TextField } from '@heroui/react';
 import { Icon } from '../../components/Icon';
 import { TeacherLayout } from '../../components/TeacherLayout';
-import { removeFromGallery, restoreToGallery, setCategoriesAsAdmin, useAdminGallery, useIsAdmin, type AdminProject } from '../../lib/admin';
+import { moderationReason, removeFromGallery, restoreToGallery, setCategoriesAsAdmin, useAdminGallery, useIsAdmin, type AdminProject } from '../../lib/admin';
 import { assetUrl } from '../../lib/data';
 import { loadCategories, type CategoryOption } from '../../lib/editor';
 import { t } from '../../lib/i18n';
@@ -268,7 +268,7 @@ function AdminTile({
             {' · '}
             {t('teacher.projects.fieldCount', { count: project.fieldCount })}
           </Card.Description>
-          {note && <p className="panel-help">{t('admin.reasonShown', { reason: note })}</p>}
+          {moderationReason(note) && <p className="panel-help">{t('admin.reasonShown', { reason: moderationReason(note)! })}</p>}
         </Card.Header>
         {project.categories.length > 0 && (
           <div className="chips">

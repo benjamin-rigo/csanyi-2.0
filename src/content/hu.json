@@ -185,6 +185,7 @@
         "notReady": "A galériába még nem kerülhet ki. Hiányzik:",
         "moderated": "Az admin levette a galériáról",
         "moderatedReason": "Az ok: {reason} Javítás után újra kiteheted a galériába.",
+        "moderatedNoReason": "Javítás után újra kiteheted a galériába.",
         "missing": {
           "image": "Kép (Projekt fül)",
           "title": "Cím (Projekt fül)",
@@ -444,6 +445,8 @@
         }
       ],
       "start": "Most te jössz",
+      "more": "Részletek",
+      "less": "Kevesebb",
       "starting": "Gyakorló projekt létrehozása…",
       "startError": "Nem sikerült létrehozni a gyakorló projektet. Próbáld újra.",
       "openSample": "Minta megnyitása",

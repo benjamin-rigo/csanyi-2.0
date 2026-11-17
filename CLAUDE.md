@@ -36,11 +36,11 @@ Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hang
 ## Vizuális szabályok (részletesen a naplóban)
 
 - **HeroUI v3 alapértelmezett megjelenés mindenhol.** Ahol van HeroUI komponens, azt használd, és ne írd felül a kinézetét (szín, méret, lekerekítés, árnyék, állapotok). Gombnak látszó linkhez: `ButtonLink` (`buttonVariants`), szöveges linkhez HeroUI `Link`; a router a react-aria `RouterProvider`-en át kezeli őket.
-- A témából csak akadálymentességi okból tér el bármi (`src/styles/tokens.css`, mérve): a HeroUI kékje sötétebben (`--accent`, fehér felirat rajta 5,99:1, rámutatáskor 4,91:1), sötétebb `--muted` és `--danger`. Új eltérés csak így, mérve. Másodlagos gomb: `variant="secondary"` (szürke), `outline` nem.
+- A témából csak akadálymentességi okból tér el bármi (`src/styles/tokens.css`, mérve): a HeroUI kékje sötétebben (`--accent`, fehér felirat rajta 5,99:1, rámutatáskor 4,91:1), sötétebb `--muted` és `--danger`, a legkisebb szöveg 15 px (`--text-xs`). Új eltérés csak így, mérve. Másodlagos gomb: `variant="secondary"` (szürke), `outline` nem.
 - Saját CSS (`src/index.css`) csak elrendezés (térköz, rács, oldalszerkezet) és a HeroUI-ban nem létező elemek: képnézet, rajzterület, feltöltő mező, hangmező-színek. A saját színek a HeroUI változóiból jönnek (`--hs-*`).
 - Térköz csak a skálából: 2, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64 (`--space-*`).
 - Ami átmenetileg nem használható, az letiltva látszik a helyén (HeroUI `isDisabled`, mellette rövid ok), nem tűnik el.
-- Betű: egyelőre Inter, saját tárhelyről (`@fontsource-variable/inter`, nem Google Fonts); a végleges párosítás nyitott.
+- Betű: Source Sans 3, saját tárhelyről (`@fontsource-variable/source-sans-3`, nem Google Fonts), a címekhez is. Betűskála: 15 / 17 / 19 / 24 / 30 / 38 px, szerepek szerint (`--type-*`, napló).
 
 ## Akadálymentesség
 

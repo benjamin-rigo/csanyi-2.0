@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Alert, Button, Description, Input, Label, Link, Radio, RadioGroup, TextField } from '@heroui/react';
 import { projectMissing, type EditorProject, type Missing, type Visibility } from '../../lib/editor';
+import { moderationReason } from '../../lib/admin';
 import { t } from '../../lib/i18n';
 import { Icon } from '../Icon';
 
@@ -70,7 +71,11 @@ export function SharePanel({
           <Alert.Indicator />
           <Alert.Content>
             <Alert.Title>{t('teacher.editor.share.moderated')}</Alert.Title>
-            <Alert.Description>{t('teacher.editor.share.moderatedReason', { reason: project.moderationNote })}</Alert.Description>
+            <Alert.Description>
+              {moderationReason(project.moderationNote)
+                ? t('teacher.editor.share.moderatedReason', { reason: moderationReason(project.moderationNote)! })
+                : t('teacher.editor.share.moderatedNoReason')}
+            </Alert.Description>
           </Alert.Content>
         </Alert>
       )}

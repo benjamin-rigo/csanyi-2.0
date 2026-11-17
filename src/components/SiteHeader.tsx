@@ -45,7 +45,9 @@ export function SiteHeader({ config }: { config: Config }) {
     <header className="site-header">
       <Logo />
       <nav aria-label={t('nav.label')} className="site-nav">
-        <ButtonLink href={config.links.help}>{t('nav.help')}</ButtonLink>
+        <ButtonLink href={config.links.help} className="nav-help">
+          {t('nav.help')}
+        </ButtonLink>
         <ButtonLink href={config.links.teachers} variant="secondary">
           {t('nav.teachers')}
         </ButtonLink>
@@ -59,6 +61,7 @@ export function SiteFooter({ config }: { config: Config }) {
     <footer className="site-footer">
       <span>{t('footer.teacherContact', { email: config.contactEmail })}</span>
       <nav aria-label={t('footer.legalLabel')} className="legal">
+        <Link href={config.links.help}>{t('nav.help')}</Link>
         <Link href={config.links.accessibility}>{t('footer.accessibility')}</Link>
         <Link href={config.links.privacy}>{t('footer.privacy')}</Link>
         <Link href={config.links.terms}>{t('footer.terms')}</Link>

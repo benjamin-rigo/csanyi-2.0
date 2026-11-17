@@ -2,6 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Visibility } from './editor';
 import { supabase, useSession } from './supabase';
 
+/** Levételkor ok nélkül az adatbázis „-” jelet tesz a helyére (ebből tudja, hogy levett kép); ezt a felület nem mutatja. */
+export function moderationReason(note: string | null | undefined): string | null {
+  return note && note !== '-' ? note : null;
+}
+
 /** A galéria kezelése (admin). Az adminlista a Supabase-ben van; a műveleteket az adatbázis is ellenőrzi. */
 export interface AdminProject {
   id: string;

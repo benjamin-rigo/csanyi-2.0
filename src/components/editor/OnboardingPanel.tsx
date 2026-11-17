@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Alert, Button, Chip, ProgressBar } from '@heroui/react';
 import { t, tList } from '../../lib/i18n';
 import { ButtonLink } from '../SiteHeader';
@@ -27,6 +28,8 @@ export function OnboardingPanel({
   const content = tList<Step>('teacher.onboarding.steps');
   const done = steps.filter(Boolean).length;
   const current = mode === 'sample' ? 0 : steps.findIndex((s) => !s);
+  // Keskeny nézetben (a rajzterület fölött) a lépés részletei lenyithatók, hogy a kép kapja a helyet.
+  const [more, setMore] = useState(false);
 
   return (
     <aside className="onboarding" aria-labelledby="onboarding-title">
@@ -76,18 +79,31 @@ export function OnboardingPanel({
                   </h3>
                   {isCurrent && (
                     <>
-                      <p>{step.text}</p>
-                      {step.points && (
-                        <ul className="onboarding-points">
-                          {step.points.map((p) => (
-                            <li key={p}>
-                              <Icon name="check" size={14} />
-                              {p}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                      {step.hint && <p className="panel-help">{step.hint}</p>}
+                      <div className="onboarding-details" id="onboarding-details" data-open={more}>
+                        <p>{step.text}</p>
+                        {step.points && (
+                          <ul className="onboarding-points">
+                            {step.points.map((p) => (
+                              <li key={p}>
+                                <Icon name="check" size={14} />
+                                {p}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        {step.hint && <p className="panel-help">{step.hint}</p>}
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="onboarding-more"
+                        aria-expanded={more}
+                        aria-controls="onboarding-details"
+                        onPress={() => setMore((m) => !m)}
+                      >
+                        {more ? t('teacher.onboarding.less') : t('teacher.onboarding.more')}
+                        <Icon name="chevron" size={16} />
+                      </Button>
                       {mode === 'sample' && onStart && (
                         <Button onPress={onStart} isPending={starting}>
                           {t('teacher.onboarding.start')}

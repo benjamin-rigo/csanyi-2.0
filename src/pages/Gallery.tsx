@@ -100,14 +100,15 @@ function ProjectCard({ project }: { project: Project }) {
   return (
     <li data-project={project.id}>
       <Card className="gcard">
-        <img
-          className="gcard-image"
-          src={project.image.src ?? undefined}
-          alt=""
-          width={project.image.width ?? undefined}
-          height={project.image.height ?? undefined}
-          loading="lazy"
-        />
+        <div className="project-thumb">
+          <img
+            src={project.image.src ?? undefined}
+            alt=""
+            width={project.image.width ?? undefined}
+            height={project.image.height ?? undefined}
+            loading="lazy"
+          />
+        </div>
         <Card.Header>
           <Card.Title render={(props) => <h2 {...props} />}>
             {/* Az egész kártya egy link (döntésnapló): a link a kártya teljes felületére kifeszül. */}
