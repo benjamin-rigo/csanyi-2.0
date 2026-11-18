@@ -42,6 +42,7 @@
 @import "@heroui/styles/components/surface.css" layer(components);
 @import "@heroui/styles/components/avatar.css" layer(components);
 @import "@heroui/styles/components/modal.css" layer(components);
+@import "@heroui/styles/components/popover.css" layer(components);
 @import "@heroui/styles/themes/default" layer(theme);
 @import "@heroui/styles/utilities";
 @import "@heroui/styles/variants";
@@ -886,6 +887,53 @@ body {
   }
 }
 
+/* Eszköztár (döntésnapló, 2026-11-18): az eszközök háttér nélkül, a kiválasztott tömör fő színnel (mint a szűrők) */
+.draw-toolbar .toggle-button {
+  --toggle-button-bg: transparent;
+  --toggle-button-bg-hover: var(--default);
+  --toggle-button-bg-pressed: var(--default);
+  --toggle-button-bg-selected: var(--accent);
+  --toggle-button-bg-selected-hover: var(--accent-hover);
+  --toggle-button-bg-selected-pressed: var(--accent-hover);
+  --toggle-button-fg-selected: var(--accent-foreground);
+}
+
+.draw-toolbar .toggle-button-group {
+  gap: var(--space-1);
+}
+
+/* Az Ecset gombon az ecsetméret kicsiben (4–24 px pötty) */
+.brush-preview {
+  flex-shrink: 0;
+  width: calc(var(--space-1) + var(--t) * var(--space-5));
+  height: calc(var(--space-1) + var(--t) * var(--space-5));
+  border-radius: var(--radius-pill);
+  background: var(--hs-fg);
+}
+
+/* A lenyíló gomb nyila lefelé mutat */
+.brush-button svg:last-child {
+  transform: rotate(90deg);
+}
+
+.brush-popover {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: var(--admin-tabs-w);
+  max-width: 100%;
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.slider-row .slider__track {
+  flex: 1;
+}
+
 /* Tördeléskor csak egész csoport kerül új sorba (rajzeszközök, ecsetméret, nagyítás, visszavonás) */
 .toolbar-group {
   display: flex;
@@ -1046,14 +1094,19 @@ body {
   --w: var(--field-stroke-selected);
 }
 
+/* Körvonal (döntésnapló, 2026-11-18): a kijelölt hangmező színes vonalat kap fehér kísérővel, hogy bármilyen képen
+   látsszon a szerkesztett alak határa (WCAG 1.4.11); a többi hangmező csak a lágy kitöltés és egy halk színes szegély. */
 .draw-field-halo {
   stroke: var(--hs-viewer-fg);
-  stroke-width: calc(var(--w) + 4);
+  stroke-width: calc(var(--w) + 3);
 }
 
-.draw-field-edge {
-  stroke: var(--hs-viewer-bg);
-  stroke-width: calc(var(--w) + 2);
+.draw-field:not(.is-selected) .draw-field-halo {
+  display: none;
+}
+
+.draw-field:not(.is-selected) .draw-field-line {
+  stroke-opacity: var(--field-stroke-quiet-opacity);
 }
 
 /* A kitöltés külön elem, hogy a lágy szél szűrője csak rá hasson; a körvonal éles marad (WCAG 1.4.11). */
@@ -1327,15 +1380,11 @@ body {
   border-top: var(--border-thin) solid var(--hs-border);
 }
 
-.layer-controls {
+.sound-card-actions {
   display: flex;
-  align-items: flex-end;
-  gap: var(--space-2);
-}
-
-.layer-controls .panel-field {
-  flex: 1;
-  min-width: 0;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
 }
 
 .layer-list + .button {

@@ -38,14 +38,19 @@ export function OnboardingPanel({
           <Chip size="sm" color="accent" variant="soft">
             {t('teacher.onboarding.label')}
           </Chip>
-          <span className="panel-help">{t('teacher.onboarding.progress', { done, total: steps.length })}</span>
+          <span className="panel-help">
+            {done ? t('teacher.onboarding.progress', { done, total: steps.length }) : t('teacher.onboarding.stepsCount', { total: steps.length })}
+          </span>
         </div>
         <h2 id="onboarding-title">{t('teacher.onboarding.title')}</h2>
-        <ProgressBar aria-label={t('teacher.onboarding.progressLabel')} value={(done / steps.length) * 100} size="sm">
-          <ProgressBar.Track>
-            <ProgressBar.Fill />
-          </ProgressBar.Track>
-        </ProgressBar>
+        {/* Üres csík hibának hatna: a haladás az első kész lépéstől látszik. */}
+        {done > 0 && (
+          <ProgressBar aria-label={t('teacher.onboarding.progressLabel')} value={(done / steps.length) * 100} size="sm">
+            <ProgressBar.Track>
+              <ProgressBar.Fill />
+            </ProgressBar.Track>
+          </ProgressBar>
+        )}
       </div>
 
       {finished ? (

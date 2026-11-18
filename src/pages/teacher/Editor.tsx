@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { Breadcrumbs, Button, Chip, Link, Modal, Separator, Slider, Tabs, ToggleButton, ToggleButtonGroup, Toolbar } from '@heroui/react';
+import { Breadcrumbs, Button, Chip, Label, Link, Modal, Popover, Separator, Slider, Tabs, ToggleButton, ToggleButtonGroup, Toolbar } from '@heroui/react';
 import { DrawingCanvas, FIT, zoomAt, type Tool, type View } from '../../components/editor/DrawingCanvas';
 import { SoundPicker } from '../../components/editor/SoundPicker';
 import { SoundsPanel, type Selection } from '../../components/editor/SoundsPanel';
@@ -569,49 +569,71 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
               </ToggleButton>
             </ToggleButtonGroup>
             <Separator orientation="vertical" />
-            <div className="toolbar-group">
-              <span className="size-dot size-dot-sm" aria-hidden="true" />
-              <Slider
-                value={size}
-                minValue={config.editor.brushMin}
-                maxValue={config.editor.brushMax}
-                onChange={(v) => setSize(v as number)}
-                aria-label={t('teacher.editor.sizeLabel')}
-                className="size-slider"
-                isDisabled={readOnly}
-              >
-                <Slider.Track>
-                  <Slider.Fill />
-                  <Slider.Thumb />
-                </Slider.Track>
-              </Slider>
-              <span className="size-dot size-dot-lg" aria-hidden="true" />
-            </div>
-            <Separator orientation="vertical" />
-            {/* Él lágysága: a kijelölt hangmezőé; a rajzon a kitöltés a széltől befelé ennyi sávban erősödik. */}
-            <div className="toolbar-group">
-              <span className="soft-dot soft-dot-hard" aria-hidden="true" />
-              <Slider
-                value={selectedField?.softness ?? config.editor.softnessDefault}
-                minValue={0}
-                maxValue={1}
-                step={0.05}
-                onChange={(v) => selectedField && changeField(selectedField.id, { softness: v as number })}
-                aria-label={t('teacher.editor.fields.softness')}
-                aria-describedby="softness-help"
-                className="size-slider"
-                isDisabled={readOnly || !selectedField}
-              >
-                <Slider.Track>
-                  <Slider.Fill />
-                  <Slider.Thumb />
-                </Slider.Track>
-              </Slider>
-              <span className="soft-dot soft-dot-soft" aria-hidden="true" />
-              <span id="softness-help" className="sr-only">
-                {selectedField ? t('teacher.editor.fields.softnessHelp') : t('teacher.editor.fields.softnessDisabled')}
-              </span>
-            </div>
+            {/* Az ecset beállításai egy lenyílóban, hogy az eszköztár egy sorban elférjen (döntésnapló, 2026-11-18). */}
+            <Popover>
+              <Button variant="ghost" isDisabled={readOnly} aria-label={t('teacher.editor.brushSettings')} className="brush-button">
+                <span
+                  className="brush-preview"
+                  style={{ '--t': (size - config.editor.brushMin) / (config.editor.brushMax - config.editor.brushMin) } as CSSProperties}
+                  aria-hidden="true"
+                />
+                <span className="tool-label">{t('teacher.editor.brushSettingsShort')}</span>
+                <Icon name="chevron" size={14} />
+              </Button>
+              <Popover.Content placement="bottom">
+                <Popover.Dialog className="brush-popover">
+                  <Popover.Heading className="sr-only">{t('teacher.editor.brushSettings')}</Popover.Heading>
+                  <Slider
+                    value={size}
+                    minValue={config.editor.brushMin}
+                    maxValue={config.editor.brushMax}
+                    onChange={(v) => setSize(v as number)}
+                    className="volume-slider"
+                  >
+                    <div className="volume-head">
+                      <Label>{t('teacher.editor.sizeLabel')}</Label>
+                      <Slider.Output />
+                    </div>
+                    <div className="slider-row">
+                      <span className="size-dot size-dot-sm" aria-hidden="true" />
+                      <Slider.Track>
+                        <Slider.Fill />
+                        <Slider.Thumb />
+                      </Slider.Track>
+                      <span className="size-dot size-dot-lg" aria-hidden="true" />
+                    </div>
+                  </Slider>
+                  {/* Él lágysága: a kijelölt hangmezőé; a rajzon a kitöltés a széltől befelé ennyi sávban erősödik. */}
+                  <Slider
+                    value={Math.round((selectedField?.softness ?? config.editor.softnessDefault) * 100)}
+                    minValue={0}
+                    maxValue={100}
+                    step={5}
+                    onChange={(v) => selectedField && changeField(selectedField.id, { softness: (v as number) / 100 })}
+                    formatOptions={{ style: 'unit', unit: 'percent' }}
+                    aria-describedby="softness-help"
+                    className="volume-slider"
+                    isDisabled={!selectedField}
+                  >
+                    <div className="volume-head">
+                      <Label>{t('teacher.editor.fields.softness')}</Label>
+                      <Slider.Output />
+                    </div>
+                    <div className="slider-row">
+                      <span className="soft-dot soft-dot-hard" aria-hidden="true" />
+                      <Slider.Track>
+                        <Slider.Fill />
+                        <Slider.Thumb />
+                      </Slider.Track>
+                      <span className="soft-dot soft-dot-soft" aria-hidden="true" />
+                    </div>
+                  </Slider>
+                  <p id="softness-help" className="panel-help">
+                    {selectedField ? t('teacher.editor.fields.softnessHelp') : t('teacher.editor.fields.softnessDisabled')}
+                  </p>
+                </Popover.Dialog>
+              </Popover.Content>
+            </Popover>
             <Separator orientation="vertical" />
             <div className="toolbar-group">
               <Button

@@ -99,43 +99,44 @@ function LayerList({
         <ul className="layer-list">
           {layers.map((l, i) => (
             <li key={`${l.sound.id}-${i}`} className="layer">
+              {/* A hang műveletei (csere, eltávolítás) a kártyán, a hangerő alatta a teljes szélességben */}
               <SoundCard
                 sound={l.sound}
                 loops={loops}
                 action={
-                  <Button size="sm" variant="outline" onPress={() => onPick(i)}>
-                    {t('teacher.editor.sound.replace')}
-                  </Button>
+                  <span className="sound-card-actions">
+                    <Button size="sm" variant="outline" onPress={() => onPick(i)}>
+                      {t('teacher.editor.sound.replace')}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      isIconOnly
+                      aria-label={t('teacher.editor.layers.removeLabel', { title: l.sound.title })}
+                      onPress={() => onRemove(i)}
+                    >
+                      <Icon name="trash" size={16} />
+                    </Button>
+                  </span>
                 }
               />
-              <div className="layer-controls">
-                <VolumeSlider
-                  id={`${id}-volume-${i}`}
-                  value={l.volume}
-                  onChange={(v) => onVolume(i, v)}
-                  label={
-                    <>
-                      {t('teacher.editor.fields.volume')}
-                      <span className="sr-only">: {l.sound.title}</span>
-                    </>
-                  }
-                />
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  isIconOnly
-                  aria-label={t('teacher.editor.layers.removeLabel', { title: l.sound.title })}
-                  onPress={() => onRemove(i)}
-                >
-                  <Icon name="trash" size={16} />
-                </Button>
-              </div>
+              <VolumeSlider
+                id={`${id}-volume-${i}`}
+                value={l.volume}
+                onChange={(v) => onVolume(i, v)}
+                label={
+                  <>
+                    {t('teacher.editor.fields.volume')}
+                    <span className="sr-only">: {l.sound.title}</span>
+                  </>
+                }
+              />
             </li>
           ))}
         </ul>
       )}
       <AddTile
-        label={layers.length ? t('teacher.editor.layers.addMore') : addLabel}
+        label={addLabel}
         onPress={() => onPick(null)}
         isDisabled={readOnly}
         className={addClass}

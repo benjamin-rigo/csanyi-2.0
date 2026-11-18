@@ -65,7 +65,11 @@ export function MyProjects({ config }: { config: Config }) {
             <Chip size="sm" color="accent" variant="soft">
               {t('teacher.onboarding.cardBadge')}
             </Chip>
-            <span className="panel-help">{t('teacher.onboarding.cardProgress', { done: practiceDone, total: config.onboarding.steps })}</span>
+            <span className="panel-help">
+              {practiceDone
+                ? t('teacher.onboarding.cardProgress', { done: practiceDone, total: config.onboarding.steps })
+                : t('teacher.onboarding.stepsCount', { total: config.onboarding.steps })}
+            </span>
           </div>
           <div className="onboarding-card-body">
             <div className="onboarding-card-text">
@@ -77,11 +81,14 @@ export function MyProjects({ config }: { config: Config }) {
               <Icon name="forward" size={16} />
             </ButtonLink>
           </div>
-          <ProgressBar aria-label={t('teacher.onboarding.progressLabel')} value={(practiceDone / config.onboarding.steps) * 100} size="sm">
-            <ProgressBar.Track>
-              <ProgressBar.Fill />
-            </ProgressBar.Track>
-          </ProgressBar>
+          {/* Üres csík hibának hatna: a haladás az első kész lépéstől látszik. */}
+          {practiceDone > 0 && (
+            <ProgressBar aria-label={t('teacher.onboarding.progressLabel')} value={(practiceDone / config.onboarding.steps) * 100} size="sm">
+              <ProgressBar.Track>
+                <ProgressBar.Fill />
+              </ProgressBar.Track>
+            </ProgressBar>
+          )}
         </Card>
       )}
 

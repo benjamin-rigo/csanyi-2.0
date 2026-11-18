@@ -51,10 +51,12 @@
   --field-color-6: #0d9488;
   --field-color-7: #ea580c;
   --field-color-8: #dc2626;
-  --field-fill-alpha: 22%;
+  --field-fill-alpha: 35%;
   /* A hangmező vonala a szerkesztőben (a fekete és fehér kontúr ezen felül), kijelölve vastagabb */
-  --field-stroke: 2;
-  --field-stroke-selected: 4;
+  --field-stroke: 1.5;
+  --field-stroke-selected: 3;
+  /* A nem kijelölt hangmező szegélye halkabb, hogy a kijelölt és a kitöltés kerüljön előtérbe */
+  --field-stroke-quiet-opacity: 0.7;
 
   /* Térköz: csak a konvencionális skála */
   --space-0-5: 2px;
