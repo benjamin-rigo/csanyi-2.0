@@ -65,12 +65,18 @@ html {
   border: var(--border-strong) solid var(--accent);
 }
 
-/* Pill (döntésnapló): minden kattintható elem és címke kerek; a választó sávja is pill, hogy illeszkedjen hozzá. */
+/* Pill (döntésnapló): minden kattintható elem és címke kerek; a választó sávja is pill, hogy illeszkedjen hozzá.
+   A csúszka és a haladásjelző is teljesen kerek; csak a hangmezők színjelölése (flekk) enyhén lekerekített. */
 .button,
 .toggle-button,
 .chip,
 .tag,
-.tabs__list-container {
+.tabs__list-container,
+.slider__track,
+.slider__thumb,
+.slider__thumb::after,
+.progress-bar__track,
+.progress-bar__fill {
   border-radius: var(--radius-pill);
 }
 
@@ -1158,9 +1164,17 @@ body {
 }
 
 /* Hangmező a rajzon: csak kitöltés, körvonal nélkül (döntésnapló, 2026-11-18); a kijelölt, amin dolgozol, erősebb. */
+.draw-field .draw-field-base {
+  fill: color-mix(in srgb, var(--c) var(--field-base-alpha), transparent);
+}
+
 .draw-field .draw-field-fill {
   fill: color-mix(in srgb, var(--c) var(--field-fill-alpha), transparent);
   stroke: none;
+}
+
+.draw-field.is-selected .draw-field-base {
+  fill: color-mix(in srgb, var(--c) var(--field-base-alpha-selected), transparent);
 }
 
 .draw-field.is-selected .draw-field-fill {

@@ -425,6 +425,8 @@ export function DrawingCanvas({
                   className={`draw-field${f.id === selectedId ? ' is-selected' : ''}`}
                   style={{ '--c': fieldColorVar(i) } as CSSProperties}
                 >
+                  {/* Egyenletes alap: az alak mintás képen is látszik; rajta a lágy szélű, erősebb réteg. */}
+                  <path d={shapePath(f.polygons)} fillRule="evenodd" className="draw-field-base" />
                   <path
                     d={shapePath(f.polygons)}
                     fillRule="evenodd"
