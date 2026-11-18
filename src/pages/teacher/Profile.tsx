@@ -1,11 +1,11 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
-import { Alert, Button, Description, FieldError, Form, Input, Label, Modal, Separator, TextField } from '@heroui/react';
+import { Alert, Button, Chip, Description, FieldError, Form, Input, Label, Modal, Separator, TextField } from '@heroui/react';
 import { FormError } from '../../components/AuthFields';
 import { TeacherLayout } from '../../components/TeacherLayout';
 import { t } from '../../lib/i18n';
 import { supabase, useSession } from '../../lib/supabase';
-import { deleteAccount, inviteTeacher, updateProfileName, useInvitations, useProfile, type AccountError } from '../../lib/teacher';
+import { deleteAccount, inviteTeacher, revokeInvitation, updateProfileName, useInvitations, useProfile, type AccountError } from '../../lib/teacher';
 
 /** A Profil szakaszai: balra cím és magyarázat, jobbra a műveletek (terv). */
 function Section({ id, title, help, children }: { id: string; title: string; help: string; children: ReactNode }) {
@@ -31,6 +31,8 @@ export function Profile() {
   const name = typedName ?? profile?.name ?? '';
   const [nameState, setNameState] = useState<'idle' | 'saving' | 'saved' | 'error' | 'empty'>('idle');
 
+  const [revoking, setRevoking] = useState<string | null>(null);
+  const [revokeError, setRevokeError] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteState, setInviteState] = useState<{ sent?: string; error?: AccountError; pending?: boolean }>({});
 
@@ -49,6 +51,15 @@ export function Profile() {
     } catch {
       setNameState('error');
     }
+  }
+
+  async function revoke(id: string) {
+    setRevoking(id);
+    setRevokeError(false);
+    const ok = await revokeInvitation(id);
+    setRevoking(null);
+    if (!ok) return setRevokeError(true);
+    reloadInvitations();
   }
 
   async function invite(e: FormEvent) {
@@ -161,11 +172,30 @@ export function Profile() {
               <ul>
                 {invitations.map((i) => (
                   <li key={i.id}>
-                    <span>{i.email}</span>
-                    <span className="panel-help">{new Date(i.createdAt).toLocaleDateString('hu-HU')}</span>
+                    <div className="invited-text">
+                      <span className="invited-email">{i.email}</span>
+                      <span className="invited-meta">
+                        <span className="panel-help">{new Date(i.createdAt).toLocaleDateString('hu-HU')}</span>
+                        <Chip size="sm" color={i.accepted ? 'success' : 'default'} variant="soft">
+                          {i.accepted ? t('teacher.profile.invitedAccepted') : t('teacher.profile.invitedPending')}
+                        </Chip>
+                      </span>
+                    </div>
+                    {!i.accepted && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        isPending={revoking === i.id}
+                        aria-label={t('teacher.profile.invitedRevokeLabel', { email: i.email })}
+                        onPress={() => revoke(i.id)}
+                      >
+                        {t('teacher.profile.invitedRevoke')}
+                      </Button>
+                    )}
                   </li>
                 ))}
               </ul>
+              {revokeError && <FormError message={t('teacher.profile.invitedRevokeError')} />}
             </div>
           )}
         </Section>

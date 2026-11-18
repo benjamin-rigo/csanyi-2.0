@@ -112,6 +112,8 @@ export interface Invitation {
   id: string;
   email: string;
   createdAt: string;
+  /** A meghívott már belépett a linkkel; ilyenkor nem vonható vissza. */
+  accepted: boolean;
 }
 
 /** A saját meghívások, legújabb elöl. */
@@ -125,10 +127,20 @@ export function useInvitations(): [Invitation[], () => void] {
     if (!userId) return;
     let alive = true;
     void supabase
-      .from('invitations')
-      .select('id, email, created_at')
-      .order('created_at', { ascending: false })
-      .then(({ data }) => alive && data && setList(data.map((r) => ({ id: r.id, email: r.email, createdAt: r.created_at }))));
+      .rpc('my_invitations')
+      .then(
+        ({ data }) =>
+          alive &&
+          data &&
+          setList(
+            (data as { id: string; email: string; created_at: string; accepted: boolean }[]).map((r) => ({
+              id: r.id,
+              email: r.email,
+              createdAt: r.created_at,
+              accepted: r.accepted,
+            })),
+          ),
+      );
     return () => {
       alive = false;
     };
@@ -140,6 +152,12 @@ export async function updateProfileName(userId: string, name: string) {
   const { error } = await supabase.from('profiles').update({ name: name.trim() }).eq('id', userId);
   if (error) throw error;
   await supabase.auth.updateUser({ data: { name: name.trim() } });
+}
+
+/** Függő meghívó visszavonása: a még be nem lépett fiók törlődik, a link érvénytelen lesz. */
+export async function revokeInvitation(id: string): Promise<boolean> {
+  const { error } = await supabase.rpc('revoke_invitation', { p_id: id });
+  return !error;
 }
 
 export type AccountError = 'invalid_email' | 'email_exists' | 'limit' | 'unauthorized' | 'other';
