@@ -400,6 +400,12 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
   }
 
   const selectedField = selection?.kind === 'field' ? (project.fields.find((f) => f.id === selection.id) ?? null) : null;
+
+  function changeField(fid: string, patch: Partial<Pick<EditorField, 'name' | 'description' | 'volume' | 'softness'>>) {
+    recordField(fid, patch);
+    patchField(fid, patch);
+    saveFieldLater(fid);
+  }
   const pickerTarget =
     picker === 'background'
       ? t('teacher.editor.background.pickerTarget')
@@ -539,6 +545,31 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
               <span className="size-dot size-dot-lg" aria-hidden="true" />
             </div>
             <Separator orientation="vertical" />
+            {/* Él lágysága: a kijelölt hangmezőé; a rajzon a kitöltés a széltől befelé ennyi sávban erősödik. */}
+            <div className="toolbar-group">
+              <span className="soft-dot soft-dot-hard" aria-hidden="true" />
+              <Slider
+                value={selectedField?.softness ?? config.editor.softnessDefault}
+                minValue={0}
+                maxValue={1}
+                step={0.05}
+                onChange={(v) => selectedField && changeField(selectedField.id, { softness: v as number })}
+                aria-label={t('teacher.editor.fields.softness')}
+                aria-describedby="softness-help"
+                className="size-slider"
+                isDisabled={readOnly || !selectedField}
+              >
+                <Slider.Track>
+                  <Slider.Fill />
+                  <Slider.Thumb />
+                </Slider.Track>
+              </Slider>
+              <span className="soft-dot soft-dot-soft" aria-hidden="true" />
+              <span id="softness-help" className="sr-only">
+                {selectedField ? t('teacher.editor.fields.softnessHelp') : t('teacher.editor.fields.softnessDisabled')}
+              </span>
+            </div>
+            <Separator orientation="vertical" />
             <div className="toolbar-group">
               <Button
                 isIconOnly
@@ -604,6 +635,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
               view={view}
               onView={setView}
               zoomLimits={{ min: config.editor.zoomMin, max: config.editor.zoomMax }}
+              edgeMaxFraction={config.viewer.edgeMaxFraction}
               readOnly={readOnly}
             />
           </div>
@@ -664,11 +696,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
                   setSelection(null);
                   void track(updateProject(project.id, { background_sound_id: null })).catch(() => undefined);
                 }}
-                onFieldChange={(fid, patch) => {
-                  recordField(fid, patch);
-                  patchField(fid, patch);
-                  saveFieldLater(fid);
-                }}
+                onFieldChange={changeField}
                 onFieldVoice={(fid, sound) => {
                   recordField(fid, { descriptionSound: sound });
                   patchField(fid, { descriptionSound: sound });

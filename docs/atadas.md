@@ -8,7 +8,7 @@ Jelölés: **most** = jelenlegi állapot, **átadáskor** = teendő.
 
 A felületen még helykitöltők vannak; ezeket az alapítvány adja meg (`public/data/config.json`):
 
-- `contactEmail`: most „[KAPCSOLATI E-MAIL]”, a láblécben és a belépésnél látszik.
+- `contactEmail`: info@csanyialapitvany.hu (2026-11-18), a láblécben és a belépésnél látszik.
 - `links.help` (Súgó), `links.accessibility` (Akadálymentességi nyilatkozat), `links.privacy` (Adatvédelem), `links.terms` (ÁSZF): most `#`, nem visznek sehova. Az ÁSZF-et a fiók beállításakor el is kell fogadni.
 - A mintakép jogai (5. pont).
 

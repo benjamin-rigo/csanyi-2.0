@@ -52,6 +52,7 @@ export function DrawingCanvas({
   view,
   onView,
   zoomLimits,
+  edgeMaxFraction,
   readOnly = false,
 }: {
   imagePath: string;
@@ -66,6 +67,8 @@ export function DrawingCanvas({
   view: View;
   onView: (view: View) => void;
   zoomLimits: { min: number; max: number };
+  /** A lágy szél teljes lágyságnál a kép rövidebb oldalának ekkora része (mint a képnézetben). */
+  edgeMaxFraction: number;
   /** Minta: csak kijelölni lehet, festeni nem. */
   readOnly?: boolean;
 }) {
@@ -88,7 +91,30 @@ export function DrawingCanvas({
   const last = useRef<{ x: number; y: number } | null>(null);
   const [painting, setPainting] = useState(false);
   const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
-  const { w, h, scale } = maskSize(imageWidth, imageHeight);
+  const { w, h, scale, brushScale } = maskSize(imageWidth, imageHeight);
+  const brush = size * brushScale;
+  /**
+   * A festett maszk a hangmező alakjához (a sokszög-tömbhöz) kötve. A következő vonás erre kerül, nem a simított
+   * körvonalból újrarajzolt maszkra, így a hangmező nem kopik vonásról vonásra; visszavonáskor a régi alak maszkja is megvan.
+   */
+  const masks = useRef(new WeakMap<Point[][], HTMLCanvasElement>());
+
+  function maskFor(polygons: Point[][] | undefined): CanvasRenderingContext2D {
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
+    const kept = polygons && masks.current.get(polygons);
+    if (kept && kept.width === w && kept.height === h) ctx.drawImage(kept, 0, 0);
+    else if (polygons) drawShape(ctx, polygons, scale);
+    return ctx;
+  }
+
+  function trace(ctx: CanvasRenderingContext2D, smooth = true): Point[][] {
+    const polygons = traceMask(ctx, scale, smooth);
+    masks.current.set(polygons, ctx.canvas);
+    return polygons;
+  }
   const selectedIndex = fields.findIndex((f) => f.id === selectedId);
   const selected = selectedIndex >= 0 ? fields[selectedIndex] : null;
   const canErase = Boolean(selected);
@@ -145,7 +171,7 @@ export function DrawingCanvas({
     ctx.globalCompositeOperation = tool === 'eraser' ? 'destination-out' : 'source-over';
     ctx.strokeStyle = '#000';
     ctx.fillStyle = '#000';
-    ctx.lineWidth = size;
+    ctx.lineWidth = brush;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
@@ -153,7 +179,7 @@ export function DrawingCanvas({
     ctx.lineTo(to.x, to.y);
     ctx.stroke();
     ctx.beginPath();
-    ctx.arc(to.x, to.y, size / 2, 0, Math.PI * 2);
+    ctx.arc(to.x, to.y, brush / 2, 0, Math.PI * 2);
     ctx.fill();
   }
 
@@ -162,14 +188,10 @@ export function DrawingCanvas({
 
   function finishPoints() {
     if (points.length < 3) return;
-    const canvas = document.createElement('canvas');
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
-    if (selected) drawShape(ctx, selected.polygons, scale);
+    const ctx = maskFor(selected?.polygons);
     addPolygon(ctx, points, scale);
     setPoints([]);
-    onStroke(selected?.id ?? null, traceMask(ctx, scale, false));
+    onStroke(selected?.id ?? null, trace(ctx, false));
   }
 
   function onFrameKey(e: ReactKeyboardEvent) {
@@ -278,12 +300,7 @@ export function DrawingCanvas({
     if (e.button !== 0 || (tool === 'eraser' && !canErase)) return;
     e.currentTarget.setPointerCapture(e.pointerId);
     start.current = { sx: e.clientX, sy: e.clientY, moved: false };
-    const canvas = document.createElement('canvas');
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
-    if (selected) drawShape(ctx, selected.polygons, scale);
-    maskRef.current = ctx;
+    maskRef.current = maskFor(selected?.polygons);
     const p = toMask(e);
     last.current = p;
     dab(p, p);
@@ -344,7 +361,7 @@ export function DrawingCanvas({
     start.current = null;
     // Kattintás egy másik hangmezőre: kijelölés, nem festés.
     const hit = click ? hitField(e) : undefined;
-    const polygons = hit && hit.id !== selectedId ? null : traceMask(maskRef.current, scale);
+    const polygons = hit && hit.id !== selectedId ? null : trace(maskRef.current);
     maskRef.current = null;
     last.current = null;
     setPainting(false);
@@ -377,6 +394,28 @@ export function DrawingCanvas({
         >
           <img src={assetUrl(imagePath)} alt="" draggable={false} />
           <svg viewBox={`0 0 ${imageWidth} ${imageHeight}`} aria-hidden="true">
+            <defs>
+              {/* Lágy szél: a kitöltés a széltől befelé, a lágysággal arányos sávban erősödik (mint a hang a képnézetben).
+                  Az alakot a sáv felével beljebb húzzuk, majd elmossuk: így a kitöltés a szélen 0, a sáv végén teljes. */}
+              {fields.map((f) => {
+                const band = f.softness * edgeMaxFraction * Math.min(imageWidth, imageHeight);
+                return band > 0 ? (
+                  <filter
+                    key={f.id}
+                    id={`soft-${f.id}`}
+                    filterUnits="userSpaceOnUse"
+                    primitiveUnits="userSpaceOnUse"
+                    x={0}
+                    y={0}
+                    width={imageWidth}
+                    height={imageHeight}
+                  >
+                    <feMorphology operator="erode" radius={band / 2} />
+                    <feGaussianBlur stdDeviation={band / 4} />
+                  </filter>
+                ) : null;
+              })}
+            </defs>
             {fields.map((f, i) =>
               painting && f.id === selectedId ? null : (
                 // Kéttónusú szegély (WCAG 1.4.11): a fekete és a fehér kontúr közül bármilyen képen legalább az egyik látszik.
@@ -385,6 +424,12 @@ export function DrawingCanvas({
                   className={`draw-field${f.id === selectedId ? ' is-selected' : ''}`}
                   style={{ '--c': fieldColorVar(i) } as CSSProperties}
                 >
+                  <path
+                    d={shapePath(f.polygons)}
+                    fillRule="evenodd"
+                    className="draw-field-fill"
+                    filter={f.softness > 0 ? `url(#soft-${f.id})` : undefined}
+                  />
                   <path d={shapePath(f.polygons)} className="draw-field-halo" />
                   <path d={shapePath(f.polygons)} className="draw-field-edge" />
                   <path d={shapePath(f.polygons)} fillRule="evenodd" className="draw-field-line" />
@@ -419,7 +464,7 @@ export function DrawingCanvas({
                 {
                   left: cursor.x * displayScale,
                   top: cursor.y * displayScale,
-                  '--d': `${size * displayScale}px`,
+                  '--d': `${brush * displayScale}px`,
                 } as CSSProperties
               }
             />

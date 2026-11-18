@@ -224,7 +224,7 @@
       "sizeLabel": "Ecsetméret",
       "undo": "Visszavonás",
       "redo": "Újra",
-      "canvasHintNew": "Fess a képre: új hangmező jön létre.",
+      "canvasHintNew": "Fess a képre: új hangmező jön létre. Az él lágysága a kijelölt hangmezőn állítható.",
       "canvasHintSelected": "Fesd ki a képen, hol van a kijelölt hangmező.",
       "panelLabel": "Beállítások",
       "tabsLabel": "Szerkesztő panel",
@@ -267,8 +267,11 @@
         "pickerTarget": "{name} hangmező",
         "detailTitle": "Hangmező",
         "deleteField": "Hangmező törlése",
+        "deleteShort": "Törlés",
+        "deleteFieldLabel": "{name} hangmező törlése",
         "softness": "Él lágysága",
-        "softnessHelp": "Minél lágyabb, annál fokozatosabban erősödik a hang, ahogy az ujj a hangmező széléről befelé halad. Felolvasóval ez nem számít.",
+        "softnessHelp": "Minél lágyabb, annál fokozatosabban erősödik a hang, ahogy az ujj a hangmező széléről befelé halad; a rajzon a kitöltés is így halványul. Felolvasóval ez nem számít.",
+        "softnessDisabled": "Az él lágyságát a kijelölt hangmezőn állíthatod.",
         "nameLabel": "Hangmező neve"
       },
       "voice": {

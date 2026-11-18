@@ -5,12 +5,16 @@ import type { Point } from './data';
  * A maszk egy vászon (canvas) a kép kicsinyített méretében; az alak a kép saját pixelkoordinátáiban van.
  */
 
-/** Maszk-vászon mérete: a kép hosszabbik oldala legfeljebb ennyi pixel. */
-export const MASK_MAX_SIDE = 600;
+/** Maszk-vászon mérete: a kép hosszabbik oldala legfeljebb ennyi pixel (nagyításnál is pontos szél). */
+export const MASK_MAX_SIDE = 1200;
+/** Az ecsetméret (config: brushMin…brushMax) ekkora maszkon értendő; nagyobb maszkon arányosan nagyobb a vonás. */
+const BRUSH_BASE_SIDE = 600;
 
-export function maskSize(imageW: number, imageH: number): { w: number; h: number; scale: number } {
-  const scale = Math.min(1, MASK_MAX_SIDE / Math.max(imageW, imageH));
-  return { w: Math.round(imageW * scale), h: Math.round(imageH * scale), scale };
+export function maskSize(imageW: number, imageH: number): { w: number; h: number; scale: number; brushScale: number } {
+  const long = Math.max(imageW, imageH);
+  const scale = Math.min(1, MASK_MAX_SIDE / long);
+  const brushScale = (long * scale) / Math.min(long, BRUSH_BASE_SIDE);
+  return { w: Math.round(imageW * scale), h: Math.round(imageH * scale), scale, brushScale };
 }
 
 /** Az alak kirajzolása a maszkra (páros-páratlan kitöltés, így a lyukak megmaradnak). */

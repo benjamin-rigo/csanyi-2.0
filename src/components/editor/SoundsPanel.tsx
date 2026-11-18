@@ -1,4 +1,4 @@
-import { useEffect, useRef, type CSSProperties, type RefObject } from 'react';
+import { useEffect, useRef, type CSSProperties, type ReactNode, type RefObject } from 'react';
 import { Button, Chip, Description, Input, Label, ListBox, Slider, TextArea, TextField } from '@heroui/react';
 import type { EditorField, EditorProject, EditorSound } from '../../lib/editor';
 import type { Guide } from '../../lib/onboarding';
@@ -125,8 +125,9 @@ export function SoundsPanel({
   }, [selectionKey]);
 
   // Görgetéskor is a panel tetején marad, hogy ne kelljen visszagörgetni a visszalépéshez.
-  const back = (
-    <div className="panel-sticky">
+  // A lefúrós nézet felső sora: vissza a listához, jobbra a nézet törlés gombja (ne a panel alján kelljen keresni).
+  const back = (action?: ReactNode) => (
+    <div className="panel-sticky panel-sticky-row">
       <Button
         variant="ghost"
         size="sm"
@@ -137,13 +138,14 @@ export function SoundsPanel({
         <Icon name="back" size={16} />
         {t('teacher.editor.panelBack')}
       </Button>
+      {action}
     </div>
   );
 
   if (selection?.kind === 'background' && bg) {
     return (
       <section className="panel-sections" aria-labelledby="bg-detail">
-        {back}
+        {back()}
         <h2 id="bg-detail" ref={detailHeading as RefObject<HTMLHeadingElement>} tabIndex={-1} className="panel-detail-title">
           <span className="panel-row-icon" aria-hidden="true">
             <Icon name="music" size={16} />
@@ -183,7 +185,18 @@ export function SoundsPanel({
     const index = project.fields.indexOf(field);
     return (
       <section className="panel-sections" aria-labelledby="field-detail">
-        {back}
+        {back(
+          <Button
+            size="sm"
+            variant="danger-soft"
+            isDisabled={readOnly}
+            aria-label={t('teacher.editor.fields.deleteFieldLabel', { name: field.name || t('teacher.editor.fields.untitled') })}
+            onPress={() => onDeleteField(field)}
+          >
+            <Icon name="trash" size={16} />
+            {t('teacher.editor.fields.deleteShort')}
+          </Button>,
+        )}
         {/* A cím maga a név: itt lehet átírni, nincs külön Név mező. */}
         <h2 id="field-detail" className="sr-only">
           {t('teacher.editor.fields.detailTitle')}
@@ -234,18 +247,6 @@ export function SoundsPanel({
             userId={userId}
             onChange={(s) => onFieldVoice(field.id, s)}
           />
-          <VolumeSlider
-            id="field-softness"
-            label={t('teacher.editor.fields.softness')}
-            value={field.softness}
-            onChange={(softness) => onFieldChange(field.id, { softness })}
-            help={t('teacher.editor.fields.softnessHelp')}
-          />
-          <div className="panel-danger-zone">
-            <Button size="sm" variant="danger-soft" onPress={() => onDeleteField(field)}>
-              {t('teacher.editor.fields.deleteField')}
-            </Button>
-          </div>
         </fieldset>
       </section>
     );

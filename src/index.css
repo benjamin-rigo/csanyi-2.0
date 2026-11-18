@@ -885,7 +885,7 @@ body {
   }
 
   .draw-toolbar {
-    column-gap: var(--space-4);
+    column-gap: var(--space-6);
   }
 
   .draw-toolbar .tool-label {
@@ -917,6 +917,27 @@ body {
 .size-dot-lg {
   width: var(--space-3);
   height: var(--space-3);
+}
+
+/* Éles és lágy pötty a lágyság csúszkája két végén */
+.soft-dot {
+  flex-shrink: 0;
+  width: var(--space-4);
+  height: var(--space-4);
+  border-radius: var(--radius-pill);
+}
+
+.soft-dot-hard {
+  width: var(--space-3);
+  height: var(--space-3);
+}
+
+.soft-dot-hard {
+  background: var(--hs-fg);
+}
+
+.soft-dot-soft {
+  background: radial-gradient(circle closest-side, var(--hs-fg) 30%, transparent);
 }
 
 .canvas-hint {
@@ -1013,8 +1034,13 @@ body {
   stroke-width: calc(var(--w) + 2);
 }
 
-.draw-field .draw-field-line {
+/* A kitöltés külön elem, hogy a lágy szél szűrője csak rá hasson; a körvonal éles marad (WCAG 1.4.11). */
+.draw-field .draw-field-fill {
   fill: color-mix(in srgb, var(--c) var(--field-fill-alpha), transparent);
+  stroke: none;
+}
+
+.draw-field .draw-field-line {
   stroke: var(--c);
   stroke-width: var(--w);
 }
@@ -1105,6 +1131,13 @@ body {
   margin: calc(-1 * var(--space-6)) calc(-1 * var(--space-6)) 0;
   padding: var(--space-6) var(--space-6) var(--space-2);
   background: var(--hs-surface);
+}
+
+.panel-sticky-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
 }
 
 .panel-sticky {
