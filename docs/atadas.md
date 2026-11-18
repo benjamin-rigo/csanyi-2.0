@@ -34,7 +34,7 @@ A felületen még helykitöltők vannak; ezeket az alapítvány adja meg (`publi
 ## 3. Levélküldés (SMTP)
 
 - **Most:** nincs beállítva. A Supabase beépített küldője csak a projekt tagjainak kézbesít, óránként néhány levelet, ezért a meghívók és az elfelejtett jelszó levelei másnak nem érkeznek meg.
-- **Átadáskor (az átvevő dönti el):** saját SMTP a Supabase-ben (Authentication → Emails → SMTP Settings). Ingyenes lehetőségek: Gmail alkalmazásjelszóval (napi kb. 500, domain nélkül), Brevo (napi 300) vagy Resend (napi 100, domain kell); saját domainnel megbízhatóbb a kézbesítés. Utána: a magyar levélsablonok bemásolása (`supabase/templates/`, Authentication → Emails → Templates), az óránkénti levélkorlát emelése (Authentication → Rate Limits), és az e-mail cím módosításának engedélyezése a Profilban.
+- **Átadáskor (az átvevő dönti el):** saját SMTP a Supabase-ben (Authentication → Emails → SMTP Settings). Ingyenes lehetőségek: Gmail alkalmazásjelszóval (napi kb. 500, domain nélkül), Brevo (napi 300) vagy Resend (napi 100, domain kell); saját domainnel megbízhatóbb a kézbesítés. Utána: a magyar levélsablonok bemásolása (`supabase/templates/`, Authentication → Emails → Templates; a sablonok csak saját SMTP-vel vagy fizetős csomaggal szerkeszthetők, addig a Supabase angol alapszövege megy ki), az óránkénti levélkorlát emelése (Authentication → Rate Limits), és az e-mail cím módosításának engedélyezése a Profilban.
 
 ## 4. Külső szolgáltatások
 
