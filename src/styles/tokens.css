@@ -88,9 +88,9 @@
   /* Lekerekítés: a saját tárolók a HeroUI kártyáihoz igazodnak */
   --radius-pill: 999px;
   --radius-content: calc(var(--radius) * 3);
-  /* Szegmentált választó (fülek, eszközválasztó): a sáv íve a HeroUI-é, a kiválasztott elemé a sáv íve mínusz a rés */
-  --radius-segment: calc(var(--radius) * 2.5);
-  --radius-segment-inner: calc(var(--radius-segment) - var(--space-1));
+  /* Szegmentált választó (fülek, eszközválasztó): a sáv és a kiválasztott elem is pill, mint a gombok */
+  --radius-segment: var(--radius-pill);
+  --radius-segment-inner: var(--radius-pill);
   /* Egymásba ágyazott elemek (döntésnapló): a belső ív = a külső ív mínusz a köztük lévő rés, így közös középpontúak.
      Ha a rés eléri a külső ívet, a belső elem már önállóan hat, ott marad a --radius-content. */
   --radius-inset-4: max(var(--space-0-5), calc(var(--radius-content) - var(--space-4))); /* 16 px-es belső margó */

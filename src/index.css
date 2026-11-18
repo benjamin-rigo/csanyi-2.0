@@ -59,9 +59,19 @@ html {
 }
 
 /* Fehér felületen (pedagógus oldal) a fehér kártya keretet kap, különben nem válik el. Ugyanaz, mint a másodlagos gomb
-   kerete: 2 px fő szín; vékony szürke keretet nem használunk (döntésnapló, 2026-11-18). */
-.teacher-main .card {
+   kerete: 2 px fő szín; vékony szürke keretet nem használunk (döntésnapló, 2026-11-18). A képes kártyán nincs keret:
+   ott a kép maga választja el (Projektjeim, Admin). */
+.teacher-main .card:not(.project-card) {
   border: var(--border-strong) solid var(--accent);
+}
+
+/* Pill (döntésnapló): minden kattintható elem és címke kerek; a választó sávja is pill, hogy illeszkedjen hozzá. */
+.button,
+.toggle-button,
+.chip,
+.tag,
+.tabs__list-container {
+  border-radius: var(--radius-pill);
 }
 
 /* Címkék: a betű ne tapadjon a széléhez (a HeroUI kicsi címkéje 4, a közepes 8 px belső margót ad) */
@@ -83,11 +93,6 @@ html {
 .tabs__tab,
 .tabs__indicator {
   border-radius: var(--radius-segment-inner);
-}
-
-/* Keretes kártyában a kép felső íve a keret belső oldalához igazodik */
-.teacher-main .project-thumb {
-  border-radius: calc(var(--radius-content) - var(--border-strong)) calc(var(--radius-content) - var(--border-strong)) 0 0;
 }
 
 /* A rádiógomb mindig kör: a HeroUI a lekerekítést a --radius-ból számolja, ami kisebb lett (2026-11-18) */
@@ -171,8 +176,15 @@ body {
 .teacher-sidebar .button--secondary,
 .site-header .button--secondary {
   --button-bg: var(--surface);
-  --button-bg-hover: var(--surface-hover);
-  --button-bg-pressed: var(--surface-hover);
+  --button-bg-hover: var(--surface);
+  --button-bg-pressed: var(--surface);
+}
+
+/* Menü az oldalsávon: a mentás háttéren a rámutatás türkizes árnyalat (a halványmenta nem látszott rajta);
+   az aktuális oldal fehér, fő színű felirattal. */
+.teacher-sidebar .button--ghost {
+  --button-bg-hover: var(--accent-soft);
+  --button-bg-pressed: var(--accent-soft-hover);
 }
 
 /* A Menü gomb csak telefonon látszik; nagyobb kijelzőn a menü mindig nyitva. */
