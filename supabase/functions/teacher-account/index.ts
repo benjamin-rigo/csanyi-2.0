@@ -42,6 +42,18 @@ Deno.serve(async (req) => {
       .gte('created_at', since);
     if ((count ?? 0) >= DAILY_LIMIT) return reply({ error: 'limit', limit: DAILY_LIMIT }, 429);
 
+    // Létező fiókra csak az hívhat meg újra, aki korábban is meghívta (a még be nem lépett fiókra a Supabase
+    // hiba nélkül újraküldi a levelet, így más fiókját is magáénak jelölhetné, és visszavonással törölhetné).
+    const { data: existingId } = await admin.rpc('auth_user_id_by_email', { p_email: address });
+    if (existingId) {
+      const { count: own } = await admin
+        .from('invitations')
+        .select('id', { count: 'exact', head: true })
+        .eq('inviter_id', user.id)
+        .eq('invited_user_id', existingId);
+      if (!own) return reply({ error: 'email_exists' }, 409);
+    }
+
     const { data: profile } = await admin.from('profiles').select('name').eq('id', user.id).single();
     const { data: invited, error } = await admin.auth.admin.inviteUserByEmail(address, {
       data: { invited_by_name: profile?.name || user.email },
@@ -51,7 +63,7 @@ Deno.serve(async (req) => {
       const exists = error.code === 'email_exists' || /already been registered/i.test(error.message);
       return reply({ error: exists ? 'email_exists' : 'send_failed', reason: error.message }, exists ? 409 : 502);
     }
-    // Létező címre a meghívás hibát ad, így ez a fiók biztosan ezzel a meghívóval jött létre: csak ezt vonhatja vissza.
+    // A fiók vagy most jött létre, vagy ennek a pedagógusnak egy korábbi meghívója hozta létre (lásd fent).
     await admin.from('invitations').insert({ inviter_id: user.id, email: address, invited_user_id: invited.user.id });
     return reply({ ok: true });
   }
