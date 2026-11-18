@@ -19,6 +19,8 @@ jobs:
   # A pedagógus tesztek itt kimaradnak, mert a teszt-fiók adatai nincsenek fent (.env.test.local).
   test:
     runs-on: ubuntu-latest
+    # Ha valami elakad, ne fusson órákig
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -27,7 +29,19 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
-      - run: npx playwright install --with-deps chromium webkit
+      # A tesztböngészők gyorsítótárból (a Playwright verziójához kötve): a letöltésük néha 10–20 percig tartott.
+      # A rendszercsomagokat (install-deps) minden futás telepíti, azok nem gyorsítótárazhatók.
+      - id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        id: browsers
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - if: steps.browsers.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium webkit
+      - if: steps.browsers.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium webkit
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v4
         if: failure()
