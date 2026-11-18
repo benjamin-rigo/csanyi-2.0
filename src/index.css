@@ -58,9 +58,10 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
-/* Fehér felületen (pedagógus oldal) a fehér kártya keretet kap, különben nem válik el (döntésnapló, 2026-11-18) */
+/* Fehér felületen (pedagógus oldal) a fehér kártya keretet kap, különben nem válik el. Ugyanaz, mint a másodlagos gomb
+   kerete: 2 px fő szín; vékony szürke keretet nem használunk (döntésnapló, 2026-11-18). */
 .teacher-main .card {
-  border: var(--border-thin) solid var(--hs-border);
+  border: var(--border-strong) solid var(--accent);
 }
 
 /* Címkék: a betű ne tapadjon a széléhez (a HeroUI kicsi címkéje 4, a közepes 8 px belső margót ad) */
@@ -72,6 +73,21 @@ html {
 .chip--sm,
 .tag--sm {
   padding-inline: var(--space-2);
+}
+
+/* Fülek: a nem kiválasztott felirata sötét (szürke felirat nem kell), a kiválasztott íve a sávhoz igazodik (közös középpont) */
+.tabs__tab {
+  color: var(--foreground);
+}
+
+.tabs__tab,
+.tabs__indicator {
+  border-radius: var(--radius-segment-inner);
+}
+
+/* Keretes kártyában a kép felső íve a keret belső oldalához igazodik */
+.teacher-main .project-thumb {
+  border-radius: calc(var(--radius-content) - var(--border-strong)) calc(var(--radius-content) - var(--border-strong)) 0 0;
 }
 
 /* A rádiógomb mindig kör: a HeroUI a lekerekítést a --radius-ból számolja, ami kisebb lett (2026-11-18) */
@@ -799,7 +815,7 @@ body {
   justify-content: center;
   gap: var(--space-3);
   text-align: center;
-  border: var(--border-thin) dashed var(--hs-border);
+  border: var(--border-strong) dashed var(--accent);
   border-radius: var(--radius-content);
   background: var(--hs-default);
 }
@@ -939,9 +955,14 @@ body {
 /* Eszköztár (döntésnapló, 2026-11-18): az eszközválasztó ugyanúgy néz ki, mint a panel fülei (HeroUI Tabs):
    halvány sáv, a kiválasztott fehér, kiemelve. Ugyanazokból a HeroUI-változókból, hogy a kettő együtt változzon. */
 .draw-toolbar .toggle-button-group {
+  gap: 0;
   padding: var(--space-1);
-  border-radius: calc(var(--radius) * 2.5);
+  border-radius: var(--radius-segment);
   background: var(--default);
+}
+
+.draw-toolbar .toggle-button-group .toggle-button {
+  border-radius: var(--radius-segment-inner);
 }
 
 .draw-toolbar .toggle-button {

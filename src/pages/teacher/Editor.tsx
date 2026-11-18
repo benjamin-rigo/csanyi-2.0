@@ -554,6 +554,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
               selectedKeys={new Set([tool])}
               onSelectionChange={(keys) => setTool([...keys][0] as Tool)}
               isDisabled={readOnly}
+              isDetached
             >
               <ToggleButton id="brush" aria-label={t('teacher.editor.brush')}>
                 <Icon name="brush" />

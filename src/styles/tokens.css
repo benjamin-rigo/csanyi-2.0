@@ -8,11 +8,14 @@
      a kék ugyanaz az árnyalat, csak sötétebb (fehér felirat rajta 5,99:1 a 3,68 helyett, rámutatáskor is 4,91:1; a fókuszgyűrű is ez),
      a halvány szöveg szürke felületen 5:1, a piros fehéren és halvány piroson is 4,5:1 fölött. */
   --accent: #0b7366;
-  --muted: #63636b;
+  /* Halvány szöveg: türkizes szürke a semleges szürke helyett (fehéren 5,80:1, mentán 5,36:1, halványmentán 5,09:1) */
+  --muted: #4f6b65;
   --danger: #c01a1f;
-  /* Mezők, rádiógombok, jelölőnégyzetek kerete (WCAG 1.4.11, mérve): a HeroUI-ban alapból nincs keret, a fehér mező fehér
-     kártyán eltűnt. #828289: fehéren 3,82:1, az oldalháttéren 3,47:1, szürke kártyán 3,29:1, a szürke elemeken 3,2:1. */
-  --field-border: #828289;
+  /* Mezők, rádiógombok, jelölőnégyzetek kerete (WCAG 1.4.11, mérve): türkizes árnyalat a szürke helyett;
+     fehéren 3,34:1, az oldalháttéren 3,09:1. */
+  --field-border: #6f948b;
+  --field-border-hover: color-mix(in oklab, var(--field-border) 70%, var(--accent) 30%);
+  --field-border-focus: var(--accent);
   --field-border-width: 1px;
 
   /* Színhang arculat (döntésnapló, 2026-11-18, mérve): türkiz fő szín (fehér felirat rajta 5,74:1, rámutatáskor 4,70:1),
@@ -20,6 +23,16 @@
      5,04:1, halvány szöveg 5,22:1, mezőkeret 3,35:1). A felületek (kártya, panel) fehérek maradnak. */
   --background: #eff8f5;
   --default: #e6f3ef;
+  /* A HeroUI szürke árnyalatai helyett menta-türkiz (döntésnapló, 2026-11-18): rámutatás, másodlagos felületek, vonalak.
+     Rámutatáskor a türkiz szöveg 4,53:1 (halványmentán) és 5,29:1 (fehéren). */
+  --default-hover: color-mix(in oklab, var(--default) 92%, var(--accent) 8%);
+  --surface-hover: color-mix(in oklab, var(--surface) 94%, var(--accent) 6%);
+  --surface-secondary: #f1f8f6;
+  --surface-tertiary: #e6f3ef;
+  --background-secondary: color-mix(in oklab, var(--background) 94%, var(--accent) 6%);
+  --background-tertiary: color-mix(in oklab, var(--background) 88%, var(--accent) 12%);
+  --border: #cfe5df;
+  --separator: #d9ece7;
   /* A logó ecsetvonásának színei (csak a jelben, szöveg nem kerül rájuk) */
   --brand-coral: #ff6b57;
   --brand-sun: #ffc23d;
@@ -75,6 +88,9 @@
   /* Lekerekítés: a saját tárolók a HeroUI kártyáihoz igazodnak */
   --radius-pill: 999px;
   --radius-content: calc(var(--radius) * 3);
+  /* Szegmentált választó (fülek, eszközválasztó): a sáv íve a HeroUI-é, a kiválasztott elemé a sáv íve mínusz a rés */
+  --radius-segment: calc(var(--radius) * 2.5);
+  --radius-segment-inner: calc(var(--radius-segment) - var(--space-1));
   /* Egymásba ágyazott elemek (döntésnapló): a belső ív = a külső ív mínusz a köztük lévő rés, így közös középpontúak.
      Ha a rés eléri a külső ívet, a belső elem már önállóan hat, ott marad a --radius-content. */
   --radius-inset-4: max(var(--space-0-5), calc(var(--radius-content) - var(--space-4))); /* 16 px-es belső margó */
