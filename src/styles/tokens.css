@@ -66,6 +66,8 @@
   --field-color-8: #dc2626;
   /* Hangmező a rajzon: egyenletes alap az egész alakon + lágy szélű réteg rajta; a kijelölt erősebb */
   --field-base-alpha: 40%;
+  /* A szerkesztőben a kép fehér alapon halványítva, hogy a hangmezők jól látszódjanak (a képnézetben nem) */
+  --editor-image-opacity: 0.5;
   --field-fill-alpha: 55%;
   --field-base-alpha-selected: 55%;
   --field-fill-alpha-selected: 75%;

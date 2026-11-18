@@ -1261,6 +1261,11 @@ body {
   user-select: none;
   -webkit-user-select: none;
   cursor: none;
+  background: var(--hs-surface);
+}
+
+.draw-frame > img {
+  opacity: var(--editor-image-opacity);
 }
 
 .draw-frame.is-disabled {
