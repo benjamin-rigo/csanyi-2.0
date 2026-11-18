@@ -33,11 +33,9 @@
   --background-tertiary: color-mix(in oklab, var(--background) 88%, var(--accent) 12%);
   --border: #cfe5df;
   --separator: #d9ece7;
-  /* A logó hangoszlopainak színei (csak a jelben, szöveg nem kerül rájuk; a türkiz alapon jól látszanak) */
+  /* A logó hanghullámának színei (csak a jelben, szöveg nem kerül rájuk; a türkiz alapon jól látszanak) */
   --brand-coral: #ff6b57;
   --brand-sun: #ffc23d;
-  --brand-pink: #ff8fc8;
-  --brand-mint: #7fe8d2;
   --brand-sky: #7cc8ff;
 
   /* A saját elrendezés színei a HeroUI témából */
