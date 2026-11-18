@@ -647,7 +647,7 @@
     "cancel": "Mégse",
     "save": "Mentés",
     "accounts": {
-      "intro": "A Színhang összes pedagógusa. A privát projekteket nem látod, csak a darabszámukat.",
+      "intro": "A hozzáférési kérések és a Színhang összes pedagógusa. A privát projekteket nem látod, csak a darabszámukat.",
       "loadError": "Nem sikerült betölteni a fiókokat. Próbáld újra később.",
       "requestsTitle": "Hozzáférési kérések ({count})",
       "requestsEmpty": "Nincs új kérés.",
