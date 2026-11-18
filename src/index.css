@@ -964,31 +964,21 @@ body {
   }
 }
 
-/* Eszköztár (döntésnapló, 2026-11-18): az eszközválasztó ugyanúgy néz ki, mint a panel fülei (HeroUI Tabs):
-   halvány sáv, a kiválasztott fehér, kiemelve. Ugyanazokból a HeroUI-változókból, hogy a kettő együtt változzon. */
+/* Eszköztár (döntésnapló, 2026-11-18): az eszköztár maga egy fehér sáv, ezért benne nincs külön választósáv
+   (túl sok réteg lenne). Az eszközök pill gombok: a kiválasztott halványmenta kitöltésű, fő színű felirattal,
+   a rámutatás ennél halványabb. */
 .draw-toolbar .toggle-button-group {
-  gap: 0;
-  padding: var(--space-1);
-  border-radius: var(--radius-segment);
-  background: var(--default);
-}
-
-.draw-toolbar .toggle-button-group .toggle-button {
-  border-radius: var(--radius-segment-inner);
+  gap: var(--space-1);
 }
 
 .draw-toolbar .toggle-button {
   --toggle-button-bg: transparent;
-  --toggle-button-bg-hover: var(--default-hover);
-  --toggle-button-bg-pressed: var(--default-hover);
-  --toggle-button-bg-selected: var(--segment);
-  --toggle-button-bg-selected-hover: var(--segment);
-  --toggle-button-bg-selected-pressed: var(--segment);
-  --toggle-button-fg-selected: var(--segment-foreground);
-}
-
-.draw-toolbar .toggle-button[data-selected="true"] {
-  box-shadow: var(--surface-shadow);
+  --toggle-button-bg-hover: var(--surface-hover);
+  --toggle-button-bg-pressed: var(--surface-hover);
+  --toggle-button-bg-selected: var(--default);
+  --toggle-button-bg-selected-hover: var(--default);
+  --toggle-button-bg-selected-pressed: var(--default);
+  --toggle-button-fg-selected: var(--accent);
 }
 
 /* Az Ecset gombon az ecsetméret kicsiben (4–24 px pötty) */
