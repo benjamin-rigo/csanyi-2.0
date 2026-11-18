@@ -59,7 +59,7 @@ export function TeacherLayout({ documentTitle, children }: { documentTitle: stri
               <span className="nav-text">{t('teacher.nav.projects')}</span>
             </ButtonLink>
             {isAdmin && (
-              <ButtonLink href="/galeria-kezelese" {...current('/galeria-kezelese')} className="button--full-width teacher-nav-link">
+              <ButtonLink href="/admin" {...current('/admin')} className="button--full-width teacher-nav-link">
                 <Icon name="shield" />
                 <span className="nav-text">{t('teacher.nav.admin')}</span>
               </ButtonLink>

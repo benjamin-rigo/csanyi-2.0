@@ -1747,7 +1747,7 @@ div.onboarding-current {
   }
 }
 
-/* Galéria kezelése (admin) */
+/* Admin (Fiókok, Galéria) */
 .admin-section {
   display: flex;
   flex-direction: column;
@@ -1768,6 +1768,63 @@ div.onboarding-current {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
+}
+
+/* Admin: fülek és bevezető */
+/* A fülsor nem nyúlik a teljes szélességre (két fül), a panel tartalma a címmel egy vonalban kezdődik */
+.admin-tabs .tabs__list-container {
+  max-width: var(--admin-tabs-w);
+  margin-bottom: var(--space-6);
+}
+
+.admin-tabs .tabs__panel {
+  padding: 0;
+}
+
+.admin-intro {
+  margin: 0 0 var(--space-8);
+  color: var(--hs-muted);
+}
+
+/* Admin, Fiókok: egy sor egy fiók; a sorokat vékony vonal választja el */
+.account-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.account-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-top: var(--border-thin) solid var(--hs-border);
+}
+
+.account-row:last-child {
+  border-bottom: var(--border-thin) solid var(--hs-border);
+}
+
+.account-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.account-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.account-email {
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
 }
 
 /* Szerkesztő táblagépen (1280 px alatt): az Első lépések sáv a rajzterület fölé kerül, és csak az aktuális lépés

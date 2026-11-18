@@ -16,7 +16,7 @@ const Login = lazy(() => import('./pages/teacher/Login').then((m) => ({ default:
 const MyProjects = lazy(() => import('./pages/teacher/MyProjects').then((m) => ({ default: m.MyProjects })));
 const NewPassword = lazy(() => import('./pages/teacher/NewPassword').then((m) => ({ default: m.NewPassword })));
 const Editor = lazy(() => import('./pages/teacher/Editor').then((m) => ({ default: m.Editor })));
-const GalleryAdmin = lazy(() => import('./pages/teacher/GalleryAdmin').then((m) => ({ default: m.GalleryAdmin })));
+const Admin = lazy(() => import('./pages/teacher/Admin').then((m) => ({ default: m.Admin })));
 const Profile = lazy(() => import('./pages/teacher/Profile').then((m) => ({ default: m.Profile })));
 
 function StatusPage({ error }: { error?: boolean }) {
@@ -103,13 +103,15 @@ function App() {
             }
           />
           <Route
-            path="/galeria-kezelese"
+            path="/admin"
             element={
               <RequireAuth>
-                <GalleryAdmin />
+                <Admin />
               </RequireAuth>
             }
           />
+          {/* A régi cím (Galéria kezelése) az Admin oldal Galéria fülére visz. */}
+          <Route path="/galeria-kezelese" element={<Navigate to="/admin?ful=galeria" replace />} />
           <Route
             path="/profil"
             element={

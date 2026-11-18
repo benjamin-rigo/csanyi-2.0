@@ -23,14 +23,14 @@ test('nyilvános oldalak', async ({ page }) => {
 test.describe('pedagógus oldal', () => {
   test.skip(!process.env.E2E_EMAIL || !process.env.E2E_PASSWORD, 'nincs teszt-fiók (.env.test.local)');
 
-  test('Projektjeim, Profil, Galéria kezelése, szerkesztő', async ({ page }) => {
+  test('Projektjeim, Profil, Admin, szerkesztő', async ({ page }) => {
     test.setTimeout(120_000);
     await page.goto('/belepes');
     await page.getByLabel('E-mail cím').fill(process.env.E2E_EMAIL!);
     await page.getByLabel('Jelszó', { exact: true }).fill(process.env.E2E_PASSWORD!);
     await page.getByRole('button', { name: 'Belépés' }).click();
     await expect(page).not.toHaveURL(/belepes/);
-    for (const path of ['/projektjeim', '/profil', '/galeria-kezelese']) {
+    for (const path of ['/projektjeim', '/profil', '/admin', '/admin?ful=galeria']) {
       await page.goto(path);
       await page.getByRole('heading', { level: 1 }).waitFor();
       await page.waitForLoadState('networkidle');

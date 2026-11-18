@@ -110,7 +110,7 @@
     "nav": {
       "projects": "Projektjeim",
       "gallery": "Galéria",
-      "admin": "Galéria kezelése",
+      "admin": "Admin",
       "newTab": "(új lapon nyílik)"
     },
     "profileLink": "Profil",
@@ -469,8 +469,10 @@
     }
   },
   "admin": {
-    "documentTitle": "Galéria kezelése · Hangösvény",
-    "title": "Galéria kezelése",
+    "documentTitle": "Admin · Hangösvény",
+    "title": "Admin",
+    "tabsLabel": "Admin részei",
+    "tabs": { "accounts": "Fiókok", "gallery": "Galéria" },
     "subtitle": "A galéria képei. Levehetsz egy képet, ha nem odavaló, és javíthatod a kategóriáit.",
     "notAdmin": "Ezt az oldalt csak adminok érik el.",
     "loadError": "Nem sikerült betölteni a galériát. Próbáld újra később.",
@@ -496,6 +498,32 @@
     "restoreError": "A(z) {title} nem tehető vissza: hiányzik valami a galériához. A pedagógusnak kell pótolnia.",
     "actionError": "Nem sikerült. Próbáld újra.",
     "cancel": "Mégse",
-    "save": "Mentés"
+    "save": "Mentés",
+    "accounts": {
+      "intro": "A Hangösvény összes pedagógusa. A privát projekteket nem látod, csak a darabszámukat.",
+      "loadError": "Nem sikerült betölteni a fiókokat. Próbáld újra később.",
+      "activeTitle": "Pedagógusok ({count})",
+      "pendingTitle": "Függő meghívók ({count})",
+      "pendingEmpty": "Nincs függő meghívó.",
+      "activeMeta": "Regisztrált: {created} · Utoljára belépett: {last} · {count} projekt",
+      "pendingMeta": "Meghívva: {date} · Meghívta: {by}",
+      "invitedBy": "Meghívta: {by}",
+      "unknown": "ismeretlen",
+      "never": "még nem",
+      "adminChip": "Admin",
+      "youChip": "Te",
+      "delete": "Fiók törlése",
+      "deleteLabel": "{name} fiókjának törlése",
+      "revoke": "Visszavonás",
+      "revokeLabel": "{name} meghívójának visszavonása",
+      "deleteTitle": "Törlöd {name} fiókját?",
+      "deleteText": "A fiók és mind a(z) {count} projektje, a képei és a hangjai véglegesen törlődnek; a galériából is eltűnnek. Ez nem vonható vissza.",
+      "reason": "Az indok",
+      "reasonHelp": "Csak az adminok látják, a pedagógus nem kap róla levelet.",
+      "reasonMissing": "Írd be az indokot.",
+      "deleteConfirm": "Fiók törlése",
+      "deleted": "{name} fiókja törölve.",
+      "revoked": "{name} meghívója visszavonva."
+    }
   }
 }

@@ -1,17 +1,15 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Button, Card, Chip, Description, EmptyState, Label, Link, Modal, Tag, TagGroup, TextArea, TextField } from '@heroui/react';
 import { Icon } from '../../components/Icon';
-import { TeacherLayout } from '../../components/TeacherLayout';
-import { moderationReason, removeFromGallery, restoreToGallery, setCategoriesAsAdmin, useAdminGallery, useIsAdmin, type AdminProject } from '../../lib/admin';
+import { moderationReason, removeFromGallery, restoreToGallery, setCategoriesAsAdmin, useAdminGallery, type AdminProject } from '../../lib/admin';
 import { assetUrl } from '../../lib/data';
 import { loadCategories, type CategoryOption } from '../../lib/editor';
 import { t } from '../../lib/i18n';
 
 type Dialog = { kind: 'remove' | 'categories'; project: AdminProject } | null;
 
-/** Galéria kezelése (admin): a galéria képei és a levett képek; levétel okkal, visszatétel, kategóriák javítása. */
-export function GalleryAdmin() {
-  const isAdmin = useIsAdmin();
+/** Admin, Galéria fül: a galéria képei és a levett képek; levétel okkal, visszatétel, kategóriák javítása. */
+export function GalleryAdminPanel() {
   const [projects, reload] = useAdminGallery();
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [dialog, setDialog] = useState<Dialog>(null);
@@ -52,27 +50,13 @@ export function GalleryAdmin() {
     }
   }
 
-  if (isAdmin === false) {
-    return (
-      <TeacherLayout documentTitle={t('admin.documentTitle')}>
-        <div className="page-heading">
-          <h1>{t('admin.title')}</h1>
-          <p>{t('admin.notAdmin')}</p>
-        </div>
-      </TeacherLayout>
-    );
-  }
-
   const list = projects.status === 'ready' ? projects.data : [];
   const live = list.filter((p) => p.visibility === 'gallery');
   const removed = list.filter((p) => p.visibility !== 'gallery');
 
   return (
-    <TeacherLayout documentTitle={t('admin.documentTitle')}>
-      <div className="page-heading">
-        <h1>{t('admin.title')}</h1>
-        <p>{t('admin.subtitle')}</p>
-      </div>
+    <>
+      <p className="admin-intro">{t('admin.subtitle')}</p>
       {projects.status === 'error' && <p role="alert">{t('admin.loadError')}</p>}
 
       {projects.status === 'ready' && (
@@ -222,11 +206,11 @@ export function GalleryAdmin() {
           </Modal.Container>
         </Modal.Backdrop>
       </Modal>
-    </TeacherLayout>
+    </>
   );
 }
 
-function ErrorAlert({ message }: { message: string }) {
+export function ErrorAlert({ message }: { message: string }) {
   return (
     <Alert status="danger" role="alert">
       <Alert.Indicator />

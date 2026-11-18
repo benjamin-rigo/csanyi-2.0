@@ -65,3 +65,36 @@ async function call(fn: string, args: Record<string, unknown>) {
 export const removeFromGallery = (id: string, reason: string) => call('admin_remove_from_gallery', { p_id: id, reason });
 export const restoreToGallery = (id: string) => call('admin_restore_to_gallery', { p_id: id });
 export const setCategoriesAsAdmin = (id: string, ids: string[]) => call('admin_set_categories', { p_id: id, ids });
+
+/** Admin, Fiókok fül: minden pedagógus. A privát projekteket az admin nem látja, csak a darabszámukat. */
+export interface AdminAccount {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+  lastSignInAt: string | null;
+  /** Még nem lépett be a meghívó linkjével. */
+  pending: boolean;
+  isAdmin: boolean;
+  projectCount: number;
+  invitedBy: string | null;
+}
+
+export function useAdminAccounts(): [Load<AdminAccount[]>, () => void] {
+  const [state, setState] = useState<Load<AdminAccount[]>>({ status: 'loading' });
+  const [version, setVersion] = useState(0);
+  const reload = useCallback(() => setVersion((v) => v + 1), []);
+  useEffect(() => {
+    let alive = true;
+    void supabase.rpc('admin_accounts').then(({ data, error }) => {
+      if (alive) setState(error ? { status: 'error' } : { status: 'ready', data: data as AdminAccount[] });
+    });
+    return () => {
+      alive = false;
+    };
+  }, [version]);
+  return [state, reload];
+}
+
+/** Fiók törlése minden adatával; függő meghívónál ez a visszavonás (indok nélkül is). */
+export const deleteAccountAsAdmin = (id: string, reason: string) => call('admin_delete_account', { p_user: id, p_reason: reason });

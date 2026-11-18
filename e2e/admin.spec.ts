@@ -76,8 +76,9 @@ async function login(page: Page) {
 test('admin: levétel okkal, a pedagógus látja, visszatétel, kategóriák', async ({ page }) => {
   await login(page);
   await page.goto('/projektjeim');
-  await page.getByRole('link', { name: 'Galéria kezelése' }).click();
-  await expect(page.getByRole('heading', { name: 'Galéria kezelése', level: 1 })).toBeVisible();
+  await page.getByRole('link', { name: 'Admin', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Admin', level: 1 })).toBeVisible();
+  await page.getByRole('tab', { name: 'Galéria' }).click();
   const card = page.locator('.project-card', { hasText: TITLE });
   await expect(card).toBeVisible();
   await expectNoAxeViolations(page);
@@ -113,4 +114,29 @@ test('admin: levétel okkal, a pedagógus látja, visszatétel, kategóriák', a
 
   const { data } = await db.from('projects').select('visibility, moderation_note').eq('id', projectId).single();
   expect(data).toEqual({ visibility: 'gallery', moderation_note: null });
+});
+
+test('admin, Fiókok: lista, a törléshez indok kell, saját és admin fiók nem törölhető', async ({ page }) => {
+  await login(page);
+  await page.goto('/admin');
+  await expect(page.getByRole('tab', { name: 'Fiókok', selected: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Pedagógusok \(\d+\)/ })).toBeVisible();
+  await expectNoAxeViolations(page);
+
+  // A saját sor (Te) mellett nincs törlés gomb.
+  const own = page.locator('.account-row', { hasText: email! });
+  await expect(own.getByText('Te', { exact: true })).toBeVisible();
+  await expect(own.getByRole('button')).toHaveCount(0);
+
+  // Ha van törölhető fiók, a megerősítő ablak indok nélkül nem töröl. Valódi fiókot a teszt nem töröl.
+  const deletable = page.getByRole('button', { name: /fiókjának törlése$/ }).first();
+  if (await deletable.count()) {
+    await deletable.click();
+    const dialog = page.getByRole('alertdialog');
+    await dialog.getByRole('button', { name: 'Fiók törlése' }).click();
+    await expect(dialog.getByText('Írd be az indokot.')).toBeVisible();
+    await expectNoAxeViolations(page, '[role=alertdialog]');
+    await dialog.getByRole('button', { name: 'Mégse' }).click();
+    await expect(dialog).toBeHidden();
+  }
 });
