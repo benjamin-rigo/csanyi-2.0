@@ -302,11 +302,14 @@ body {
   color: var(--hs-muted);
 }
 
+/* A kártya képe szélétől szélig ér (döntésnapló, 2026-11-18): felül a kártya íve, alul egyenes vágás, alatta a szöveg
+   a fehér felületen. A HeroUI kártya belső margóját (16 px) negatív margóval hidaljuk át. */
 .project-thumb {
   position: relative;
   isolation: isolate;
   aspect-ratio: 4 / 3;
-  border-radius: var(--radius-inset-4);
+  margin: calc(-1 * var(--space-4)) calc(-1 * var(--space-4)) 0;
+  border-radius: var(--radius-content) var(--radius-content) 0 0;
   overflow: hidden;
   background: var(--hs-default);
 }
