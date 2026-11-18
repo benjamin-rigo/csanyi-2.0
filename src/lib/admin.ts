@@ -41,21 +41,24 @@ export function useIsAdmin(): boolean | null {
 
 type Load<T> = { status: 'loading' } | { status: 'error' } | { status: 'ready'; data: T };
 
-export function useAdminGallery(): [Load<AdminProject[]>, () => void] {
-  const [state, setState] = useState<Load<AdminProject[]>>({ status: 'loading' });
+/** Admin lista egy adatbázis-függvényből; a reload újratölti. */
+function useAdminList<T>(fn: string): [Load<T[]>, () => void] {
+  const [state, setState] = useState<Load<T[]>>({ status: 'loading' });
   const [version, setVersion] = useState(0);
   const reload = useCallback(() => setVersion((v) => v + 1), []);
   useEffect(() => {
     let alive = true;
-    void supabase.rpc('admin_gallery').then(({ data, error }) => {
-      if (alive) setState(error ? { status: 'error' } : { status: 'ready', data: data as AdminProject[] });
+    void supabase.rpc(fn).then(({ data, error }) => {
+      if (alive) setState(error ? { status: 'error' } : { status: 'ready', data: data as T[] });
     });
     return () => {
       alive = false;
     };
-  }, [version]);
+  }, [fn, version]);
   return [state, reload];
 }
+
+export const useAdminGallery = () => useAdminList<AdminProject>('admin_gallery');
 
 async function call(fn: string, args: Record<string, unknown>) {
   const { error } = await supabase.rpc(fn, args);
@@ -80,21 +83,24 @@ export interface AdminAccount {
   invitedBy: string | null;
 }
 
-export function useAdminAccounts(): [Load<AdminAccount[]>, () => void] {
-  const [state, setState] = useState<Load<AdminAccount[]>>({ status: 'loading' });
-  const [version, setVersion] = useState(0);
-  const reload = useCallback(() => setVersion((v) => v + 1), []);
-  useEffect(() => {
-    let alive = true;
-    void supabase.rpc('admin_accounts').then(({ data, error }) => {
-      if (alive) setState(error ? { status: 'error' } : { status: 'ready', data: data as AdminAccount[] });
-    });
-    return () => {
-      alive = false;
-    };
-  }, [version]);
-  return [state, reload];
-}
+export const useAdminAccounts = () => useAdminList<AdminAccount>('admin_accounts');
 
 /** Fiók törlése minden adatával; függő meghívónál ez a visszavonás (indok nélkül is). */
 export const deleteAccountAsAdmin = (id: string, reason: string) => call('admin_delete_account', { p_user: id, p_reason: reason });
+
+/** Admin, Fiókok fül: a nyitott hozzáférési kérések, a legrégebbi elöl. */
+export interface AccessRequest {
+  id: string;
+  name: string;
+  email: string;
+  school: string;
+  message: string | null;
+  createdAt: string;
+  /** Ezzel a címmel már van fiók: meghívni nem kell, csak lezárni. */
+  hasAccount: boolean;
+}
+
+export const useAccessRequests = () => useAdminList<AccessRequest>('admin_access_requests');
+
+/** A kérés lezárása (meghívás után vagy elutasításkor): a kérés törlődik. */
+export const resolveAccessRequest = (id: string) => call('admin_resolve_access_request', { p_id: id });

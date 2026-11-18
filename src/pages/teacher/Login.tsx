@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Navigate, useNavigate } from 'react-router';
 import { Button, Checkbox, Form, Link } from '@heroui/react';
 import { AuthLayout } from '../../components/AuthLayout';
+import { ButtonLink } from '../../components/SiteHeader';
 import { authErrorMessage, EmailField, FormError, isEmail, PasswordField, focusFirstInvalid } from '../../components/AuthFields';
 import type { Config } from '../../lib/data';
 import { t } from '../../lib/i18n';
@@ -42,7 +43,6 @@ export function Login({ config }: { config: Config }) {
       documentTitle={t('auth.login.documentTitle')}
       title={t('auth.login.title')}
       subtitle={t('auth.login.subtitle')}
-      footnote={t('auth.login.noAccount', { email: config.contactEmail })}
     >
       <Form className="auth-form" onSubmit={submit} validationBehavior="aria">
         <EmailField value={email} onChange={setEmail} error={errors.email} autoFocus />
@@ -70,6 +70,12 @@ export function Login({ config }: { config: Config }) {
           {t('auth.login.submit')}
         </Button>
       </Form>
+      <div className="auth-alt">
+        <p>{t('auth.login.noAccount')}</p>
+        <ButtonLink href={config.links.requestAccess} variant="outline" className="button--full-width">
+          {t('auth.login.requestAccess')}
+        </ButtonLink>
+      </div>
     </AuthLayout>
   );
 }

@@ -47,7 +47,7 @@ export interface Gallery {
 
 export interface Config {
   contactEmail: string;
-  links: Record<'help' | 'teachers' | 'accessibility' | 'privacy' | 'terms', string>;
+  links: Record<'help' | 'teachers' | 'requestAccess' | 'accessibility' | 'privacy' | 'terms', string>;
   auth: { passwordMinLength: number };
   upload: { imageMaxMb: number; soundMaxMb: number };
   onboarding: { sampleProjectId: string; steps: number };

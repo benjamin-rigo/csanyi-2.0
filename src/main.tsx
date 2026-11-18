@@ -18,6 +18,7 @@ const MyProjects = lazy(() => import('./pages/teacher/MyProjects').then((m) => (
 const NewPassword = lazy(() => import('./pages/teacher/NewPassword').then((m) => ({ default: m.NewPassword })));
 const Editor = lazy(() => import('./pages/teacher/Editor').then((m) => ({ default: m.Editor })));
 const Admin = lazy(() => import('./pages/teacher/Admin').then((m) => ({ default: m.Admin })));
+const RequestAccess = lazy(() => import('./pages/teacher/RequestAccess').then((m) => ({ default: m.RequestAccess })));
 const Profile = lazy(() => import('./pages/teacher/Profile').then((m) => ({ default: m.Profile })));
 
 function StatusPage({ error }: { error?: boolean }) {
@@ -78,6 +79,7 @@ function App() {
           <Route path="/sugo" element={<Help config={config} />} />
           <Route path="/belepes" element={<Login config={config} />} />
           <Route path="/elfelejtett-jelszo" element={<ForgotPassword />} />
+          <Route path="/hozzaferes" element={<RequestAccess config={config} />} />
           <Route path="/uj-jelszo" element={<NewPassword config={config} />} />
           <Route path="/fiok-beallitasa" element={<AccountSetup config={config} />} />
           <Route

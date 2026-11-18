@@ -22,7 +22,7 @@
     "empty": "Ebben a kategóriában még nincs kép."
   },
   "footer": {
-    "teacherContact": "Pedagógus vagy? Hozzáférésért írj nekünk: {email}",
+    "teacherContact": "Pedagógus vagy?",
     "legalLabel": "Jogi információk",
     "accessibility": "Akadálymentesség",
     "privacy": "Adatvédelem",
@@ -82,7 +82,7 @@
           {
             "title": "Hozzáférés",
             "items": [
-              "A Színhang meghívásos. Egy kolléga meghívhat a Profil oldaláról, vagy írj nekünk: {email}"
+              "A Színhang meghívásos. Kérj hozzáférést a Belépés oldalon, vagy egy kolléga meghívhat a Profil oldaláról."
             ]
           },
           {
@@ -182,7 +182,28 @@
       "forgot": "Elfelejtetted a jelszavad?",
       "remember": "Maradjak bejelentkezve",
       "submit": "Belépés",
-      "noAccount": "Még nincs fiókod? A Színhang meghívásos, hozzáférésért írj nekünk: {email}"
+      "noAccount": "Még nincs fiókod? A Színhang meghívásos.",
+      "requestAccess": "Hozzáférés kérése"
+    },
+    "request": {
+      "documentTitle": "Hozzáférés kérése · Színhang",
+      "title": "Hozzáférés kérése",
+      "subtitle": "Írd meg, ki vagy és hol tanítasz. Ha jóváhagyjuk, meghívót küldünk.",
+      "name": "Név",
+      "school": "Iskola vagy intézmény",
+      "message": "Üzenet",
+      "messageHelp": "Nem kötelező. Írd meg például, kikkel és milyen órán használnád.",
+      "privacy": "Az adataidat csak a kérésed elbírálásához használjuk, utána töröljük.",
+      "submit": "Kérés elküldése",
+      "sent": "Megkaptuk a kérésed. Ha jóváhagyjuk, e-mailben kapsz egy meghívót. Nézd meg a levélszemét mappát is.",
+      "errors": {
+        "nameRequired": "Add meg a neved.",
+        "schoolRequired": "Add meg, hol tanítasz.",
+        "rateLimit": "Most sok kérés érkezett. Próbáld újra egy óra múlva.",
+        "other": "Nem sikerült elküldeni. Próbáld újra később."
+      },
+      "question": "Kérdésed van? Írj nekünk: {email}",
+      "backToLogin": "Vissza a belépéshez"
     },
     "forgot": {
       "documentTitle": "Elfelejtett jelszó · Színhang",
@@ -628,6 +649,20 @@
     "accounts": {
       "intro": "A Színhang összes pedagógusa. A privát projekteket nem látod, csak a darabszámukat.",
       "loadError": "Nem sikerült betölteni a fiókokat. Próbáld újra később.",
+      "requestsTitle": "Hozzáférési kérések ({count})",
+      "requestsEmpty": "Nincs új kérés.",
+      "requestsLoadError": "Nem sikerült betölteni a kéréseket. Próbáld újra később.",
+      "requestMeta": "{school} · Kérte: {date}",
+      "hasAccountChip": "Már van fiókja",
+      "invite": "Meghívás",
+      "inviteLabel": "{name} meghívása",
+      "decline": "Elutasítás",
+      "declineLabel": "{name} kérésének elutasítása",
+      "close": "Lezárás",
+      "closeLabel": "{name} kérésének lezárása",
+      "invited": "Meghívó elküldve: {email}",
+      "declined": "{name} kérése elutasítva.",
+      "closed": "{name} kérése lezárva.",
       "activeTitle": "Pedagógusok ({count})",
       "pendingTitle": "Függő meghívók ({count})",
       "pendingEmpty": "Nincs függő meghívó.",

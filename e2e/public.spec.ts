@@ -42,6 +42,19 @@ test('belépés és elfelejtett jelszó: akadálymentes', async ({ page }) => {
   await expectNoAxeViolations(page);
 });
 
+// Elküldeni nem küldjük el, mert az az éles adatbázisba írna.
+test('hozzáférés kérése: a belépésből nyílik, akadálymentes, jelzi a hiányzó mezőket', async ({ page }) => {
+  await page.goto('/belepes');
+  await page.getByRole('link', { name: 'Hozzáférés kérése' }).click();
+  await expect(page).toHaveURL(/hozzaferes/);
+  await expectNoAxeViolations(page);
+  await page.getByRole('button', { name: 'Kérés elküldése' }).click();
+  await expect(page.getByText('Add meg a neved.')).toBeVisible();
+  await expect(page.getByText('Add meg, hol tanítasz.')).toBeVisible();
+  await expect(page.getByLabel('Név')).toBeFocused();
+  await expectNoAxeViolations(page);
+});
+
 test('súgó: a fejlécből nyílik, akadálymentes', async ({ page, isMobile }) => {
   await page.goto('/');
   // Telefonon a Súgó a láblécben van.

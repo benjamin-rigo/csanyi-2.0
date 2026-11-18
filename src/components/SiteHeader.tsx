@@ -81,7 +81,12 @@ export function SiteHeader({ config }: { config: Config }) {
 export function SiteFooter({ config }: { config: Config }) {
   return (
     <footer className="site-footer">
-      <span>{t('footer.teacherContact', { email: config.contactEmail })}</span>
+      <div className="footer-teacher">
+        <span>{t('footer.teacherContact')}</span>
+        <ButtonLink href={config.links.requestAccess} variant="outline">
+          {t('auth.login.requestAccess')}
+        </ButtonLink>
+      </div>
       <nav aria-label={t('footer.legalLabel')} className="legal">
         <Link href={config.links.help}>{t('nav.help')}</Link>
         <Link href={config.links.accessibility}>{t('footer.accessibility')}</Link>

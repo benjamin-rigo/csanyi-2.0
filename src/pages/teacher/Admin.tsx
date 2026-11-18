@@ -2,9 +2,18 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { Button, Chip, Description, EmptyState, Label, Modal, Tabs, TextArea, TextField } from '@heroui/react';
 import { TeacherLayout } from '../../components/TeacherLayout';
-import { deleteAccountAsAdmin, useAdminAccounts, useIsAdmin, type AdminAccount } from '../../lib/admin';
+import {
+  deleteAccountAsAdmin,
+  resolveAccessRequest,
+  useAccessRequests,
+  useAdminAccounts,
+  useIsAdmin,
+  type AccessRequest,
+  type AdminAccount,
+} from '../../lib/admin';
 import { t } from '../../lib/i18n';
 import { useSession } from '../../lib/supabase';
+import { inviteTeacher } from '../../lib/teacher';
 import { ErrorAlert, GalleryAdminPanel } from './GalleryAdmin';
 
 type Tab = 'accounts' | 'gallery';
@@ -143,6 +152,8 @@ function AccountsPanel() {
       <p className="admin-intro">{t('admin.accounts.intro')}</p>
       {error && !target && <ErrorAlert message={error} />}
 
+      <RequestsSection onInvited={reload} onStatus={setStatus} />
+
       <section className="admin-section" aria-labelledby="admin-active">
         <h2 id="admin-active">{t('admin.accounts.activeTitle', { count: active.length })}</h2>
         <ul className="account-list">{active.map(row)}</ul>
@@ -212,5 +223,100 @@ function AccountsPanel() {
         </Modal.Backdrop>
       </Modal>
     </>
+  );
+}
+
+/** Hozzáférési kérések: meghívás (a teacher-account függvényen át, mint a Profilból) vagy elutasítás; utána a kérés törlődik. */
+function RequestsSection({ onInvited, onStatus }: { onInvited: () => void; onStatus: (message: string) => void }) {
+  const [requests, reload] = useAccessRequests();
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState('');
+
+  async function handle(r: AccessRequest, invite: boolean) {
+    setBusy(r.id);
+    setError('');
+    try {
+      if (invite) {
+        const failed = await inviteTeacher(r.email);
+        if (failed) return setError(t(`teacher.profile.inviteErrors.${failed}`));
+      }
+      await resolveAccessRequest(r.id);
+      onStatus(
+        invite
+          ? t('admin.accounts.invited', { email: r.email })
+          : t(r.hasAccount ? 'admin.accounts.closed' : 'admin.accounts.declined', { name: r.name }),
+      );
+      reload();
+      if (invite) onInvited();
+    } catch {
+      setError(t('admin.actionError'));
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  if (requests.status === 'loading') return null;
+  const count = requests.status === 'ready' ? requests.data.length : 0;
+  const date = (iso: string) => new Date(iso).toLocaleDateString('hu-HU');
+
+  return (
+    <section className="admin-section" aria-labelledby="admin-requests">
+      <h2 id="admin-requests">{t('admin.accounts.requestsTitle', { count })}</h2>
+      {error && <ErrorAlert message={error} />}
+      {requests.status === 'error' ? (
+        <p role="alert">{t('admin.accounts.requestsLoadError')}</p>
+      ) : count === 0 ? (
+        <EmptyState>
+          <p>{t('admin.accounts.requestsEmpty')}</p>
+        </EmptyState>
+      ) : (
+        <ul className="account-list">
+          {requests.data.map((r) => (
+            <li key={r.id} className="account-row">
+              <div className="account-text">
+                <span className="account-name">
+                  {r.name}
+                  {r.hasAccount && <Chip size="sm">{t('admin.accounts.hasAccountChip')}</Chip>}
+                </span>
+                <span className="account-email">{r.email}</span>
+                <span className="panel-help">{t('admin.accounts.requestMeta', { school: r.school, date: date(r.createdAt) })}</span>
+                {r.message && <p className="request-message">{r.message}</p>}
+              </div>
+              <div className="admin-actions">
+                {r.hasAccount ? (
+                  <Button
+                    variant="ghost"
+                    isPending={busy === r.id}
+                    aria-label={t('admin.accounts.closeLabel', { name: r.name })}
+                    onPress={() => void handle(r, false)}
+                  >
+                    {t('admin.accounts.close')}
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      variant="ghost"
+                      isDisabled={busy === r.id}
+                      aria-label={t('admin.accounts.declineLabel', { name: r.name })}
+                      onPress={() => void handle(r, false)}
+                    >
+                      {t('admin.accounts.decline')}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      isPending={busy === r.id}
+                      aria-label={t('admin.accounts.inviteLabel', { name: r.name })}
+                      onPress={() => void handle(r, true)}
+                    >
+                      {t('admin.accounts.invite')}
+                    </Button>
+                  </>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }

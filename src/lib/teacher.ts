@@ -177,6 +177,13 @@ export function inviteTeacher(email: string) {
   return accountAction({ action: 'invite', email, redirectTo: new URL(import.meta.env.BASE_URL, window.location.origin).href });
 }
 
+/** Hozzáférés kérése (nyilvános): a válasz nem árulja el, volt-e már kérés vagy fiók ezzel a címmel. */
+export async function requestAccess(r: { name: string; email: string; school: string; message: string }): Promise<'rate_limit' | 'other' | null> {
+  const { error } = await supabase.rpc('request_access', { p_name: r.name, p_email: r.email, p_school: r.school, p_message: r.message });
+  if (!error) return null;
+  return error.code === '54000' ? 'rate_limit' : 'other';
+}
+
 export function deleteAccount() {
   return accountAction({ action: 'delete' });
 }
