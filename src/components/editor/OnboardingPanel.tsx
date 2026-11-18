@@ -130,7 +130,7 @@ export function OnboardingPanel({
       {!finished && (
         <div className="onboarding-foot">
           {mode === 'practice' && (
-            <ButtonLink href="/minta" variant="secondary">
+            <ButtonLink href="/minta" variant="outline">
               <Icon name="eye" size={16} />
               {t('teacher.onboarding.openSample')}
             </ButtonLink>

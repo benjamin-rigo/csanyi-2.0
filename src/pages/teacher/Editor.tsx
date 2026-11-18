@@ -511,7 +511,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
               {t(`teacher.editor.status.${status}`)}
             </span>
             <div className="editor-actions">
-              <Button variant="secondary" className={guideClass('preview')} onPress={() => void openPreview()}>
+              <Button variant="outline" className={guideClass('preview')} onPress={() => void openPreview()}>
                 <Icon name="eye" size={16} />
                 {t('teacher.editor.preview')}
               </Button>
@@ -528,7 +528,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
       <div className="editor-unsupported">
         <h2>{t('teacher.editor.unsupported.title')}</h2>
         <p>{t('teacher.editor.unsupported.text')}</p>
-        <ButtonLink href="/projektjeim" variant="secondary">
+        <ButtonLink href="/projektjeim" variant="outline">
           <Icon name="back" size={16} />
           {t('teacher.editor.backToProjects')}
         </ButtonLink>
@@ -775,7 +775,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
                 </div>
               </Modal.Header>
               <Modal.Footer>
-                <Button variant="secondary" slot="close">
+                <Button variant="outline" slot="close">
                   {t('teacher.editor.fields.cancel')}
                 </Button>
                 <Button variant="danger" onPress={() => confirmDelete && void removeField(confirmDelete)}>
@@ -798,7 +798,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
                 </div>
               </Modal.Header>
               <Modal.Footer>
-                <Button variant="secondary" slot="close">
+                <Button variant="outline" slot="close">
                   {t('teacher.editor.project.cancel')}
                 </Button>
                 <Button variant="danger" onPress={() => void removeProject()}>

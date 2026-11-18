@@ -63,7 +63,7 @@ export function ProjectPanel({
             </span>
           </span>
           <FileTrigger acceptedFileTypes={IMAGE_TYPES} onSelect={(files) => void replace(files?.[0])}>
-            <Button size="sm" variant="secondary" isPending={replacing}>
+            <Button size="sm" variant="outline" isPending={replacing}>
               {t('teacher.editor.project.replaceImage')}
             </Button>
           </FileTrigger>

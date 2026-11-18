@@ -103,7 +103,7 @@ function LayerList({
                 sound={l.sound}
                 loops={loops}
                 action={
-                  <Button size="sm" variant="secondary" onPress={() => onPick(i)}>
+                  <Button size="sm" variant="outline" onPress={() => onPick(i)}>
                     {t('teacher.editor.sound.replace')}
                   </Button>
                 }
@@ -348,7 +348,7 @@ export function SoundsPanel({
       <section className="panel-section" aria-labelledby="fields-title">
         <div className="panel-section-head">
           <h2 id="fields-title">{t('teacher.editor.fields.title')}</h2>
-          <Button variant="secondary" size="sm" onPress={onAddField} isDisabled={readOnly}>
+          <Button variant="outline" size="sm" onPress={onAddField} isDisabled={readOnly}>
             <Icon name="plus" size={16} />
             {t('teacher.editor.fields.add')}
           </Button>

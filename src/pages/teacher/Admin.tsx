@@ -199,7 +199,7 @@ function AccountsPanel() {
                     {error && <ErrorAlert message={error} />}
                   </Modal.Body>
                   <Modal.Footer>
-                    <Button variant="secondary" slot="close">
+                    <Button variant="outline" slot="close">
                       {t('admin.cancel')}
                     </Button>
                     <Button variant="danger" isPending={busy === target.id} onPress={confirmDelete}>

@@ -111,7 +111,7 @@ export function SharePanel({
           <Label>{t('teacher.editor.share.linkLabel')}</Label>
           <div className="share-link-row">
             <Input />
-            <Button variant="secondary" onPress={() => void copy()}>
+            <Button variant="outline" onPress={() => void copy()}>
               {copied ? t('teacher.editor.share.copied') : t('teacher.editor.share.copy')}
             </Button>
           </div>

@@ -476,7 +476,7 @@ export function DrawingCanvas({
           <span role="status" className="points-count">
             {t('teacher.editor.points.count', { n: points.length })}
           </span>
-          <Button size="sm" variant="secondary" isDisabled={!points.length} onPress={() => setPoints([])}>
+          <Button size="sm" variant="outline" isDisabled={!points.length} onPress={() => setPoints([])}>
             {t('teacher.editor.points.cancel')}
           </Button>
           <Button size="sm" isDisabled={points.length < 3} onPress={finishPoints}>

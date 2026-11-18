@@ -42,7 +42,7 @@ export function TeacherLayout({ documentTitle, children }: { documentTitle: stri
         <div className="teacher-logo">
           <Logo />
           <Button
-            variant="secondary"
+            variant="outline"
             className="teacher-menu-button"
             aria-expanded={menuOpen}
             aria-controls="teacher-menu"

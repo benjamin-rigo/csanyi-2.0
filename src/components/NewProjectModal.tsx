@@ -105,7 +105,7 @@ export function NewProjectModal({
                       </>
                     )}
                     <FileTrigger acceptedFileTypes={IMAGE_TYPES} onSelect={(files) => pick(files?.[0])}>
-                      <Button variant="secondary" className="dropzone-browse" aria-describedby="image-help image-error">
+                      <Button variant="outline" className="dropzone-browse" aria-describedby="image-help image-error">
                         {preview ? t('teacher.newProject.change') : t('teacher.newProject.browse')}
                       </Button>
                     </FileTrigger>
@@ -135,7 +135,7 @@ export function NewProjectModal({
                 {errors.form && <FormError message={errors.form} />}
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" slot="close">
+                <Button variant="outline" slot="close">
                   {t('teacher.newProject.cancel')}
                 </Button>
                 <Button type="submit" isPending={pending}>

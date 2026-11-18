@@ -7,13 +7,23 @@
   /* HeroUI: csak akadálymentességi okból tér el az alaptól (WCAG 2.2 AA, mérve):
      a kék ugyanaz az árnyalat, csak sötétebb (fehér felirat rajta 5,99:1 a 3,68 helyett, rámutatáskor is 4,91:1; a fókuszgyűrű is ez),
      a halvány szöveg szürke felületen 5:1, a piros fehéren és halvány piroson is 4,5:1 fölött. */
-  --accent: oklch(0.5 0.195 253.83);
+  --accent: #0b7366;
   --muted: #63636b;
   --danger: #c01a1f;
   /* Mezők, rádiógombok, jelölőnégyzetek kerete (WCAG 1.4.11, mérve): a HeroUI-ban alapból nincs keret, a fehér mező fehér
      kártyán eltűnt. #828289: fehéren 3,82:1, az oldalháttéren 3,47:1, szürke kártyán 3,29:1, a szürke elemeken 3,2:1. */
   --field-border: #828289;
   --field-border-width: 1px;
+
+  /* Színhang arculat (döntésnapló, 2026-11-18, mérve): türkiz fő szín (fehér felirat rajta 5,74:1, rámutatáskor 4,70:1),
+     mentás oldalháttér (rajta türkiz 5,31:1, mezőkeret 3,53:1), halványmenta a szürke elemek helyett (rajta türkiz
+     5,04:1, halvány szöveg 5,22:1, mezőkeret 3,35:1). A felületek (kártya, panel) fehérek maradnak. */
+  --background: #eff8f5;
+  --default: #e6f3ef;
+  /* A logó ecsetvonásának színei (csak a jelben, szöveg nem kerül rájuk) */
+  --brand-coral: #ff6b57;
+  --brand-sun: #ffc23d;
+  --brand-mint: #12a594;
 
   /* A saját elrendezés színei a HeroUI témából */
   --hs-bg: var(--background);

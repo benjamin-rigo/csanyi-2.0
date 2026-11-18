@@ -72,7 +72,7 @@ export function GalleryAdminPanel() {
               <ul className="project-grid">
                 {live.map((p) => (
                   <AdminTile key={p.id} project={p} title={title(p)} label={label}>
-                    <Button size="sm" variant="secondary" onPress={() => open('categories', p)}>
+                    <Button size="sm" variant="outline" onPress={() => open('categories', p)}>
                       {t('admin.categories')}
                     </Button>
                     <Button size="sm" variant="danger-soft" onPress={() => open('remove', p)}>
@@ -93,7 +93,7 @@ export function GalleryAdminPanel() {
                   <AdminTile key={p.id} project={p} title={title(p)} label={label} note={p.moderationNote}>
                     <Button
                       size="sm"
-                      variant="secondary"
+                      variant="outline"
                       onPress={() =>
                         void run(
                           () => restoreToGallery(p.id),
@@ -142,7 +142,7 @@ export function GalleryAdminPanel() {
                     {error && <ErrorAlert message={error} />}
                   </Modal.Body>
                   <Modal.Footer>
-                    <Button variant="secondary" slot="close">
+                    <Button variant="outline" slot="close">
                       {t('admin.cancel')}
                     </Button>
                     <Button
@@ -185,7 +185,7 @@ export function GalleryAdminPanel() {
                     {error && <ErrorAlert message={error} />}
                   </Modal.Body>
                   <Modal.Footer>
-                    <Button variant="secondary" slot="close">
+                    <Button variant="outline" slot="close">
                       {t('admin.cancel')}
                     </Button>
                     <Button

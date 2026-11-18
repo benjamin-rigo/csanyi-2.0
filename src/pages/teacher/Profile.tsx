@@ -147,7 +147,7 @@ export function Profile() {
               <FieldError>{t('teacher.profile.inviteErrors.invalid_email')}</FieldError>
             </TextField>
             <div className="profile-actions">
-              <Button type="submit" variant="secondary" isPending={inviteState.pending}>
+              <Button type="submit" variant="outline" isPending={inviteState.pending}>
                 {t('teacher.profile.inviteSend')}
               </Button>
             </div>
@@ -203,7 +203,7 @@ export function Profile() {
 
         <Section id="profile-onboarding" title={t('teacher.profile.onboardingTitle')} help={t('teacher.profile.onboardingHelp')}>
           <div className="profile-actions">
-            <Button variant="secondary" onPress={() => navigate('/minta')}>
+            <Button variant="outline" onPress={() => navigate('/minta')}>
               {t('teacher.profile.onboardingButton')}
             </Button>
           </div>
@@ -213,7 +213,7 @@ export function Profile() {
 
         <Section id="profile-signout" title={t('teacher.profile.signOutTitle')} help={t('teacher.profile.signOutHelp')}>
           <div className="profile-actions">
-            <Button variant="secondary" onPress={() => void supabase.auth.signOut()}>
+            <Button variant="outline" onPress={() => void supabase.auth.signOut()}>
               {t('teacher.profile.signOut')}
             </Button>
           </div>
@@ -242,7 +242,7 @@ export function Profile() {
                 </div>
               </Modal.Header>
               <Modal.Footer>
-                <Button variant="secondary" slot="close">
+                <Button variant="outline" slot="close">
                   {t('teacher.profile.cancel')}
                 </Button>
                 <Button

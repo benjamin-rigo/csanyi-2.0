@@ -90,6 +90,8 @@ body {
 .project-card:has(.card-link:focus-visible),
 .dropzone[data-focus-visible] {
   outline: none;
+  /* A fókusz jelzése azonnal látszik, nem úszik be (a kártya rámutatásos árnyéka animált) */
+  transition: none;
   box-shadow:
     0 0 0 var(--ring-offset-width) var(--background),
     0 0 0 calc(var(--focus-ring-width) + var(--ring-offset-width)) var(--focus);
@@ -97,6 +99,12 @@ body {
 
 /* Felületi rétegek (döntésnapló): a szürke elem csak fehér felületen látszik. A szürke oldalháttéren álló
    másodlagos gomb ezért fehér alapot kap, a HeroUI saját gombváltozójával. */
+/* Másodlagos gomb: a HeroUI keretes (outline) gombja (döntésnapló, 2026-11-18); a kerete a mért mezőkeret-szín,
+   mert az alap --border fehéren alig látszik. */
+.button--outline {
+  border-color: var(--field-border);
+}
+
 .teacher-sidebar .button--secondary,
 .site-header .button--secondary {
   --button-bg: var(--surface);
@@ -158,13 +166,9 @@ body {
 }
 
 .logo-mark {
-  display: inline-grid;
-  place-items: center;
+  flex-shrink: 0;
   width: var(--space-10);
   height: var(--space-10);
-  border-radius: var(--radius-pill);
-  background: var(--hs-fg);
-  color: var(--hs-surface);
 }
 
 .site-nav {
@@ -302,14 +306,15 @@ body {
   background: var(--hs-default);
 }
 
-/* A kép saját színei elmosva töltik ki a kép melletti helyet (nagyítva, hogy a szélén ne látsszon a mosás széle) */
+/* A kép saját színei elmosva töltik ki a kép melletti helyet. A kép közepéből (erősen ránagyítva), mert a szélén
+   gyakran fehér papír vagy keret van, ami fehéres, homályos sávot adna; a nagyítás miatt a mosás széle sem látszik. */
 .project-thumb::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: var(--thumb, none) center / cover;
-  filter: blur(var(--space-6)) saturate(1.2);
+  background: var(--thumb, none) center / 300% auto no-repeat;
+  filter: blur(var(--space-8)) saturate(1.4);
   transform: scale(1.3);
 }
 
