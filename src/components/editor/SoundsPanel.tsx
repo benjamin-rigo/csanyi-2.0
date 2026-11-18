@@ -311,20 +311,25 @@ export function SoundsPanel({
                 className={guide?.guide === 'row' && guide.field === f.id ? 'guide-target' : undefined}
               >
                 <span className="field-swatch" style={{ '--c': fieldColorVar(i) } as CSSProperties} aria-hidden="true" />
+                {/* A hiányt jelző címkék a név alatt: a név így a teljes szélességet kapja, és nem csúszik rájuk. */}
                 <span className="panel-row-text">
                   <span className="panel-row-title">{fieldName(f)}</span>
                   {f.sound && <span className="panel-row-sub">{f.sound.title}</span>}
+                  {(!f.sound || f.polygons.length === 0) && (
+                    <span className="panel-row-chips">
+                      {!f.sound && (
+                        <Chip size="sm" color="warning" variant="soft">
+                          {t('teacher.editor.fields.noSound')}
+                        </Chip>
+                      )}
+                      {f.polygons.length === 0 && (
+                        <Chip size="sm" color="warning" variant="soft">
+                          {t('teacher.editor.fields.noShape')}
+                        </Chip>
+                      )}
+                    </span>
+                  )}
                 </span>
-                {!f.sound && (
-                  <Chip size="sm" color="warning" variant="soft">
-                    {t('teacher.editor.fields.noSound')}
-                  </Chip>
-                )}
-                {f.polygons.length === 0 && (
-                  <Chip size="sm" color="warning" variant="soft">
-                    {t('teacher.editor.fields.noShape')}
-                  </Chip>
-                )}
                 <Icon name="chevron" size={16} />
               </ListBox.Item>
             ))}

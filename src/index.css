@@ -1214,6 +1214,14 @@ body {
 
 .panel-row-title {
   font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.panel-row-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
 }
 
 .panel-row-sub {
