@@ -21,11 +21,14 @@ export interface Profile {
 }
 
 /** A bejelentkezett pedagógus profilja (név a Fiók beállításából). */
+/** Az utolsó ismert profil: oldalváltáskor az oldalsáv alja nem villan, amíg az új lekérés tart. */
+let knownProfile: Profile | null = null;
+
 export function useProfile(): Profile | null {
   const session = useSession();
-  const [profile, setProfile] = useState<Profile | null>(null);
   const userId = session?.user.id;
   const email = session?.user.email ?? '';
+  const [profile, setProfile] = useState<Profile | null>(() => (knownProfile && knownProfile.id === userId ? knownProfile : null));
   useEffect(() => {
     if (!userId) return;
     let alive = true;
@@ -34,7 +37,11 @@ export function useProfile(): Profile | null {
       .select('id, name')
       .eq('id', userId)
       .single()
-      .then(({ data }) => alive && data && setProfile({ ...data, email }));
+      .then(({ data }) => {
+        if (!data) return;
+        knownProfile = { ...data, email };
+        if (alive) setProfile(knownProfile);
+      });
     return () => {
       alive = false;
     };

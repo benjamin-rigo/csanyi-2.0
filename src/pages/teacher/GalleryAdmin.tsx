@@ -2,19 +2,31 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Button, Card, Chip, Description, EmptyState, Label, Link, Modal, Tag, TagGroup, TextArea, TextField } from '@heroui/react';
 import { Icon } from '../../components/Icon';
 import { Thumb } from '../../components/Thumb';
-import { moderationReason, removeFromGallery, restoreToGallery, setCategoriesAsAdmin, useAdminGallery, type AdminProject } from '../../lib/admin';
-import { assetUrl } from '../../lib/data';
+import {
+  deleteProjectAsAdmin,
+  moderationReason,
+  removeFromGallery,
+  restoreToGallery,
+  setCategoriesAsAdmin,
+  useAdminGallery,
+  type AdminProject,
+} from '../../lib/admin';
+import { assetUrl, useConfig } from '../../lib/data';
 import { loadCategories, type CategoryOption } from '../../lib/editor';
 import { t } from '../../lib/i18n';
 
-type Dialog = { kind: 'remove' | 'categories'; project: AdminProject } | null;
+type DialogKind = 'remove' | 'delete' | 'categories';
+type Dialog = { kind: DialogKind; project: AdminProject } | null;
 
-/** Admin, Galéria fül: a galéria képei és a levett képek; levétel okkal, visszatétel, kategóriák javítása. */
+/** Admin, Galéria fül: a galéria képei és a levett képek; levétel okkal, visszatétel, végleges törlés, kategóriák javítása. */
 export function GalleryAdminPanel() {
   const [projects, reload] = useAdminGallery();
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [dialog, setDialog] = useState<Dialog>(null);
   const [reason, setReason] = useState('');
+  const [reasonMissing, setReasonMissing] = useState(false);
+  // Az Első lépések mintaprojektje nem törölhető.
+  const sampleId = useConfig()?.onboarding.sampleProjectId;
   const [picked, setPicked] = useState<string[]>([]);
   const [pending, setPending] = useState(false);
   const [status, setStatus] = useState('');
@@ -29,9 +41,10 @@ export function GalleryAdminPanel() {
   const label = (id: string) => categories.find((c) => c.id === id)?.label ?? id;
   const title = (p: AdminProject) => p.title || t('teacher.projects.untitled');
 
-  function open(kind: 'remove' | 'categories', project: AdminProject) {
+  function open(kind: DialogKind, project: AdminProject) {
     setError('');
     setReason('');
+    setReasonMissing(false);
     setPicked(project.categories);
     setDialog({ kind, project });
   }
@@ -103,6 +116,15 @@ export function GalleryAdminPanel() {
                     >
                       {t('admin.restore')}
                     </Button>
+                    <Button
+                      variant="danger-soft"
+                      isDisabled={p.id === sampleId}
+                      aria-label={t('admin.deleteLabel', { title: title(p) })}
+                      onPress={() => open('delete', p)}
+                    >
+                      {t('admin.delete')}
+                    </Button>
+                    {p.id === sampleId && <p className="panel-help">{t('admin.sampleLocked')}</p>}
                   </AdminTile>
                 ))}
               </ul>
@@ -123,7 +145,7 @@ export function GalleryAdminPanel() {
       <Modal>
         <Modal.Backdrop isOpen={dialog !== null} onOpenChange={(o) => !o && setDialog(null)}>
           <Modal.Container size="sm">
-            <Modal.Dialog role={dialog?.kind === 'remove' ? 'alertdialog' : 'dialog'}>
+            <Modal.Dialog role={dialog?.kind === 'categories' ? 'dialog' : 'alertdialog'}>
               {dialog?.kind === 'remove' && (
                 <>
                   <Modal.Header>
@@ -156,6 +178,57 @@ export function GalleryAdminPanel() {
                       }
                     >
                       {t('admin.removeConfirm')}
+                    </Button>
+                  </Modal.Footer>
+                </>
+              )}
+              {dialog?.kind === 'delete' && (
+                <>
+                  <Modal.Header>
+                    <div className="modal-heading">
+                      <Modal.Heading>{t('admin.deleteTitle', { title: title(dialog.project) })}</Modal.Heading>
+                      <p>{t('admin.deleteText')}</p>
+                    </div>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <TextField
+                      value={reason}
+                      onChange={(v) => {
+                        setReason(v);
+                        setReasonMissing(false);
+                      }}
+                      isRequired
+                      isInvalid={reasonMissing}
+                      fullWidth
+                    >
+                      <Label>{t('admin.reason')}</Label>
+                      <TextArea rows={3} />
+                      <Description>{t('admin.deleteReasonHelp')}</Description>
+                    </TextField>
+                    {reasonMissing && (
+                      <p className="field-error-text" role="alert">
+                        {t('admin.deleteReasonMissing')}
+                      </p>
+                    )}
+                    {error && <ErrorAlert message={error} />}
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="outline" slot="close">
+                      {t('admin.cancel')}
+                    </Button>
+                    <Button
+                      variant="danger"
+                      isPending={pending}
+                      onPress={() => {
+                        if (!reason.trim()) return setReasonMissing(true);
+                        void run(
+                          () => deleteProjectAsAdmin(dialog.project.id, reason.trim()),
+                          t('admin.deleted', { title: title(dialog.project) }),
+                          t('admin.actionError'),
+                        );
+                      }}
+                    >
+                      {t('admin.deleteConfirm')}
                     </Button>
                   </Modal.Footer>
                 </>

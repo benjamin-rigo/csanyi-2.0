@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { Breadcrumbs, Button, Chip, Label, Link, Modal, Popover, Separator, Slider, Tabs, ToggleButton, ToggleButtonGroup, Toolbar } from '@heroui/react';
+import { Button, Chip, Label, Link, Modal, Popover, Separator, Slider, Tabs, ToggleButton, ToggleButtonGroup, Toolbar } from '@heroui/react';
 import { DrawingCanvas, FIT, zoomAt, type Tool, type View } from '../../components/editor/DrawingCanvas';
 import { SoundPicker } from '../../components/editor/SoundPicker';
 import { SoundsPanel, type Selection } from '../../components/editor/SoundsPanel';
@@ -496,11 +496,16 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
   return (
     <div className="editor-page">
       <header className="editor-header">
-        <h1 className="sr-only">{title}</h1>
-        <Breadcrumbs aria-label={t('teacher.editor.breadcrumbLabel')} className="editor-breadcrumb">
-          <Breadcrumbs.Item href="/projektjeim">{t('teacher.editor.backToProjects')}</Breadcrumbs.Item>
-          <Breadcrumbs.Item>{title}</Breadcrumbs.Item>
-        </Breadcrumbs>
+        {/* Vissza gomb és a projekt címe (a szerkesztőkben megszokott fejléc); a „Projekt” címke jelzi, hogy ez nem hangmező. */}
+        <ButtonLink href="/projektjeim" className="editor-back">
+          <Icon name="back" />
+          {t('teacher.editor.backToProjects')}
+        </ButtonLink>
+        <Separator orientation="vertical" className="editor-header-separator" />
+        <div className="editor-title">
+          <span className="editor-title-label">{t('teacher.editor.projectLabel')}</span>
+          <h1>{title || t('teacher.projects.untitled')}</h1>
+        </div>
         {readOnly ? (
           // Minta: a Megosztás helyén „Csak megtekintés” címke (döntésnapló).
           <Chip>{t('teacher.onboarding.readOnly')}</Chip>

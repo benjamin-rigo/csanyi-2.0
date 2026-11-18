@@ -10,7 +10,6 @@
 @import "@heroui/styles/components/error-message.css" layer(components);
 @import "@heroui/styles/components/field-error.css" layer(components);
 @import "@heroui/styles/components/label.css" layer(components);
-@import "@heroui/styles/components/breadcrumbs.css" layer(components);
 @import "@heroui/styles/components/link.css" layer(components);
 @import "@heroui/styles/components/tabs.css" layer(components);
 @import "@heroui/styles/components/button.css" layer(components);
@@ -991,18 +990,34 @@ body {
   border-bottom: var(--border-thin) solid var(--hs-border);
 }
 
-.editor-breadcrumb {
+.editor-back {
+  flex-shrink: 0;
+}
+
+.editor-header-separator {
+  align-self: center;
+  height: var(--space-8);
+}
+
+/* Hosszú projektcímnél a cím rövidül (…), nem csúszik a mentés jelzőre. */
+.editor-title {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Hosszú projektcímnél az utolsó elem rövidül (…), nem csúszik a mentés jelzőre. */
-.editor-breadcrumb .breadcrumbs__item:last-child {
-  flex-shrink: 1;
-  min-width: 0;
+.editor-title-label {
+  font-size: var(--text-sm);
+  color: var(--hs-muted);
+  line-height: var(--leading-snug);
 }
 
-.editor-breadcrumb .breadcrumbs__item:last-child > * {
+.editor-title h1 {
+  margin: 0;
+  font-size: var(--type-panel);
+  font-weight: 600;
+  line-height: var(--leading-snug);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -116,6 +116,27 @@ test('admin: levétel okkal, a pedagógus látja, visszatétel, kategóriák', a
   expect(data).toEqual({ visibility: 'gallery', moderation_note: null });
 });
 
+test('admin: levett kép végleges törlése, csak indokkal', async ({ page }) => {
+  await login(page);
+  await page.goto('/admin?ful=galeria');
+  await page.locator('.project-card', { hasText: TITLE }).getByRole('button', { name: 'Levétel' }).click();
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Levétel' }).click();
+  await expect(page.getByRole('heading', { name: /Levett képek/ })).toBeVisible();
+
+  await page.getByRole('button', { name: `${TITLE} végleges törlése` }).click();
+  const dialog = page.getByRole('alertdialog');
+  await dialog.getByRole('button', { name: 'Végleges törlés' }).click();
+  await expect(dialog.getByText('Írd be az indokot.')).toBeVisible();
+  await expectNoAxeViolations(page, '[role=alertdialog]');
+  await dialog.getByLabel('Az ok').fill('E2E teszt törlés.');
+  await dialog.getByRole('button', { name: 'Végleges törlés' }).click();
+  await expect(dialog).toBeHidden();
+  await expect(page.locator('.project-card', { hasText: TITLE })).toHaveCount(0);
+
+  const { data } = await db.from('projects').select('id').eq('id', projectId);
+  expect(data).toEqual([]);
+});
+
 test('admin, Fiókok: lista, a törléshez indok kell, saját és admin fiók nem törölhető', async ({ page }) => {
   await login(page);
   await page.goto('/admin');

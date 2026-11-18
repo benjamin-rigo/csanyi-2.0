@@ -23,15 +23,21 @@ export interface AdminProject {
   categories: string[];
 }
 
+/** Az utolsó ismert válasz: oldalváltáskor az Admin menüpont nem tűnik el, amíg az új lekérés tart. */
+let knownAdmin: { userId: string; admin: boolean } | null = null;
+
 /** Admin-e a bejelentkezett pedagógus (null: még nem tudjuk). */
 export function useIsAdmin(): boolean | null {
   const session = useSession();
   const userId = session?.user.id;
-  const [admin, setAdmin] = useState<boolean | null>(null);
+  const [admin, setAdmin] = useState<boolean | null>(() => (knownAdmin && knownAdmin.userId === userId ? knownAdmin.admin : null));
   useEffect(() => {
     if (!userId) return;
     let alive = true;
-    void supabase.rpc('is_admin').then(({ data }) => alive && setAdmin(data === true));
+    void supabase.rpc('is_admin').then(({ data }) => {
+      knownAdmin = { userId, admin: data === true };
+      if (alive) setAdmin(data === true);
+    });
     return () => {
       alive = false;
     };
@@ -67,6 +73,7 @@ async function call(fn: string, args: Record<string, unknown>) {
 
 export const removeFromGallery = (id: string, reason: string) => call('admin_remove_from_gallery', { p_id: id, reason });
 export const restoreToGallery = (id: string) => call('admin_restore_to_gallery', { p_id: id });
+export const deleteProjectAsAdmin = (id: string, reason: string) => call('admin_delete_project', { p_id: id, p_reason: reason });
 export const setCategoriesAsAdmin = (id: string, ids: string[]) => call('admin_set_categories', { p_id: id, ids });
 
 /** Admin, Fiókok fül: minden pedagógus. A privát projekteket az admin nem látja, csak a darabszámukat. */

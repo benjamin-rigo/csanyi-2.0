@@ -31,12 +31,19 @@ export const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.m
   auth: { flowType: 'implicit', storage: sessionStore, persistSession: true, detectSessionInUrl: true },
 });
 
+/** Az utolsó ismert munkamenet: oldalváltáskor nem kell újra kivárni, így a menü és a profil nem villan. */
+let known: Session | null | undefined;
+
 /** A bejelentkezett pedagógus munkamenete. undefined: még töltődik. */
 export function useSession(): Session | null | undefined {
-  const [session, setSession] = useState<Session | null | undefined>(undefined);
+  const [session, setSession] = useState<Session | null | undefined>(known);
   useEffect(() => {
-    void supabase.auth.getSession().then(({ data }) => setSession(data.session));
-    const { data } = supabase.auth.onAuthStateChange((_event, s) => setSession(s));
+    const update = (s: Session | null) => {
+      known = s;
+      setSession(s);
+    };
+    void supabase.auth.getSession().then(({ data }) => update(data.session));
+    const { data } = supabase.auth.onAuthStateChange((_event, s) => update(s));
     return () => data.subscription.unsubscribe();
   }, []);
   return session;
