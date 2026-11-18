@@ -58,6 +58,22 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Fehér felületen (pedagógus oldal) a fehér kártya keretet kap, különben nem válik el (döntésnapló, 2026-11-18) */
+.teacher-main .card {
+  border: var(--border-thin) solid var(--hs-border);
+}
+
+/* Címkék: a betű ne tapadjon a széléhez (a HeroUI kicsi címkéje 4, a közepes 8 px belső margót ad) */
+.chip,
+.tag {
+  padding-inline: var(--space-3);
+}
+
+.chip--sm,
+.tag--sm {
+  padding-inline: var(--space-2);
+}
+
 /* A rádiógomb mindig kör: a HeroUI a lekerekítést a --radius-ból számolja, ami kisebb lett (2026-11-18) */
 .radio__control,
 .radio__indicator:empty::before {
