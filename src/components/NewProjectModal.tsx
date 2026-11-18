@@ -97,7 +97,7 @@ export function NewProjectModal({
                       <img src={preview} alt="" className="dropzone-preview" />
                     ) : (
                       <>
-                        <Icon name="upload" size={20} />
+                        <Icon name="upload" size="lg" />
                         <p>
                           <strong>{t('teacher.newProject.drop')}</strong>
                           {t('teacher.newProject.or')}

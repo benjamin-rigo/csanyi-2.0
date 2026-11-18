@@ -81,6 +81,10 @@
 
   /* Méretek */
   --border-thin: 1px;
+  /* Ikonméretek: kicsi (sűrű listákban, címkékben), közepes (gombokban, alap), nagy (feltöltő mezőben) */
+  --icon-sm: 14px;
+  --icon-md: 16px;
+  --icon-lg: 20px;
   --border-strong: 2px;
   --kid-page-x: var(--space-16);
   --kid-page-x-narrow: var(--space-4);

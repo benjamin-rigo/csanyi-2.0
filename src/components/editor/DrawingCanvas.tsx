@@ -18,14 +18,13 @@ export function zoomAt(view: View, frame: DOMRect, sx: number, sy: number, zoom:
   return { zoom, x: view.x + sx - zoom * lx - frame.left, y: view.y + sy - zoom * ly - frame.top };
 }
 
-/** Ennyi képernyőpixelnél kisebb mozdulat kattintásnak számít (kijelölés), nem festésnek. */
-const CLICK_PX = 4;
-/** Pontok: az első pont ennyi képernyőpixelen belül lezárja az alakzatot; a pontok sugara. */
-const CLOSE_PX = 12;
-const POINT_PX = 5;
-/** Pontok billentyűzettel: a célkereszt lépése a kép rövidebb oldalának arányában (Shifttel nagyobb). */
-const KEY_STEP = 0.01;
-const KEY_STEP_BIG = 0.05;
+/**
+ * A rajzterület érzékenysége (config.json → editor.pointer):
+ * clickPx: ennyi képernyőpixelnél kisebb mozdulat kattintás (kijelölés), nem festés;
+ * closePx: a Pontok első pontja ennyi képernyőpixelen belül lezárja az alakzatot; pointPx: a pontok sugara;
+ * keyStep / keyStepBig: a billentyűs célkereszt lépése a kép rövidebb oldalának arányában (Shifttel nagyobb).
+ */
+export type PointerSettings = { clickPx: number; closePx: number; pointPx: number; keyStep: number; keyStepBig: number };
 
 /** A hangmezők színe a lista sorrendjében (tokenekből). */
 export function fieldColorVar(index: number): string {
@@ -53,6 +52,7 @@ export function DrawingCanvas({
   onView,
   zoomLimits,
   edgeMaxFraction,
+  pointer,
   readOnly = false,
 }: {
   imagePath: string;
@@ -69,6 +69,7 @@ export function DrawingCanvas({
   zoomLimits: { min: number; max: number };
   /** A lágy szél teljes lágyságnál a kép rövidebb oldalának ekkora része (mint a képnézetben). */
   edgeMaxFraction: number;
+  pointer: PointerSettings;
   /** Minta: csak kijelölni lehet, festeni nem. */
   readOnly?: boolean;
 }) {
@@ -196,7 +197,7 @@ export function DrawingCanvas({
 
   function onFrameKey(e: ReactKeyboardEvent) {
     if (!pointsMode) return;
-    const step = Math.min(imageWidth, imageHeight) * (e.shiftKey ? KEY_STEP_BIG : KEY_STEP);
+    const step = Math.min(imageWidth, imageHeight) * (e.shiftKey ? pointer.keyStepBig : pointer.keyStep);
     const move: Record<string, Point> = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
     const c = keyCursor ?? [imageWidth / 2, imageHeight / 2];
     if (move[e.key]) {
@@ -326,7 +327,7 @@ export function DrawingCanvas({
     }
     const p = toMask(e);
     setCursor(p);
-    if (start.current && Math.hypot(e.clientX - start.current.sx, e.clientY - start.current.sy) > CLICK_PX) start.current.moved = true;
+    if (start.current && Math.hypot(e.clientX - start.current.sx, e.clientY - start.current.sy) > pointer.clickPx) start.current.moved = true;
     if (!painting || !last.current) return;
     dab(last.current, p);
     last.current = p;
@@ -336,11 +337,11 @@ export function DrawingCanvas({
   function addPoint(e: React.PointerEvent) {
     const down = pointStart.current;
     pointStart.current = null;
-    if (!down || Math.hypot(e.clientX - down.sx, e.clientY - down.sy) > CLICK_PX) return;
+    if (!down || Math.hypot(e.clientX - down.sx, e.clientY - down.sy) > pointer.clickPx) return;
     const r = frameRef.current!.getBoundingClientRect();
     const p: Point = [((e.clientX - r.left) / r.width) * imageWidth, ((e.clientY - r.top) / r.height) * imageHeight];
     const first = points[0];
-    if (points.length >= 3 && Math.hypot(p[0] - first[0], p[1] - first[1]) <= pxToImage(CLOSE_PX)) finishPoints();
+    if (points.length >= 3 && Math.hypot(p[0] - first[0], p[1] - first[1]) <= pxToImage(pointer.closePx)) finishPoints();
     else setPoints([...points, p]);
     setKeyCursor(null);
   }
@@ -446,11 +447,11 @@ export function DrawingCanvas({
                     key={i}
                     cx={p[0]}
                     cy={p[1]}
-                    r={pxToImage(i === 0 && points.length >= 3 ? CLOSE_PX : POINT_PX)}
+                    r={pxToImage(i === 0 && points.length >= 3 ? pointer.closePx : pointer.pointPx)}
                     className={i === 0 ? 'is-first' : ''}
                   />
                 ))}
-                {keyCursor && <circle cx={keyCursor[0]} cy={keyCursor[1]} r={pxToImage(CLOSE_PX)} className="key-cursor" />}
+                {keyCursor && <circle cx={keyCursor[0]} cy={keyCursor[1]} r={pxToImage(pointer.closePx)} className="key-cursor" />}
               </g>
             )}
           </svg>

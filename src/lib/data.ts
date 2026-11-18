@@ -62,6 +62,8 @@ export interface Config {
     softnessDefault: number;
     /** Új háttérréteg hangereje (0–1). */
     backgroundVolumeDefault: number;
+    /** A rajzterület érzékenysége (DrawingCanvas). */
+    pointer: { clickPx: number; closePx: number; pointPx: number; keyStep: number; keyStepBig: number };
   };
   viewer: {
     startCue: Sound;

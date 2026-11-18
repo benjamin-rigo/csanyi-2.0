@@ -38,13 +38,15 @@ const PATHS: Record<string, string> = {
   music: 'M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM21 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
 };
 
-export function Icon({ name, size = 18 }: { name: string; size?: number }) {
+/** Ikonméret tokenből (--icon-sm / -md / -lg), szám nem adható meg (döntésnapló, 2026-11-18). */
+export type IconSize = 'sm' | 'md' | 'lg';
+
+export function Icon({ name, size = 'md' }: { name: string; size?: IconSize }) {
   const d = PATHS[name];
   if (!d) return null;
   return (
     <svg
-      width={size}
-      height={size}
+      className={`icon icon-${size}`}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"

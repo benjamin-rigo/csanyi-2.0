@@ -507,16 +507,16 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
         ) : (
           <>
             <span role="status" className={`save-status save-status--${status}`}>
-              <Icon name="cloud" size={16} />
+              <Icon name="cloud" />
               {t(`teacher.editor.status.${status}`)}
             </span>
             <div className="editor-actions">
               <Button variant="outline" className={guideClass('preview')} onPress={() => void openPreview()}>
-                <Icon name="eye" size={16} />
+                <Icon name="eye" />
                 {t('teacher.editor.preview')}
               </Button>
               <Button onPress={() => setTab('share')}>
-                <Icon name="link" size={16} />
+                <Icon name="link" />
                 {t('teacher.editor.shareButton')}
               </Button>
             </div>
@@ -529,7 +529,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
         <h2>{t('teacher.editor.unsupported.title')}</h2>
         <p>{t('teacher.editor.unsupported.text')}</p>
         <ButtonLink href="/projektjeim" variant="outline">
-          <Icon name="back" size={16} />
+          <Icon name="back" />
           {t('teacher.editor.backToProjects')}
         </ButtonLink>
       </div>
@@ -556,15 +556,15 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
               isDisabled={readOnly}
             >
               <ToggleButton id="brush" aria-label={t('teacher.editor.brush')}>
-                <Icon name="brush" size={16} />
+                <Icon name="brush" />
                 <span className="tool-label">{t('teacher.editor.brush')}</span>
               </ToggleButton>
               <ToggleButton id="eraser" aria-label={t('teacher.editor.eraser')}>
-                <Icon name="eraser" size={16} />
+                <Icon name="eraser" />
                 <span className="tool-label">{t('teacher.editor.eraser')}</span>
               </ToggleButton>
               <ToggleButton id="points" aria-label={t('teacher.editor.points.tool')}>
-                <Icon name="points" size={16} />
+                <Icon name="points" />
                 <span className="tool-label">{t('teacher.editor.points.tool')}</span>
               </ToggleButton>
             </ToggleButtonGroup>
@@ -578,7 +578,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
                   aria-hidden="true"
                 />
                 <span className="tool-label">{t('teacher.editor.brushSettingsShort')}</span>
-                <Icon name="chevron" size={14} />
+                <Icon name="chevron" size="sm" />
               </Button>
               <Popover.Content placement="bottom">
                 <Popover.Dialog className="brush-popover">
@@ -701,6 +701,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
               onView={setView}
               zoomLimits={{ min: config.editor.zoomMin, max: config.editor.zoomMax }}
               edgeMaxFraction={config.viewer.edgeMaxFraction}
+              pointer={config.editor.pointer}
               readOnly={readOnly}
             />
           </div>

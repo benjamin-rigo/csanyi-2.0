@@ -48,7 +48,7 @@ export function TeacherLayout({ documentTitle, children }: { documentTitle: stri
             aria-controls="teacher-menu"
             onPress={() => setMenuOpen((o) => !o)}
           >
-            <Icon name={menuOpen ? 'close' : 'menu'} size={16} />
+            <Icon name={menuOpen ? 'close' : 'menu'} />
             {t('teacher.menu')}
           </Button>
         </div>
@@ -75,7 +75,7 @@ export function TeacherLayout({ documentTitle, children }: { documentTitle: stri
                 {t('teacher.nav.gallery')}
                 <span className="sr-only"> {t('teacher.nav.newTab')}</span>
               </span>
-              <Icon name="external" size={16} />
+              <Icon name="external" />
             </a>
           </nav>
           <ButtonLink href="/profil" {...current('/profil')} className="button--full-width teacher-nav-link teacher-profile">

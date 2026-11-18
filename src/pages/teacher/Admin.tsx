@@ -126,7 +126,6 @@ function AccountsPanel() {
         </div>
         {!a.isAdmin && !self && (
           <Button
-            size="sm"
             variant={a.pending ? 'ghost' : 'danger-soft'}
             isPending={busy === a.id}
             aria-label={t(a.pending ? 'admin.accounts.revokeLabel' : 'admin.accounts.deleteLabel', { name: label(a) })}

@@ -53,7 +53,7 @@ export function MyProjects({ config }: { config: Config }) {
         </div>
         <div className="new-project-action">
           {/* Az oldal fő gombja (egy nézetben egy fő gomb, döntésnapló); az Első lépések mellette másodlagos. */}
-          <Button size="lg" onPress={() => setCreating(true)}>
+          <Button onPress={() => setCreating(true)}>
             <Icon name="plus" />
             {t('teacher.projects.newProject')}
           </Button>
@@ -77,9 +77,9 @@ export function MyProjects({ config }: { config: Config }) {
               <Card.Title render={(props) => <h2 {...props} />}>{t('teacher.onboarding.cardTitle')}</Card.Title>
               <Card.Description>{t('teacher.onboarding.cardText')}</Card.Description>
             </div>
-            <ButtonLink href={practiceId ? `/szerkeszto/${practiceId}` : '/minta'} variant="outline" className="button--lg">
+            <ButtonLink href={practiceId ? `/szerkeszto/${practiceId}` : '/minta'} variant="outline">
               {practiceId ? t('teacher.onboarding.cardContinue') : t('teacher.onboarding.cardStart')}
-              <Icon name="forward" size={16} />
+              <Icon name="forward" />
             </ButtonLink>
           </div>
           {/* Üres csík hibának hatna: a haladás az első kész lépéstől látszik. */}

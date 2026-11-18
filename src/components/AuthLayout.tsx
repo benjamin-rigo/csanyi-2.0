@@ -30,7 +30,7 @@ export function AuthLayout({
       <main className="auth-main">
         <nav aria-label={t('auth.breadcrumbLabel')}>
           <Link href="/" className="back-link text-sm">
-            <Icon name="back" size={16} />
+            <Icon name="back" />
             {t('auth.backToGallery')}
           </Link>
         </nav>

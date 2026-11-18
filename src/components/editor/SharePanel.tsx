@@ -58,7 +58,7 @@ export function SharePanel({
               <Radio.Control>
                 <Radio.Indicator />
               </Radio.Control>
-              <Icon name={icon} size={16} />
+              <Icon name={icon} />
               {t(`teacher.editor.share.${value}`)}
             </Radio.Content>
             <Description>{t(`teacher.editor.share.${value}Help`)}</Description>

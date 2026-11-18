@@ -102,7 +102,7 @@ export function ProjectPanel({
         <TagGroup.List>
           {categories.map((c) => (
             <Tag key={c.id} id={c.id} textValue={c.label}>
-              {c.icon && <Icon name={c.icon} size={14} />}
+              {c.icon && <Icon name={c.icon} size="sm" />}
               {c.label}
             </Tag>
           ))}

@@ -58,6 +58,26 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Ikonok: méret csak tokenből */
+.icon {
+  flex-shrink: 0;
+}
+
+.icon-sm {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+}
+
+.icon-md {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+
+.icon-lg {
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+}
+
 body {
   margin: 0;
   background: var(--hs-bg);

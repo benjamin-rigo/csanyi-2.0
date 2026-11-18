@@ -73,7 +73,7 @@ export function OnboardingPanel({
                 aria-current={isCurrent ? 'step' : undefined}
               >
                 <span className={`onboarding-num${isDone ? ' is-done' : ''}`} aria-hidden="true">
-                  {isDone ? <Icon name="check" size={14} /> : i + 1}
+                  {isDone ? <Icon name="check" size="sm" /> : i + 1}
                 </span>
                 <div className="onboarding-step-body">
                   <h3>
@@ -90,7 +90,7 @@ export function OnboardingPanel({
                           <ul className="onboarding-points">
                             {step.points.map((p) => (
                               <li key={p}>
-                                <Icon name="check" size={14} />
+                                <Icon name="check" size="sm" />
                                 {p}
                               </li>
                             ))}
@@ -107,12 +107,12 @@ export function OnboardingPanel({
                         onPress={() => setMore((m) => !m)}
                       >
                         {more ? t('teacher.onboarding.less') : t('teacher.onboarding.more')}
-                        <Icon name="chevron" size={16} />
+                        <Icon name="chevron" />
                       </Button>
                       {mode === 'sample' && onStart && (
                         <Button onPress={onStart} isPending={starting}>
                           {t('teacher.onboarding.start')}
-                          <Icon name="forward" size={16} />
+                          <Icon name="forward" />
                         </Button>
                       )}
                       {startError && (
@@ -136,7 +136,7 @@ export function OnboardingPanel({
         <div className="onboarding-foot">
           {mode === 'practice' && (
             <ButtonLink href="/minta" variant="outline">
-              <Icon name="eye" size={16} />
+              <Icon name="eye" />
               {t('teacher.onboarding.openSample')}
             </ButtonLink>
           )}

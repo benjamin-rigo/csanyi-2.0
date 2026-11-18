@@ -72,10 +72,10 @@ export function GalleryAdminPanel() {
               <ul className="project-grid">
                 {live.map((p) => (
                   <AdminTile key={p.id} project={p} title={title(p)} label={label}>
-                    <Button size="sm" variant="outline" onPress={() => open('categories', p)}>
+                    <Button variant="outline" onPress={() => open('categories', p)}>
                       {t('admin.categories')}
                     </Button>
-                    <Button size="sm" variant="danger-soft" onPress={() => open('remove', p)}>
+                    <Button variant="danger-soft" onPress={() => open('remove', p)}>
                       {t('admin.remove')}
                     </Button>
                   </AdminTile>
@@ -92,7 +92,6 @@ export function GalleryAdminPanel() {
                 {removed.map((p) => (
                   <AdminTile key={p.id} project={p} title={title(p)} label={label} note={p.moderationNote}>
                     <Button
-                      size="sm"
                       variant="outline"
                       onPress={() =>
                         void run(
@@ -176,7 +175,7 @@ export function GalleryAdminPanel() {
                       <TagGroup.List>
                         {categories.map((c) => (
                           <Tag key={c.id} id={c.id} textValue={c.label}>
-                            {c.icon && <Icon name={c.icon} size={14} />}
+                            {c.icon && <Icon name={c.icon} size="sm" />}
                             {c.label}
                           </Tag>
                         ))}

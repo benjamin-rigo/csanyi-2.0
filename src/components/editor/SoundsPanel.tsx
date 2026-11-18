@@ -115,7 +115,7 @@ function LayerList({
                       aria-label={t('teacher.editor.layers.removeLabel', { title: l.sound.title })}
                       onPress={() => onRemove(i)}
                     >
-                      <Icon name="trash" size={16} />
+                      <Icon name="trash" />
                     </Button>
                   </span>
                 }
@@ -215,7 +215,7 @@ export function SoundsPanel({
         aria-label={t('teacher.editor.panelBackLabel')}
         onPress={() => onSelect(null)}
       >
-        <Icon name="back" size={16} />
+        <Icon name="back" />
         {t('teacher.editor.panelBack')}
       </Button>
       {action}
@@ -228,7 +228,7 @@ export function SoundsPanel({
         {back()}
         <h2 id="bg-detail" ref={detailHeading as RefObject<HTMLHeadingElement>} tabIndex={-1} className="panel-detail-title">
           <span className="panel-row-icon" aria-hidden="true">
-            <Icon name="music" size={16} />
+            <Icon name="music" />
           </span>
           {t('teacher.editor.background.detailTitle')}
         </h2>
@@ -261,7 +261,7 @@ export function SoundsPanel({
             aria-label={t('teacher.editor.fields.deleteFieldLabel', { name: field.name || t('teacher.editor.fields.untitled') })}
             onPress={() => onDeleteField(field)}
           >
-            <Icon name="trash" size={16} />
+            <Icon name="trash" />
             {t('teacher.editor.fields.deleteShort')}
           </Button>,
         )}
@@ -320,7 +320,7 @@ export function SoundsPanel({
           <ListBox aria-labelledby="bg-title" selectionMode="none" onAction={() => onSelect({ kind: 'background' })} className="panel-list">
             <ListBox.Item id="background" textValue={titles(bgs)}>
               <span className="panel-row-icon" aria-hidden="true">
-                <Icon name="music" size={16} />
+                <Icon name="music" />
               </span>
               <span className="panel-row-text">
                 <span className="panel-row-title">{titles(bgs)}</span>
@@ -330,7 +330,7 @@ export function SoundsPanel({
                     : t('teacher.editor.background.volumeShort', { n: Math.round(bgs[0].volume * 100) })}
                 </span>
               </span>
-              <Icon name="chevron" size={16} />
+              <Icon name="chevron" />
             </ListBox.Item>
           </ListBox>
         ) : (
@@ -350,7 +350,7 @@ export function SoundsPanel({
         <div className="panel-section-head">
           <h2 id="fields-title">{t('teacher.editor.fields.title')}</h2>
           <Button variant="outline" size="sm" onPress={onAddField} isDisabled={readOnly}>
-            <Icon name="plus" size={16} />
+            <Icon name="plus" />
             {t('teacher.editor.fields.add')}
           </Button>
         </div>
@@ -390,7 +390,7 @@ export function SoundsPanel({
                     </span>
                   )}
                 </span>
-                <Icon name="chevron" size={16} />
+                <Icon name="chevron" />
               </ListBox.Item>
             ))}
           </ListBox>

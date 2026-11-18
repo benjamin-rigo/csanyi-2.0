@@ -55,7 +55,7 @@ export function PlayButton({ src, title }: { src: string; title: string }) {
       aria-label={t(playing ? 'teacher.editor.sound.pause' : 'teacher.editor.sound.play', { title })}
       onPress={toggle}
     >
-      <Icon name={playing ? 'pause' : 'play'} size={16} />
+      <Icon name={playing ? 'pause' : 'play'} />
     </Button>
   );
 }

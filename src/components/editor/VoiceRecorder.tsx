@@ -86,19 +86,19 @@ export function VoiceRecorder({
     <div className="voice-actions">
       {recording ? (
         <Button size="sm" onPress={stop}>
-          <Icon name="stop" size={16} />
+          <Icon name="stop" />
           {t('teacher.editor.voice.stop')}
         </Button>
       ) : (
         <Button size="sm" variant="outline" onPress={() => void start()} isPending={busy}>
-          <Icon name="mic" size={16} />
+          <Icon name="mic" />
           {sound ? t('teacher.editor.voice.rerecord') : t('teacher.editor.voice.record')}
         </Button>
       )}
       {!recording && (
         <FileTrigger acceptedFileTypes={AUDIO_TYPES} onSelect={(files) => files?.[0] && void save(files[0])}>
           <Button size="sm" variant="ghost">
-            <Icon name="upload" size={16} />
+            <Icon name="upload" />
             {t('teacher.editor.voice.upload')}
           </Button>
         </FileTrigger>

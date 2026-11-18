@@ -182,7 +182,6 @@ export function Profile() {
                     </div>
                     {!i.accepted && (
                       <Button
-                        size="sm"
                         variant="ghost"
                         isPending={revoking === i.id}
                         aria-label={t('teacher.profile.invitedRevokeLabel', { email: i.email })}

@@ -38,7 +38,8 @@
     "zoomMax": 6,
     "zoomStep": 1.25,
     "softnessDefault": 0.3,
-    "backgroundVolumeDefault": 0.4
+    "backgroundVolumeDefault": 0.4,
+    "pointer": { "clickPx": 4, "closePx": 12, "pointPx": 5, "keyStep": 0.01, "keyStepBig": 0.05 }
   },
   "onboarding": {
     "sampleProjectId": "ac087770-0f15-46d8-88db-3581c14ea5b6",

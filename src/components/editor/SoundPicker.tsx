@@ -143,7 +143,7 @@ export function SoundPicker({
                           <PlayButton src={picked.url} title={name || picked.file.name} />
                         ) : (
                           <>
-                            <Icon name="upload" size={20} />
+                            <Icon name="upload" size="lg" />
                             <p>
                               <strong>{t('teacher.editor.picker.drop')}</strong>
                               {t('teacher.editor.picker.or')}
