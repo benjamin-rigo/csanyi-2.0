@@ -164,7 +164,6 @@ export function Profile() {
             {inviteState.error && inviteState.error !== 'invalid_email' && (
               <FormError message={t(`teacher.profile.inviteErrors.${inviteState.error}`)} />
             )}
-            <p className="panel-help">{t('teacher.profile.smtpNote')}</p>
           </Form>
           {invitations.length > 0 && (
             <div className="profile-invited">

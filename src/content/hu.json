@@ -384,7 +384,6 @@
         "unauthorized": "Lépj be újra, és próbáld meg még egyszer.",
         "other": "Nem sikerült elküldeni a meghívót. Próbáld újra később."
       },
-      "smtpNote": "Átmenetileg a meghívó levél csak a projekt rendszergazdájának címére érkezik meg; a kollégák a levélküldés beállítása után kapják meg.",
       "invitedTitle": "Meghívottjaid",
       "invitedPending": "Függőben",
       "invitedAccepted": "Elfogadva",
