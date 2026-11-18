@@ -43,7 +43,7 @@ test.beforeAll(async () => {
       image_path: 'media/tengerpart.svg',
       image_width: 1600,
       image_height: 1000,
-      background_sound_id: bg,
+      background_layers: [{ sound: bg, volume: 0.4 }],
     })
     .select('id')
     .single();
@@ -52,7 +52,7 @@ test.beforeAll(async () => {
     project_id: projectId,
     name: 'Hullám',
     description: 'Hullámok.',
-    sound_id: sound,
+    sound_layers: [{ sound, volume: 1 }],
     description_sound_id: voice,
     shape: { type: 'multipolygon', polygons: [[[0, 0], [400, 0], [400, 400]]] },
   });

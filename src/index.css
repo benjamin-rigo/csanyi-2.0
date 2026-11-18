@@ -1316,6 +1316,16 @@ body {
   min-width: 0;
 }
 
+.layer-list + .button {
+  margin-top: var(--space-2);
+}
+
+/* Többsoros listasorban a színjelölés a név sorában marad */
+.panel-list .field-swatch {
+  align-self: flex-start;
+  margin-top: calc((1lh - var(--swatch)) / 2);
+}
+
 .volume-slider {
   display: flex;
   flex-direction: column;
