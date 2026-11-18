@@ -4,7 +4,7 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 
 ## Alapok
 - Cél: pedagógusok képekhez hangmezőket és hangokat társítanak; vak és gyengénlátó (és látó) gyerekek felfedezik a képet.
-- Név: egyelőre Hangösvény (2026-10-13). Jelöltek a végleges névre: Képzelő (alcímmel, pl. „hallgasd meg a képet”), Hangképzelő; a Csányi Alapítvánnyal egyeztetni. A kepzelo.hu foglalt, a hangkepzelo.hu és a kepzelo.eu szabad volt.
+- Név: **Színhang** (2026-11-18; előtte Hangösvény, 2026-10-13). A felület minden szövegében, a levélsablonokban és a böngésző címsorában ez szerepel; a régi tervfájlok és a lefutott migrációk megjegyzései maradnak. A domain még nincs megnézve, a Csányi Alapítvánnyal egyeztetni.
 - Terminológia: a kép hangos területe a felületen „hangmező” (nem „zóna”). A gyerekek ezt a szót nem hallják.
 - Eszközök: táblagép (érintés) és asztali gép (egér, billentyűzet) egyenrangú.
 - Csak web, natív burok nincs.

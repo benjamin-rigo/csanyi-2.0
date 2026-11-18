@@ -6,6 +6,7 @@ import { ALL_CATEGORY, type Config, type Gallery as GalleryData, type Project } 
 import { t } from '../lib/i18n';
 import { unlock } from '../lib/audio';
 import { Icon } from '../components/Icon';
+import { Thumb } from '../components/Thumb';
 import { SiteFooter, SiteHeader } from '../components/SiteHeader';
 
 /** A legutóbb megnyitott kép: visszatéréskor a fókusz ennek a kártyájára kerül, nem az oldal elejére. */
@@ -100,15 +101,7 @@ function ProjectCard({ project }: { project: Project }) {
   return (
     <li data-project={project.id}>
       <Card className="gcard">
-        <div className="project-thumb">
-          <img
-            src={project.image.src ?? undefined}
-            alt=""
-            width={project.image.width ?? undefined}
-            height={project.image.height ?? undefined}
-            loading="lazy"
-          />
-        </div>
+        <Thumb src={project.image.src} width={project.image.width} height={project.image.height} />
         <Card.Header>
           <Card.Title render={(props) => <h2 {...props} />}>
             {/* Az egész kártya egy link (döntésnapló): a link a kártya teljes felületére kifeszül. */}

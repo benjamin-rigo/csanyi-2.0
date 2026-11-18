@@ -294,10 +294,27 @@ body {
 }
 
 .project-thumb {
+  position: relative;
+  isolation: isolate;
   aspect-ratio: 4 / 3;
   border-radius: var(--radius-inset-4);
   overflow: hidden;
   background: var(--hs-default);
+}
+
+/* A kép saját színei elmosva töltik ki a kép melletti helyet (nagyítva, hogy a szélén ne látsszon a mosás széle) */
+.project-thumb::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--thumb, none) center / cover;
+  filter: blur(var(--space-6)) saturate(1.2);
+  transform: scale(1.3);
+}
+
+.project-thumb img {
+  position: relative;
 }
 
 /* Galéria és Projektjeim: ugyanaz a keret, a kép (műalkotás) egészben látszik, levágás nélkül */

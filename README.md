@@ -1,4 +1,4 @@
-# Hangösvény (csányi 2.0)
+# Színhang (csányi 2.0)
 
 Gyerek oldal (galéria, képnézet) és pedagógus oldal. React 19 + Vite + HeroUI v3 + Tailwind 4, backend: Supabase.
 

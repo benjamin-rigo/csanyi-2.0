@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, Button, Card, Chip, Description, EmptyState, Label, Link, Modal, Tag, TagGroup, TextArea, TextField } from '@heroui/react';
 import { Icon } from '../../components/Icon';
+import { Thumb } from '../../components/Thumb';
 import { moderationReason, removeFromGallery, restoreToGallery, setCategoriesAsAdmin, useAdminGallery, type AdminProject } from '../../lib/admin';
 import { assetUrl } from '../../lib/data';
 import { loadCategories, type CategoryOption } from '../../lib/editor';
@@ -237,7 +238,7 @@ function AdminTile({
   return (
     <li>
       <Card className="project-card">
-        <div className="project-thumb">{project.imagePath && <img src={assetUrl(project.imagePath)} alt="" loading="lazy" />}</div>
+        <Thumb src={project.imagePath ? assetUrl(project.imagePath) : null} />
         <Card.Header>
           <Card.Title render={(props) => <h3 {...props} />}>
             <Link href={`/kep/${project.id}`} target="_blank" rel="noreferrer">

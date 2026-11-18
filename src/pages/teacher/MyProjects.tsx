@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, Card, Chip, EmptyState, ProgressBar } from '@heroui/react';
 import { Link as AriaLink } from 'react-aria-components';
 import { Icon } from '../../components/Icon';
+import { Thumb } from '../../components/Thumb';
 import { NewProjectModal } from '../../components/NewProjectModal';
 import { ButtonLink } from '../../components/SiteHeader';
 import { loadProject } from '../../lib/editor';
@@ -114,7 +115,7 @@ function ProjectTile({ project }: { project: ProjectSummary }) {
   return (
     <li>
       <Card className="project-card">
-        <div className="project-thumb">{project.imagePath && <img src={assetUrl(project.imagePath)} alt="" loading="lazy" />}</div>
+        <Thumb src={project.imagePath ? assetUrl(project.imagePath) : null} />
         <Card.Header>
           <Card.Title render={(props) => <h2 {...props} />}>
             {/* Az egész kártya egy link a szerkesztőbe. */}

@@ -1,6 +1,6 @@
 # Átadás
 
-A Hangösvény a Csányi Alapítványé lesz. Ez a lista mutatja, mely fiókok, kulcsok és beállítások vannak most a fejlesztőnél, és mit kell átállítani az alapítvány saját fiókjaira. Fejlesztés közben folyamatosan bővül; minden új külső szolgáltatás ide is bekerül.
+A Színhang a Csányi Alapítványé lesz. Ez a lista mutatja, mely fiókok, kulcsok és beállítások vannak most a fejlesztőnél, és mit kell átállítani az alapítvány saját fiókjaira. Fejlesztés közben folyamatosan bővül; minden új külső szolgáltatás ide is bekerül.
 
 Jelölés: **most** = jelenlegi állapot, **átadáskor** = teendő.
 

@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Hangösvény",
+    "name": "Színhang",
     "loading": "Betöltés…",
     "loadError": "Nem sikerült betölteni a képeket. Próbáld újra később."
   },
@@ -10,8 +10,8 @@
     "teachers": "Pedagógusoknak"
   },
   "gallery": {
-    "documentTitle": "Hangösvény galéria, fedezd fel a képek hangjait",
-    "title": "Üdvözöllek a Hangösvény galériájában!",
+    "documentTitle": "Színhang galéria, fedezd fel a képek hangjait",
+    "title": "Üdvözöllek a Színhang galériájában!",
     "intro": "Ezen az oldalon képek hangjait fedezheted fel. Válassz egy kategóriát, hogy milyen képet szeretnél felfedezni.",
     "categoriesLabel": "Kategóriák",
     "count": "{count} kép",
@@ -29,7 +29,7 @@
     "terms": "ÁSZF"
   },
   "viewer": {
-    "documentTitle": "{title} · Hangösvény",
+    "documentTitle": "{title} · Színhang",
     "back": "Vissza",
     "welcome": "Szuper, megnyitottad {title} című képet! {tip}Tartsd az ujjad a képen, és keresd meg a hangokat. Kilépni {exit} tudsz.",
     "welcomeCaption": "Tartsd az ujjad a képen, és keresd meg a hangokat.",
@@ -66,16 +66,16 @@
       "requestNewLink": "Kérj új linket"
     },
     "login": {
-      "documentTitle": "Belépés · Hangösvény",
+      "documentTitle": "Belépés · Színhang",
       "title": "Belépés",
       "subtitle": "Lépj be a pedagógus fiókodba.",
       "forgot": "Elfelejtetted a jelszavad?",
       "remember": "Maradjak bejelentkezve",
       "submit": "Belépés",
-      "noAccount": "Még nincs fiókod? A Hangösvény meghívásos, hozzáférésért írj nekünk: {email}"
+      "noAccount": "Még nincs fiókod? A Színhang meghívásos, hozzáférésért írj nekünk: {email}"
     },
     "forgot": {
-      "documentTitle": "Elfelejtett jelszó · Hangösvény",
+      "documentTitle": "Elfelejtett jelszó · Színhang",
       "title": "Elfelejtett jelszó",
       "subtitle": "Add meg az e-mail címed, és küldünk egy linket az új jelszó beállításához.",
       "submit": "Link küldése",
@@ -83,14 +83,14 @@
       "backToLogin": "Vissza a belépéshez"
     },
     "newPassword": {
-      "documentTitle": "Új jelszó · Hangösvény",
+      "documentTitle": "Új jelszó · Színhang",
       "title": "Új jelszó beállítása",
       "password": "Új jelszó",
       "submit": "Mentés és belépés"
     },
     "setup": {
-      "documentTitle": "Fiók beállítása · Hangösvény",
-      "title": "Üdv a Hangösvényen!",
+      "documentTitle": "Fiók beállítása · Színhang",
+      "title": "Üdv a Színhangon!",
       "subtitle": "Állítsd be a fiókodat, és kezdheted.",
       "emailHelp": "A meghívó erre a címre érkezett.",
       "name": "A neved",
@@ -116,7 +116,7 @@
     "profileLink": "Profil",
     "menu": "Menü",
     "projects": {
-      "documentTitle": "Projektjeim · Hangösvény",
+      "documentTitle": "Projektjeim · Színhang",
       "title": "Projektjeim",
       "subtitle": "A képeid, amikhez hangokat és hangmezőket adtál.",
       "newProject": "Új projekt",
@@ -162,7 +162,7 @@
       }
     },
     "editor": {
-      "documentTitle": "{title} · Szerkesztő · Hangösvény",
+      "documentTitle": "{title} · Szerkesztő · Színhang",
       "loading": "Betöltés…",
       "notFound": "Ezt a projektet nem találjuk, vagy nem a tiéd.",
       "loadError": "Nem sikerült betölteni a projektet. Próbáld újra később.",
@@ -369,7 +369,7 @@
       "shareButton": "Megosztás"
     },
     "profile": {
-      "documentTitle": "Profil · Hangösvény",
+      "documentTitle": "Profil · Színhang",
       "title": "Profil",
       "subtitle": "A fiókod és a beállításaid.",
       "dataTitle": "Adataid",
@@ -478,7 +478,7 @@
     }
   },
   "admin": {
-    "documentTitle": "Admin · Hangösvény",
+    "documentTitle": "Admin · Színhang",
     "title": "Admin",
     "tabsLabel": "Admin részei",
     "tabs": { "accounts": "Fiókok", "gallery": "Galéria" },
@@ -509,7 +509,7 @@
     "cancel": "Mégse",
     "save": "Mentés",
     "accounts": {
-      "intro": "A Hangösvény összes pedagógusa. A privát projekteket nem látod, csak a darabszámukat.",
+      "intro": "A Színhang összes pedagógusa. A privát projekteket nem látod, csak a darabszámukat.",
       "loadError": "Nem sikerült betölteni a fiókokat. Próbáld újra később.",
       "activeTitle": "Pedagógusok ({count})",
       "pendingTitle": "Függő meghívók ({count})",

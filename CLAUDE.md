@@ -1,4 +1,4 @@
-# Hangösvény (csányi 2.0)
+# Színhang (csányi 2.0)
 
 Webes alkalmazás, amelyben pedagógusok képekhez **hangmezőket** (a kép hangos területei) és hangokat társítanak, vak, gyengénlátó és látó gyerekek pedig érintéssel (táblagép) vagy egérrel és billentyűzettel (asztali gép) felfedezik a képet. Van egy nyilvános galéria.
 
