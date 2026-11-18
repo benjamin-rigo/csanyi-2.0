@@ -51,12 +51,8 @@
   --field-color-6: #0d9488;
   --field-color-7: #ea580c;
   --field-color-8: #dc2626;
-  --field-fill-alpha: 35%;
-  /* A hangmező vonala a szerkesztőben (a fekete és fehér kontúr ezen felül), kijelölve vastagabb */
-  --field-stroke: 1.5;
-  --field-stroke-selected: 3;
-  /* A nem kijelölt hangmező szegélye halkabb, hogy a kijelölt és a kitöltés kerüljön előtérbe */
-  --field-stroke-quiet-opacity: 0.7;
+  --field-fill-alpha: 45%;
+  --field-fill-alpha-selected: 70%;
 
   /* Térköz: csak a konvencionális skála */
   --space-0-5: 2px;
@@ -71,13 +67,18 @@
   --space-12: 48px;
   --space-16: 64px;
 
+  /* Lekerekítés (2026-11-18: kisebb, az alap 8 helyett 4 px; ebből számol minden HeroUI-elem: gomb és kártya 12,
+     címke 8, fül 10 px). A mezőké külön 8 px, hogy a skálán maradjon. */
+  --radius: 4px;
+  --field-radius: 8px;
+
   /* Lekerekítés: a saját tárolók a HeroUI kártyáihoz igazodnak */
   --radius-pill: 999px;
   --radius-content: calc(var(--radius) * 3);
   /* Egymásba ágyazott elemek (döntésnapló): a belső ív = a külső ív mínusz a köztük lévő rés, így közös középpontúak.
      Ha a rés eléri a külső ívet, a belső elem már önállóan hat, ott marad a --radius-content. */
-  --radius-inset-4: calc(var(--radius-content) - var(--space-4)); /* 16 px-es belső margó (HeroUI kártya) */
-  --radius-inset-3: calc(var(--radius-content) - var(--space-3)); /* 12 px-es belső margó */
+  --radius-inset-4: max(var(--space-0-5), calc(var(--radius-content) - var(--space-4))); /* 16 px-es belső margó */
+  --radius-inset-3: max(var(--space-0-5), calc(var(--radius-content) - var(--space-3))); /* 12 px-es belső margó */
 
   /* Méretek */
   --border-thin: 1px;

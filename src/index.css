@@ -58,6 +58,12 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* A rádiógomb mindig kör: a HeroUI a lekerekítést a --radius-ból számolja, ami kisebb lett (2026-11-18) */
+.radio__control,
+.radio__indicator:empty::before {
+  border-radius: var(--radius-pill);
+}
+
 /* Ikonok: méret csak tokenből */
 .icon {
   flex-shrink: 0;
@@ -914,19 +920,26 @@ body {
   }
 }
 
-/* Eszköztár (döntésnapló, 2026-11-18): az eszközök háttér nélkül, a kiválasztott tömör fő színnel (mint a szűrők) */
-.draw-toolbar .toggle-button {
-  --toggle-button-bg: transparent;
-  --toggle-button-bg-hover: var(--default);
-  --toggle-button-bg-pressed: var(--default);
-  --toggle-button-bg-selected: var(--accent);
-  --toggle-button-bg-selected-hover: var(--accent-hover);
-  --toggle-button-bg-selected-pressed: var(--accent-hover);
-  --toggle-button-fg-selected: var(--accent-foreground);
+/* Eszköztár (döntésnapló, 2026-11-18): az eszközválasztó ugyanúgy néz ki, mint a panel fülei (HeroUI Tabs):
+   halvány sáv, a kiválasztott fehér, kiemelve. Ugyanazokból a HeroUI-változókból, hogy a kettő együtt változzon. */
+.draw-toolbar .toggle-button-group {
+  padding: var(--space-1);
+  border-radius: calc(var(--radius) * 2.5);
+  background: var(--default);
 }
 
-.draw-toolbar .toggle-button-group {
-  gap: var(--space-1);
+.draw-toolbar .toggle-button {
+  --toggle-button-bg: transparent;
+  --toggle-button-bg-hover: var(--default-hover);
+  --toggle-button-bg-pressed: var(--default-hover);
+  --toggle-button-bg-selected: var(--segment);
+  --toggle-button-bg-selected-hover: var(--segment);
+  --toggle-button-bg-selected-pressed: var(--segment);
+  --toggle-button-fg-selected: var(--segment-foreground);
+}
+
+.draw-toolbar .toggle-button[data-selected="true"] {
+  box-shadow: var(--surface-shadow);
 }
 
 /* Az Ecset gombon az ecsetméret kicsiben (4–24 px pötty) */
@@ -936,11 +949,6 @@ body {
   height: calc(var(--space-1) + var(--t) * var(--space-5));
   border-radius: var(--radius-pill);
   background: var(--hs-fg);
-}
-
-/* A lenyíló gomb nyila lefelé mutat */
-.brush-button svg:last-child {
-  transform: rotate(90deg);
 }
 
 .brush-popover {
@@ -1110,41 +1118,14 @@ body {
   visibility: hidden;
 }
 
-.draw-field path {
-  fill: none;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-  --w: var(--field-stroke);
-}
-
-.draw-field.is-selected path {
-  --w: var(--field-stroke-selected);
-}
-
-/* Körvonal (döntésnapló, 2026-11-18): a kijelölt hangmező színes vonalat kap fehér kísérővel, hogy bármilyen képen
-   látsszon a szerkesztett alak határa (WCAG 1.4.11); a többi hangmező csak a lágy kitöltés és egy halk színes szegély. */
-.draw-field-halo {
-  stroke: var(--hs-viewer-fg);
-  stroke-width: calc(var(--w) + 3);
-}
-
-.draw-field:not(.is-selected) .draw-field-halo {
-  display: none;
-}
-
-.draw-field:not(.is-selected) .draw-field-line {
-  stroke-opacity: var(--field-stroke-quiet-opacity);
-}
-
-/* A kitöltés külön elem, hogy a lágy szél szűrője csak rá hasson; a körvonal éles marad (WCAG 1.4.11). */
+/* Hangmező a rajzon: csak kitöltés, körvonal nélkül (döntésnapló, 2026-11-18); a kijelölt, amin dolgozol, erősebb. */
 .draw-field .draw-field-fill {
   fill: color-mix(in srgb, var(--c) var(--field-fill-alpha), transparent);
   stroke: none;
 }
 
-.draw-field .draw-field-line {
-  stroke: var(--c);
-  stroke-width: var(--w);
+.draw-field.is-selected .draw-field-fill {
+  fill: color-mix(in srgb, var(--c) var(--field-fill-alpha-selected), transparent);
 }
 
 .draw-frame.is-points {
@@ -1561,12 +1542,39 @@ body {
   gap: var(--space-4);
 }
 
+/* Megosztás, hiánylista: fülenként egy csoport, hangmezőnként egy sor (színjelölés, név, alatta mi hiányzik) */
+.missing-group {
+  margin-top: var(--space-3);
+}
+
+.missing-group-title {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
 .missing-list {
-  margin: var(--space-2) 0 0;
-  padding-inline-start: var(--space-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-2);
+}
+
+.missing-field {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.missing-field .field-swatch {
+  margin-top: calc((1lh - var(--swatch)) / 2);
+}
+
+.missing-field-text {
+  display: flex;
+  flex-direction: column;
 }
 
 .share-link-row {

@@ -578,7 +578,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
                   aria-hidden="true"
                 />
                 <span className="tool-label">{t('teacher.editor.brushSettingsShort')}</span>
-                <Icon name="chevron" size="sm" />
+                <Icon name="chevron-down" size="sm" />
               </Button>
               <Popover.Content placement="bottom">
                 <Popover.Dialog className="brush-popover">

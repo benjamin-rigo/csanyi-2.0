@@ -112,7 +112,7 @@ test('Pontok eszköz és visszavonás (alak, név, törlés)', async ({ page }) 
     await page.keyboard.press(k);
   }
   await page.getByRole('button', { name: 'Lezárás' }).click();
-  const shape = page.locator('.draw-field-line');
+  const shape = page.locator('.draw-field-fill');
   const twoParts = await shape.getAttribute('d');
   expect(twoParts!.match(/M/g)!.length).toBe(2);
 
@@ -135,5 +135,5 @@ test('Pontok eszköz és visszavonás (alak, név, törlés)', async ({ page }) 
   await expect(page.locator('.draw-field')).toHaveCount(1);
   await expect(page.getByText('Automatikusan mentve')).toBeVisible({ timeout: 10_000 });
   await page.reload();
-  await expect(page.locator('.draw-field-line')).toHaveAttribute('d', twoParts!);
+  await expect(page.locator('.draw-field-fill')).toHaveAttribute('d', twoParts!);
 });

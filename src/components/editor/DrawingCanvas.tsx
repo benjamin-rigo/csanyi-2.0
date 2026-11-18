@@ -419,7 +419,7 @@ export function DrawingCanvas({
             </defs>
             {fields.map((f, i) =>
               painting && f.id === selectedId ? null : (
-                // A kijelölt hangmező színes vonala fehér kísérővel bármilyen képen látszik (WCAG 1.4.11); a többi halk szegélyt kap.
+                // Körvonal nincs (döntésnapló, 2026-11-18): a kijelölt hangmező erősebb kitöltést kap, a többi halványabbat.
                 <g
                   key={f.id}
                   className={`draw-field${f.id === selectedId ? ' is-selected' : ''}`}
@@ -431,8 +431,6 @@ export function DrawingCanvas({
                     className="draw-field-fill"
                     filter={f.softness > 0 ? `url(#soft-${f.id})` : undefined}
                   />
-                  <path d={shapePath(f.polygons)} className="draw-field-halo" />
-                  <path d={shapePath(f.polygons)} fillRule="evenodd" className="draw-field-line" />
                 </g>
               ),
             )}

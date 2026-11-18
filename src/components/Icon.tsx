@@ -1,62 +1,89 @@
-const PATHS: Record<string, string> = {
-  image:
-    'M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM9 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM21 16l-5-5-9 9',
-  paw: 'M7 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM12 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM8 17c0-2.5 1.8-4.5 4-4.5s4 2 4 4.5c0 1.5-1.2 2.5-2.5 2.5h-3C9.2 19.5 8 18.5 8 17z',
-  leaf: 'M5 19c0-8 5-13 14-14 0 9-5 14-13 14zM5 19l8-8',
-  back: 'M19 12H5M11 6l-6 6 6 6',
-  eye: 'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
-  'eye-off':
-    'M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.9 8.3 2 12 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2',
-  check: 'M5 12l5 5L20 7',
-  globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18',
-  external: 'M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5',
-  plus: 'M12 5v14M5 12h14',
-  upload: 'M12 16V4M6 10l6-6 6 6M4 20h16',
-  close: 'M6 6l12 12M18 6L6 18',
-  forward: 'M5 12h14M13 6l6 6-6 6',
-  brush: 'M18.4 2.6a2 2 0 0 1 2.9 2.9L11 15.8l-3-3zM7 14c-2 0-3 1.5-3 3 0 1.2-.7 2-2 2 1 1.5 2.7 2 4 2 2.5 0 4-1.8 4-4z',
-  points: 'M6 18L8 6l10 4-3 8zM6 18h.01M8 6h.01M18 10h.01M15 18h.01',
-  eraser: 'M7 21h13M4.6 15.4l9.9-9.9a2 2 0 0 1 2.8 0l2.2 2.2a2 2 0 0 1 0 2.8L11 19H7.4z',
-  undo: 'M9 14L4 9l5-5M4 9h11a5 5 0 0 1 0 10h-3',
-  redo: 'M15 14l5-5-5-5M20 9H9a5 5 0 0 0 0 10h3',
-  link: 'M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1',
-  cloud: 'M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 9.5a4 4 0 0 1-.5 8.5z',
-  chevron: 'M9 6l6 6-6 6',
-  play: 'M8 5v14l11-7z',
-  pause: 'M8 5v14M16 5v14',
-  mic: 'M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM5 11a7 7 0 0 0 14 0M12 18v3',
-  stop: 'M7 7h10v10H7z',
-  minus: 'M5 12h14',
-  lock: 'M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6z',
-  menu: 'M4 6h16M4 12h16M4 18h16',
-  shield: 'M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6z',
-  city: 'M3 21h18M5 21V8l5-3v16M10 21V10h9v11M13 13h3M13 17h3M7 11h.01M7 15h.01',
-  story: 'M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h13M8 7h7M8 11h5',
-  season:
-    'M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4',
-  trash: 'M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3',
-  music: 'M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM21 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  Brush,
+  Building2,
+  Check,
+  ChevronDown,
+  ChevronRight,
+  CloudCheck,
+  Eraser,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  Globe,
+  Image,
+  Leaf,
+  Link,
+  Lock,
+  Menu,
+  Mic,
+  Minus,
+  Music,
+  Pause,
+  PawPrint,
+  PenTool,
+  Play,
+  Plus,
+  Redo2,
+  Shield,
+  Square,
+  Sun,
+  Trash2,
+  Undo2,
+  Upload,
+  X,
+  type LucideIcon,
+} from 'lucide-react';
+
+/**
+ * Ikonok a Lucide készletből (ugyanez a shadcn/ui ikonkészlete, döntésnapló, 2026-11-18). A nevek a felületen és az
+ * adatbázisban (kategóriák ikonja) használt kulcsok.
+ */
+const ICONS: Record<string, LucideIcon> = {
+  image: Image,
+  paw: PawPrint,
+  leaf: Leaf,
+  back: ArrowLeft,
+  eye: Eye,
+  'eye-off': EyeOff,
+  check: Check,
+  globe: Globe,
+  external: ExternalLink,
+  plus: Plus,
+  upload: Upload,
+  close: X,
+  forward: ArrowRight,
+  brush: Brush,
+  points: PenTool,
+  eraser: Eraser,
+  undo: Undo2,
+  redo: Redo2,
+  link: Link,
+  cloud: CloudCheck,
+  chevron: ChevronRight,
+  'chevron-down': ChevronDown,
+  play: Play,
+  pause: Pause,
+  mic: Mic,
+  stop: Square,
+  minus: Minus,
+  lock: Lock,
+  menu: Menu,
+  shield: Shield,
+  city: Building2,
+  story: BookOpen,
+  season: Sun,
+  music: Music,
+  trash: Trash2,
 };
 
 /** Ikonméret tokenből (--icon-sm / -md / -lg), szám nem adható meg (döntésnapló, 2026-11-18). */
 export type IconSize = 'sm' | 'md' | 'lg';
 
 export function Icon({ name, size = 'md' }: { name: string; size?: IconSize }) {
-  const d = PATHS[name];
-  if (!d) return null;
-  return (
-    <svg
-      className={`icon icon-${size}`}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path d={d} />
-    </svg>
-  );
+  const Glyph = ICONS[name];
+  if (!Glyph) return null;
+  return <Glyph className={`icon icon-${size}`} strokeWidth={2} aria-hidden="true" focusable="false" />;
 }

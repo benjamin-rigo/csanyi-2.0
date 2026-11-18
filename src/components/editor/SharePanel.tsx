@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { Alert, Button, Description, Input, Label, Link, Radio, RadioGroup, TextField } from '@heroui/react';
 import { projectMissing, type EditorProject, type Missing, type Visibility } from '../../lib/editor';
 import { moderationReason } from '../../lib/admin';
+import { fieldColorVar } from './DrawingCanvas';
 import { t } from '../../lib/i18n';
 import { Icon } from '../Icon';
 
@@ -34,7 +35,16 @@ export function SharePanel({
   const [copied, setCopied] = useState(false);
   const missing = projectMissing(project);
   const url = shareUrl(project.id);
-  const fieldName = (id: string) => project.fields.find((f) => f.id === id)?.name.trim() || t('teacher.editor.fields.untitled');
+  const projectItems = missing.filter((m) => m.kind === 'image' || m.kind === 'title' || m.kind === 'shortDescription');
+  const soundItems = missing.filter((m) => m.kind === 'background' || m.kind === 'fields');
+  type FieldKind = Extract<Missing, { fieldId: string }>['kind'];
+  const byField = project.fields
+    .map((field, index) => ({
+      field,
+      index,
+      kinds: missing.flatMap((m) => ('fieldId' in m && m.fieldId === field.id ? [m.kind as FieldKind] : [])),
+    }))
+    .filter((x) => x.kinds.length > 0);
 
   async function copy() {
     await navigator.clipboard.writeText(url);
@@ -85,17 +95,44 @@ export function SharePanel({
           <Alert.Indicator />
           <Alert.Content>
             <Alert.Title>{t('teacher.editor.share.notReady')}</Alert.Title>
-            <ul className="missing-list">
-              {missing.map((m, i) => (
-                <li key={i}>
-                  <Link onPress={() => onGoToMissing(m)} className="text-sm">
-                    {'fieldId' in m
-                      ? t(`teacher.editor.share.missing.${m.kind}`, { name: fieldName(m.fieldId) })
-                      : t(`teacher.editor.share.missing.${m.kind}`)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {/* Fülek szerint csoportosítva, hangmezőnként egy sor: mi hiányzik belőle (ne ismétlődjön ugyanaz a név). */}
+            {projectItems.length > 0 && (
+              <div className="missing-group">
+                <p className="missing-group-title">{t('teacher.editor.share.groupProject')}</p>
+                <ul className="missing-list">
+                  {projectItems.map((m) => (
+                    <li key={m.kind}>
+                      <Link onPress={() => onGoToMissing(m)}>{t(`teacher.editor.share.missing.${m.kind}`)}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {(soundItems.length > 0 || byField.length > 0) && (
+              <div className="missing-group">
+                <p className="missing-group-title">{t('teacher.editor.share.groupSounds')}</p>
+                <ul className="missing-list">
+                  {soundItems.map((m) => (
+                    <li key={m.kind}>
+                      <Link onPress={() => onGoToMissing(m)}>{t(`teacher.editor.share.missing.${m.kind}`)}</Link>
+                    </li>
+                  ))}
+                  {byField.map(({ field, index, kinds }) => (
+                    <li key={field.id} className="missing-field">
+                      <span className="field-swatch" style={{ '--c': fieldColorVar(index) } as CSSProperties} aria-hidden="true" />
+                      <span className="missing-field-text">
+                        <Link onPress={() => onGoToMissing({ kind: kinds[0], fieldId: field.id })}>
+                          {field.name.trim() || t('teacher.editor.share.untitledField', { n: index + 1 })}
+                        </Link>
+                        <span className="panel-help">
+                          {t('teacher.editor.share.fieldMissing', { items: kinds.map((k) => t(`teacher.editor.share.missing.${k}`)).join(', ') })}
+                        </span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </Alert.Content>
         </Alert>
       )}
