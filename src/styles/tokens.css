@@ -62,6 +62,10 @@
   /* Lekerekítés: a saját tárolók a HeroUI kártyáihoz igazodnak */
   --radius-pill: 999px;
   --radius-content: calc(var(--radius) * 3);
+  /* Egymásba ágyazott elemek (döntésnapló): a belső ív = a külső ív mínusz a köztük lévő rés, így közös középpontúak.
+     Ha a rés eléri a külső ívet, a belső elem már önállóan hat, ott marad a --radius-content. */
+  --radius-inset-4: calc(var(--radius-content) - var(--space-4)); /* 16 px-es belső margó (HeroUI kártya) */
+  --radius-inset-3: calc(var(--radius-content) - var(--space-3)); /* 12 px-es belső margó */
 
   /* Méretek */
   --border-thin: 1px;
@@ -70,6 +74,7 @@
   --content-max: 1180px;
   --card-image-h: 240px;
   --card-min-w: 300px;
+  --card-min-w-tablet: 240px;
   --intro-max: 720px;
   --auth-card-w: 420px;
   --sidebar-w: 264px;

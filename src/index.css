@@ -295,7 +295,7 @@ body {
 
 .project-thumb {
   aspect-ratio: 4 / 3;
-  border-radius: var(--radius-content);
+  border-radius: var(--radius-inset-4);
   overflow: hidden;
   background: var(--hs-default);
 }
@@ -744,7 +744,7 @@ body {
 .dropzone-preview {
   max-height: var(--card-image-h);
   max-width: 100%;
-  border-radius: var(--radius-content);
+  border-radius: var(--radius-inset-4);
 }
 
 .dropzone-help {
@@ -1359,7 +1359,7 @@ body {
   width: var(--space-12);
   height: var(--space-12);
   object-fit: cover;
-  border-radius: var(--space-2);
+  border-radius: var(--radius-inset-3);
   flex-shrink: 0;
 }
 
@@ -1629,6 +1629,16 @@ div.onboarding-current {
   justify-content: space-between;
   gap: var(--space-4);
   font-size: var(--text-sm);
+}
+
+/* ---------- Tablet szélesség ---------- */
+
+/* Sűrűbb rács: kisebb oldalmargó és keskenyebb legkisebb kártya, így 1024 px-en 3, 768 px-en 2 oszlop */
+@media (min-width: 721px) and (max-width: 1279px) {
+  :root {
+    --kid-page-x: var(--space-8);
+    --card-min-w: var(--card-min-w-tablet);
+  }
 }
 
 /* ---------- Keskeny kijelző ---------- */
