@@ -1,6 +1,6 @@
 import { useEffect, useRef, type CSSProperties, type ReactNode, type RefObject } from 'react';
 import { Button, Chip, Description, Input, Label, ListBox, Slider, TextArea, TextField } from '@heroui/react';
-import type { EditorField, EditorProject, EditorSound } from '../../lib/editor';
+import type { EditorField, EditorLayer, EditorProject, EditorSound } from '../../lib/editor';
 import type { Guide } from '../../lib/onboarding';
 import { t } from '../../lib/i18n';
 import { Icon } from '../Icon';
@@ -21,7 +21,7 @@ function VolumeSlider({
   value: number;
   onChange: (v: number) => void;
   help?: string;
-  label?: string;
+  label?: ReactNode;
 }) {
   return (
     <div className="panel-field">
@@ -68,6 +68,83 @@ function AddTile({
 }
 
 /**
+ * Hangrétegek (döntésnapló, 2026-11-18): egyszerre szólnak, mindegyik saját hangerővel. Rétegenként csere,
+ * hangerő és eltávolítás; alul új réteg hozzáadása.
+ */
+function LayerList({
+  id,
+  layers,
+  loops = false,
+  readOnly,
+  addLabel,
+  addClass,
+  onPick,
+  onVolume,
+  onRemove,
+}: {
+  id: string;
+  layers: EditorLayer[];
+  loops?: boolean;
+  readOnly: boolean;
+  addLabel: string;
+  addClass?: string;
+  onPick: (index: number | null) => void;
+  onVolume: (index: number, volume: number) => void;
+  onRemove: (index: number) => void;
+}) {
+  return (
+    <div className="panel-field">
+      <span className="panel-label">{t('teacher.editor.layers.title')}</span>
+      {layers.length > 0 && (
+        <ul className="layer-list">
+          {layers.map((l, i) => (
+            <li key={`${l.sound.id}-${i}`} className="layer">
+              <SoundCard
+                sound={l.sound}
+                loops={loops}
+                action={
+                  <Button size="sm" variant="secondary" onPress={() => onPick(i)}>
+                    {t('teacher.editor.sound.replace')}
+                  </Button>
+                }
+              />
+              <div className="layer-controls">
+                <VolumeSlider
+                  id={`${id}-volume-${i}`}
+                  value={l.volume}
+                  onChange={(v) => onVolume(i, v)}
+                  label={
+                    <>
+                      {t('teacher.editor.fields.volume')}
+                      <span className="sr-only">: {l.sound.title}</span>
+                    </>
+                  }
+                />
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  isIconOnly
+                  aria-label={t('teacher.editor.layers.removeLabel', { title: l.sound.title })}
+                  onPress={() => onRemove(i)}
+                >
+                  <Icon name="trash" size={16} />
+                </Button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+      <AddTile
+        label={layers.length ? t('teacher.editor.layers.addMore') : addLabel}
+        onPress={() => onPick(null)}
+        isDisabled={readOnly}
+        className={addClass}
+      />
+    </div>
+  );
+}
+
+/**
  * Hangok fül (11, 11b), lefúrós szerkezettel: a lista (háttérhang, hangmezők) sorára kattintva
  * a panel a részletekre vált; a „Hangok” gombbal vissza, a fókusz ugyanarra a sorra kerül.
  */
@@ -78,8 +155,8 @@ export function SoundsPanel({
   userId,
   onAddField,
   onPickSound,
-  onBackgroundVolume,
-  onRemoveBackground,
+  onLayerVolume,
+  onRemoveLayer,
   onFieldChange,
   onFieldVoice,
   onDeleteField,
@@ -91,10 +168,11 @@ export function SoundsPanel({
   onSelect: (s: Selection) => void;
   userId: string;
   onAddField: () => void;
-  onPickSound: (target: 'background' | string) => void;
-  onBackgroundVolume: (v: number) => void;
-  onRemoveBackground: () => void;
-  onFieldChange: (id: string, patch: Partial<Pick<EditorField, 'name' | 'description' | 'volume' | 'softness'>>) => void;
+  /** Hangválasztó: új réteg (index: null) vagy a réteg hangjának cseréje. */
+  onPickSound: (target: 'background' | string, index: number | null) => void;
+  onLayerVolume: (target: 'background' | string, index: number, volume: number) => void;
+  onRemoveLayer: (target: 'background' | string, index: number) => void;
+  onFieldChange: (id: string, patch: Partial<Pick<EditorField, 'name' | 'description' | 'softness'>>) => void;
   onFieldVoice: (id: string, sound: EditorSound | null) => void;
   onDeleteField: (field: EditorField) => void;
   /** Minta: a listák és részletek megnézhetők, de nem módosíthatók. */
@@ -102,7 +180,8 @@ export function SoundsPanel({
   /** Első lépések: a kék kerettel kiemelt elem. */
   guide?: { guide: Guide; field?: string } | null;
 }) {
-  const bg = project.background;
+  const bgs = project.backgrounds;
+  const titles = (layers: EditorLayer[]) => layers.map((l) => l.sound.title).join(', ');
   const field = selection?.kind === 'field' ? (project.fields.find((f) => f.id === selection.id) ?? null) : null;
   const fieldName = (f: EditorField) => f.name.trim() || t('teacher.editor.fields.untitled');
   const guideClass = (g: Guide) => (guide?.guide === g ? 'guide-target' : undefined);
@@ -142,7 +221,7 @@ export function SoundsPanel({
     </div>
   );
 
-  if (selection?.kind === 'background' && bg) {
+  if (selection?.kind === 'background') {
     return (
       <section className="panel-sections" aria-labelledby="bg-detail">
         {back()}
@@ -153,29 +232,17 @@ export function SoundsPanel({
           {t('teacher.editor.background.detailTitle')}
         </h2>
         <fieldset disabled={readOnly} className="plain-fieldset panel-fieldset">
-          <div className="panel-field">
-            <span className="panel-label">{t('teacher.editor.fields.sound')}</span>
-            <SoundCard
-              sound={bg}
-              loops
-              action={
-                <Button size="sm" variant="secondary" onPress={() => onPickSound('background')}>
-                  {t('teacher.editor.sound.replace')}
-                </Button>
-              }
-            />
-          </div>
-          <VolumeSlider
-            id="bg-volume"
-            value={project.backgroundVolume}
-            onChange={onBackgroundVolume}
-            help={t('teacher.editor.background.help')}
+          <LayerList
+            id="bg"
+            layers={bgs}
+            loops
+            readOnly={readOnly}
+            addLabel={t('teacher.editor.background.add')}
+            onPick={(i) => onPickSound('background', i)}
+            onVolume={(i, v) => onLayerVolume('background', i, v)}
+            onRemove={(i) => onRemoveLayer('background', i)}
           />
-          <div className="panel-danger-zone">
-            <Button size="sm" variant="danger-soft" onPress={onRemoveBackground}>
-              {t('teacher.editor.background.removeLong')}
-            </Button>
-          </div>
+          <p className="panel-help">{t('teacher.editor.background.help')}</p>
         </fieldset>
       </section>
     );
@@ -215,26 +282,16 @@ export function SoundsPanel({
             <Description>{t('teacher.editor.fields.nameHelp')}</Description>
           </TextField>
           {field.polygons.length === 0 && <p className="panel-hint">{t('teacher.editor.fields.shapeHint')}</p>}
-          <div className="panel-field">
-            <span className="panel-label">{t('teacher.editor.fields.sound')}</span>
-            {field.sound ? (
-              <SoundCard
-                sound={field.sound}
-                action={
-                  <Button size="sm" variant="secondary" onPress={() => onPickSound(field.id)}>
-                    {t('teacher.editor.sound.replace')}
-                  </Button>
-                }
-              />
-            ) : (
-              <AddTile
-                label={t('teacher.editor.fields.addSound')}
-                onPress={() => onPickSound(field.id)}
-                className={guideClass('add-sound')}
-              />
-            )}
-          </div>
-          <VolumeSlider id="field-volume" value={field.volume} onChange={(volume) => onFieldChange(field.id, { volume })} />
+          <LayerList
+            id="field"
+            layers={field.sounds}
+            readOnly={readOnly}
+            addLabel={t('teacher.editor.fields.addSound')}
+            addClass={field.sounds.length ? undefined : guideClass('add-sound')}
+            onPick={(i) => onPickSound(field.id, i)}
+            onVolume={(i, v) => onLayerVolume(field.id, i, v)}
+            onRemove={(i) => onRemoveLayer(field.id, i)}
+          />
           <TextField value={field.description} onChange={(description) => onFieldChange(field.id, { description })} fullWidth>
             <Label>{t('teacher.editor.fields.description')}</Label>
             <TextArea rows={3} className={guideClass('description')} />
@@ -258,16 +315,18 @@ export function SoundsPanel({
         <div className="panel-section-head">
           <h2 id="bg-title">{t('teacher.editor.background.title')}</h2>
         </div>
-        {bg ? (
+        {bgs.length ? (
           <ListBox aria-labelledby="bg-title" selectionMode="none" onAction={() => onSelect({ kind: 'background' })} className="panel-list">
-            <ListBox.Item id="background" textValue={bg.title}>
+            <ListBox.Item id="background" textValue={titles(bgs)}>
               <span className="panel-row-icon" aria-hidden="true">
                 <Icon name="music" size={16} />
               </span>
               <span className="panel-row-text">
-                <span className="panel-row-title">{bg.title}</span>
+                <span className="panel-row-title">{titles(bgs)}</span>
                 <span className="panel-row-sub">
-                  {t('teacher.editor.background.volumeShort', { n: Math.round(project.backgroundVolume * 100) })}
+                  {bgs.length > 1
+                    ? t('teacher.editor.layers.count', { n: bgs.length })
+                    : t('teacher.editor.background.volumeShort', { n: Math.round(bgs[0].volume * 100) })}
                 </span>
               </span>
               <Icon name="chevron" size={16} />
@@ -277,7 +336,7 @@ export function SoundsPanel({
           <>
             <AddTile
               label={t('teacher.editor.background.add')}
-              onPress={() => onPickSound('background')}
+              onPress={() => onPickSound('background', null)}
               isDisabled={readOnly}
               className={guideClass('add-background')}
             />
@@ -314,10 +373,10 @@ export function SoundsPanel({
                 {/* A hiányt jelző címkék a név alatt: a név így a teljes szélességet kapja, és nem csúszik rájuk. */}
                 <span className="panel-row-text">
                   <span className="panel-row-title">{fieldName(f)}</span>
-                  {f.sound && <span className="panel-row-sub">{f.sound.title}</span>}
-                  {(!f.sound || f.polygons.length === 0) && (
+                  {f.sounds.length > 0 && <span className="panel-row-sub">{titles(f.sounds)}</span>}
+                  {(!f.sounds.length || f.polygons.length === 0) && (
                     <span className="panel-row-chips">
-                      {!f.sound && (
+                      {!f.sounds.length && (
                         <Chip size="sm" color="warning" variant="soft">
                           {t('teacher.editor.fields.noSound')}
                         </Chip>

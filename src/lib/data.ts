@@ -12,8 +12,8 @@ export interface SoundField {
   id: string;
   name: string;
   description: string;
-  /** null: még nincs hang (linkkel megosztott, félkész projektben lehet) */
-  sound: Sound | null;
+  /** A hangmező hangrétegei: egyszerre szólnak, mindegyik saját hangerővel. Üres: még nincs hang (félkész projekt). */
+  sounds: Sound[];
   /** Felvett leírás: kikapcsolt felolvasónál ez szól érintésre. */
   descriptionSound: Sound | null;
   /** Egy vagy több sokszög (lyukakkal), páros-páratlan kitöltéssel. */
@@ -29,7 +29,8 @@ export interface Project {
   shortDescription: string;
   categories: string[];
   image: { src: string | null; width: number | null; height: number | null };
-  background: Sound | null;
+  /** A háttérhang rétegei: egyszerre szólnak, mindegyik saját hangerővel. */
+  backgrounds: Sound[];
   fields: SoundField[];
 }
 
@@ -50,7 +51,18 @@ export interface Config {
   auth: { passwordMinLength: number };
   upload: { imageMaxMb: number; soundMaxMb: number };
   onboarding: { sampleProjectId: string; steps: number };
-  editor: { autosaveDelayMs: number; brushDefault: number; brushMin: number; brushMax: number; zoomMin: number; zoomMax: number; zoomStep: number; softnessDefault: number };
+  editor: {
+    autosaveDelayMs: number;
+    brushDefault: number;
+    brushMin: number;
+    brushMax: number;
+    zoomMin: number;
+    zoomMax: number;
+    zoomStep: number;
+    softnessDefault: number;
+    /** Új háttérréteg hangereje (0–1). */
+    backgroundVolumeDefault: number;
+  };
   viewer: {
     startCue: Sound;
     backgroundFadeInMs: number;
@@ -89,17 +101,24 @@ function soundOrNull(sound: { src: string | null; volume: number } | null): Soun
   return sound?.src ? withBase(sound as Sound) : null;
 }
 
+/** A rétegek; a régebbi adat még egyetlen hangot ad (sound, background). */
+function layers(list: Sound[] | undefined, single: { src: string | null; volume: number } | null | undefined): Sound[] {
+  const raw = list ?? (single ? [single] : []);
+  return raw.flatMap((s) => soundOrNull(s) ?? []);
+}
+
 function resolveProject(p: Project): Project {
+  const legacyProject = p as Project & { background?: Sound | null };
   return {
     ...p,
     image: { ...p.image, src: p.image.src && assetUrl(p.image.src) },
-    background: soundOrNull(p.background),
+    backgrounds: layers(p.backgrounds, legacyProject.background),
     fields: p.fields.map((f) => {
-      // A régebbi adat még egyetlen sokszöget ad (points).
-      const legacy = f as SoundField & { points?: Point[] };
+      // A régebbi adat még egyetlen sokszöget (points) és egyetlen hangot (sound) ad.
+      const legacy = f as SoundField & { points?: Point[]; sound?: Sound | null };
       return {
         ...f,
-        sound: soundOrNull(f.sound),
+        sounds: layers(f.sounds, legacy.sound),
         descriptionSound: soundOrNull(f.descriptionSound ?? null),
         polygons: f.polygons ?? (legacy.points ? [legacy.points] : []),
         softness: f.softness ?? 0,

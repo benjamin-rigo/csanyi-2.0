@@ -12,14 +12,19 @@ export interface EditorSound {
   durationMs: number | null;
 }
 
+/** Egy hangréteg: a rétegek egyszerre szólnak, mindegyik saját hangerővel. */
+export interface EditorLayer {
+  sound: EditorSound;
+  volume: number;
+}
+
 export interface EditorField {
   id: string;
   sort: number;
   name: string;
   description: string;
   polygons: Point[][];
-  sound: EditorSound | null;
-  volume: number;
+  sounds: EditorLayer[];
   softness: number;
   descriptionSound: EditorSound | null;
 }
@@ -42,8 +47,7 @@ export interface EditorProject {
   imagePath: string;
   imageWidth: number;
   imageHeight: number;
-  background: EditorSound | null;
-  backgroundVolume: number;
+  backgrounds: EditorLayer[];
   fields: EditorField[];
 }
 
@@ -68,15 +72,20 @@ function shapePolygons(shape: Shape): Point[][] {
 
 const SOUND = 'id, title, path, source, license, duration_ms';
 
+/** Az adatbázisban egy réteg: a hang azonosítója és a hangereje. */
+type LayerRow = { sound: string; volume: number };
+
+export function layerRows(layers: EditorLayer[]): LayerRow[] {
+  return layers.map((l) => ({ sound: l.sound.id, volume: l.volume }));
+}
+
 export async function loadProject(id: string, userId: string): Promise<EditorProject | null> {
   const { data, error } = await supabase
     .from('projects')
     .select(
-      `id, title, short_description, author, visibility, moderation_note, image_path, image_width, image_height, background_volume, owner_id, is_practice,
+      `id, title, short_description, author, visibility, moderation_note, image_path, image_width, image_height, background_layers, owner_id, is_practice,
        project_categories(category_id),
-       background:sounds!projects_background_sound_id_fkey(${SOUND}),
-       fields(id, sort, name, description, shape, volume, edge_softness,
-         sound:sounds!fields_sound_id_fkey(${SOUND}),
+       fields(id, sort, name, description, shape, sound_layers, edge_softness,
          description_sound:sounds!fields_description_sound_id_fkey(${SOUND}))`,
     )
     .eq('id', id)
@@ -96,20 +105,27 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
     image_path: string;
     image_width: number;
     image_height: number;
-    background_volume: number;
-    background: SoundRow | null;
+    background_layers: LayerRow[];
     fields: {
       id: string;
       sort: number;
       name: string;
       description: string;
       shape: Shape;
-      volume: number;
+      sound_layers: LayerRow[];
       edge_softness: number;
-      sound: SoundRow | null;
       description_sound: SoundRow | null;
     }[];
   };
+  // A rétegek hangjai egy lekérdezéssel; a hiányzó (törölt) hang rétege kimarad.
+  const ids = [...new Set([...row.background_layers, ...row.fields.flatMap((f) => f.sound_layers)].map((l) => l.sound))];
+  const sounds = new Map<string, EditorSound>();
+  if (ids.length) {
+    const { data: rows } = await check(supabase.from('sounds').select(SOUND).in('id', ids));
+    for (const r of (rows ?? []) as SoundRow[]) sounds.set(r.id, toSound(r)!);
+  }
+  const toLayers = (list: LayerRow[]): EditorLayer[] =>
+    list.flatMap((l) => (sounds.has(l.sound) ? [{ sound: sounds.get(l.sound)!, volume: l.volume }] : []));
   return {
     id: row.id,
     title: row.title,
@@ -123,8 +139,7 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
     imagePath: row.image_path,
     imageWidth: row.image_width,
     imageHeight: row.image_height,
-    background: toSound(row.background),
-    backgroundVolume: row.background_volume,
+    backgrounds: toLayers(row.background_layers),
     fields: row.fields
       .sort((a, b) => a.sort - b.sort)
       .map((f) => ({
@@ -133,8 +148,7 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
         name: f.name,
         description: f.description,
         polygons: shapePolygons(f.shape),
-        sound: toSound(f.sound),
-        volume: f.volume,
+        sounds: toLayers(f.sound_layers),
         softness: f.edge_softness,
         descriptionSound: toSound(f.description_sound),
       })),
@@ -142,8 +156,7 @@ export async function loadProject(id: string, userId: string): Promise<EditorPro
 }
 
 export type ProjectPatch = Partial<{
-  background_sound_id: string | null;
-  background_volume: number;
+  background_layers: LayerRow[];
   title: string;
   short_description: string;
   author: string;
@@ -156,8 +169,7 @@ export type FieldPatch = Partial<{
   name: string;
   description: string;
   shape: Shape;
-  sound_id: string | null;
-  volume: number;
+  sound_layers: LayerRow[];
   edge_softness: number;
   description_sound_id: string | null;
 }>;
@@ -197,8 +209,7 @@ export const restoreField = (projectId: string, f: EditorField) =>
       name: f.name,
       description: f.description,
       shape: shapeOf(f.polygons),
-      sound_id: f.sound?.id ?? null,
-      volume: f.volume,
+      sound_layers: layerRows(f.sounds),
       edge_softness: f.softness,
       description_sound_id: f.descriptionSound?.id ?? null,
     }),
@@ -386,12 +397,12 @@ export function projectMissing(p: EditorProject): Missing[] {
   if (!p.imagePath) out.push({ kind: 'image' });
   if (!p.title.trim()) out.push({ kind: 'title' });
   if (!p.shortDescription.trim()) out.push({ kind: 'shortDescription' });
-  if (!p.background) out.push({ kind: 'background' });
+  if (!p.backgrounds.length) out.push({ kind: 'background' });
   if (!p.fields.length) out.push({ kind: 'fields' });
   for (const f of p.fields) {
     if (!f.name.trim()) out.push({ kind: 'fieldName', fieldId: f.id });
     if (!f.description.trim()) out.push({ kind: 'fieldDescription', fieldId: f.id });
-    if (!f.sound) out.push({ kind: 'fieldSound', fieldId: f.id });
+    if (!f.sounds.length) out.push({ kind: 'fieldSound', fieldId: f.id });
     if (!f.descriptionSound) out.push({ kind: 'fieldDescriptionSound', fieldId: f.id });
   }
   return out;

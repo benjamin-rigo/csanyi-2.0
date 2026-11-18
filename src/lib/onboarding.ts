@@ -48,8 +48,8 @@ export function practiceSteps(project: EditorProject, previewed: boolean): boole
     true,
     Boolean(field),
     Boolean(field?.name.trim() && field.description.trim()),
-    Boolean(field?.sound),
-    Boolean(project.background),
+    Boolean(field?.sounds.length),
+    project.backgrounds.length > 0,
     previewed,
   ];
 }

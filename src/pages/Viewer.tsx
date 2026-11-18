@@ -2,10 +2,10 @@ import type React from 'react';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { Button } from '@heroui/react';
-import { useSharedProject, type Config, type Gallery, type Project, type Sound, type SoundField } from '../lib/data';
+import { useSharedProject, type Config, type Gallery, type Project, type SoundField } from '../lib/data';
 import { t } from '../lib/i18n';
 import { detectPlatform } from '../lib/device';
-import { preload, SceneAudio } from '../lib/audio';
+import { layerVoices, preload, SceneAudio } from '../lib/audio';
 import { Icon } from '../components/Icon';
 import { ButtonLink } from '../components/SiteHeader';
 import { edgeGain, shapePath } from '../lib/geometry';
@@ -61,7 +61,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
   const audioRef = useRef<SceneAudio | null>(null);
   useEffect(() => {
     const audio = new SceneAudio({
-      background: project.background,
+      backgrounds: project.backgrounds,
       startCue: v.startCue,
       fadeInMs: v.backgroundFadeInMs,
       fadeOutMs: v.backgroundFadeOutMs,
@@ -73,7 +73,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
       audio.dispose();
       audioRef.current = null;
     };
-  }, [project.background, v]);
+  }, [project.backgrounds, v]);
 
   const platform = detectPlatform();
   const welcome = t('viewer.welcome', {
@@ -91,7 +91,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
   // Megnyitás: cím, hangok előtöltése, a felolvasó egyszer felolvassa az üdvözlést.
   useEffect(() => {
     document.title = t('viewer.documentTitle', { title: project.title });
-    preload([v.startCue, project.background, ...project.fields.map((f) => f.sound)].filter((s): s is Sound => s !== null));
+    preload([v.startCue, ...project.backgrounds, ...project.fields.flatMap((f) => f.sounds)]);
   }, [project, v.startCue]);
 
   // A hangmező fókuszkerete csak billentyűzettel látszik; érintésnél és felolvasóval zavaró.
@@ -144,7 +144,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
     (fieldId: string | null) => {
       const field = project.fields.find((f) => f.id === fieldId) ?? null;
       markActive(field);
-      audioRef.current?.setField(field?.id ?? null, field?.sound ?? null);
+      audioRef.current?.setField(field?.id ?? null, field?.sounds ?? []);
     },
     [markActive, project.fields],
   );
@@ -191,7 +191,7 @@ function Scene({ project, config }: { project: Project; config: Config }) {
       // Lágy szél: a hangmező szélétől befelé erősödik a hang; az átfedő hangmezők együtt szólnak.
       const edge = v.edgeMaxFraction * Math.min(imgW, imgH);
       const hits = project.fields.map((f) => ({ field: f, gain: edgeGain(x, y, f.polygons, f.softness * edge) })).filter((h) => h.gain > 0);
-      audioRef.current?.setFields(hits.flatMap(({ field, gain }) => (field.sound ? [{ id: field.id, sound: field.sound, gain }] : [])));
+      audioRef.current?.setFields(hits.flatMap(({ field, gain }) => layerVoices(field.id, field.sounds, gain)));
       const strongest = hits.reduce<(typeof hits)[number] | null>((best, h) => (!best || h.gain > best.gain ? h : best), null);
       const found = strongest && strongest.gain >= v.descriptionThreshold ? strongest.field : null;
       // Érintés és egér csak kikapcsolt felolvasónál jut ide, ezért a felvett leírás nem beszél a felolvasóra.

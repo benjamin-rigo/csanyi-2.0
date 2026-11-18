@@ -240,7 +240,7 @@
         "volumeShort": "Hangerő {n}%",
         "settings": "Háttérhang beállításai",
         "remove": "Eltávolítás",
-        "help": "A kép megnyitásakor lassan beúszik, és végig szól. Ha egy hangmező megszólal, kicsit lehalkul, hogy a hangmező hangja érthető legyen.",
+        "help": "A kép megnyitásakor lassan beúszik, és végig szól; több hang egyszerre szól. Ha egy hangmező megszólal, kicsit lehalkul, hogy a hangmező hangja érthető legyen.",
         "pickerTarget": "Háttérhang",
         "detailTitle": "Háttérhang",
         "removeLong": "Háttérhang eltávolítása"
@@ -286,6 +286,12 @@
         "label": "Leíró hang",
         "micError": "Nem kaptunk hozzáférést a mikrofonhoz. Engedélyezd a böngésző beállításaiban.",
         "saving": "Mentés…"
+      },
+      "layers": {
+        "title": "Hangok",
+        "addMore": "Még egy hang",
+        "removeLabel": "{title} eltávolítása",
+        "count": "{n} hang egyszerre"
       },
       "sound": {
         "play": "{title} lejátszása",

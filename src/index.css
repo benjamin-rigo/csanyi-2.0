@@ -1284,6 +1284,38 @@ body {
   border-top: var(--border-thin) solid var(--hs-border);
 }
 
+/* Hangrétegek: rétegenként hangkártya, alatta hangerő és eltávolítás; a rétegeket vékony vonal választja el */
+.layer-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.layer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.layer + .layer {
+  padding-top: var(--space-4);
+  border-top: var(--border-thin) solid var(--hs-border);
+}
+
+.layer-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.layer-controls .panel-field {
+  flex: 1;
+  min-width: 0;
+}
+
 .volume-slider {
   display: flex;
   flex-direction: column;

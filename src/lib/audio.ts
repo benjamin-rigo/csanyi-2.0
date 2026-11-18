@@ -98,7 +98,8 @@ function stop(voice: Voice | null, fadeMs: number) {
 }
 
 export interface SceneAudioOptions {
-  background: Sound | null;
+  /** A háttérhang rétegei (egyszerre szólnak). */
+  backgrounds: Sound[];
   startCue: Sound;
   fadeInMs: number;
   fadeOutMs: number;
@@ -108,8 +109,9 @@ export interface SceneAudioOptions {
 
 /** Egy kép hangjai: indító jel + háttérhang + a hangmezők. */
 export class SceneAudio {
-  private bg: Voice | null = null;
-  /** A szóló hangmezők: erősség (0–1) és a hang saját hangereje. */
+  /** A háttér rétegei, a rétegek sorrendjében. */
+  private bg: Voice[] = [];
+  /** A szóló hangok (hangmezőnként rétegenként egy): erősség (0–1) és a hang saját hangereje. */
   private fields = new Map<string, { voice: Promise<Voice>; gain: number }>();
   private speech: { id: string; voice: Promise<Voice>; ended: boolean } | null = null;
   private started = false;
@@ -132,20 +134,19 @@ export class SceneAudio {
     const cue = await play(this.opts.startCue, { loop: false, fadeMs: 10, startGain: this.opts.startCue.volume });
     const cueMs = (cue.src.buffer?.duration ?? 0) * 1000;
     window.setTimeout(async () => {
-      if (this.disposed || !this.opts.background) return;
-      const bg = await play(this.opts.background, { loop: true, fadeMs: this.opts.fadeInMs });
-      if (this.disposed) return stop(bg, this.opts.fadeOutMs);
+      if (this.disposed || !this.opts.backgrounds.length) return;
+      const bg = await Promise.all(this.opts.backgrounds.map((s) => play(s, { loop: true, fadeMs: this.opts.fadeInMs })));
+      if (this.disposed) return bg.forEach((v) => stop(v, this.opts.fadeOutMs));
       this.bg = bg;
       this.duck();
     }, cueMs);
   }
 
-  /** A háttérhang a legerősebb szóló hangmező arányában halkul. */
+  /** A háttérhang (minden rétege) a legerősebb szóló hangmező arányában halkul. */
   private duck() {
-    if (!this.bg) return;
-    const volume = this.opts.background?.volume ?? 0;
     const strongest = Math.max(0, ...[...this.fields.values()].map((f) => f.gain));
-    ramp(this.bg.gain.gain, volume * (1 - (1 - this.opts.duckLevel) * strongest), 300);
+    const factor = 1 - (1 - this.opts.duckLevel) * strongest;
+    this.bg.forEach((v, i) => ramp(v.gain.gain, (this.opts.backgrounds[i]?.volume ?? 0) * factor, 300));
   }
 
   /**
@@ -177,9 +178,9 @@ export class SceneAudio {
     this.duck();
   }
 
-  /** Egyetlen hangmező teljes erővel (felolvasó, billentyűzet), vagy null: egyik sem. */
-  setField(id: string | null, sound: Sound | null): void {
-    this.setFields(id && sound ? [{ id, sound, gain: 1 }] : []);
+  /** Egyetlen hangmező minden rétege teljes erővel (felolvasó, billentyűzet), vagy null: egyik sem. */
+  setField(id: string | null, sounds: Sound[]): void {
+    this.setFields(id ? layerVoices(id, sounds, 1) : []);
   }
 
   /**
@@ -209,7 +210,12 @@ export class SceneAudio {
     const fadeMs = this.opts.fadeOutMs;
     for (const f of this.fields.values()) void f.voice.then((v) => stop(v, fadeMs));
     this.fields.clear();
-    stop(this.bg, this.opts.fadeOutMs);
-    this.bg = null;
+    this.bg.forEach((v) => stop(v, this.opts.fadeOutMs));
+    this.bg = [];
   }
+}
+
+/** Egy hangmező rétegei külön hangként, közös erősséggel (a lágy szél szerint). */
+export function layerVoices(fieldId: string, sounds: Sound[], gain: number): { id: string; sound: Sound; gain: number }[] {
+  return sounds.map((sound, i) => ({ id: `${fieldId}#${i}`, sound, gain }));
 }

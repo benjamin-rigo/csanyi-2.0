@@ -1,13 +1,13 @@
-import { shapeOf, type EditorField, type EditorProject, type FieldPatch, type ProjectPatch } from './editor';
+import { layerRows, shapeOf, type EditorField, type EditorProject, type FieldPatch, type ProjectPatch } from './editor';
 
 /**
  * A szerkesztő visszavonható lépései: a hangmezők és a projekt adatai, valamint hangmező létrehozása és törlése.
  * Nem visszavonható: képcsere (törli a listát), megosztás, kategóriák.
  */
 export type FieldValues = Partial<
-  Pick<EditorField, 'polygons' | 'name' | 'description' | 'volume' | 'softness' | 'sound' | 'descriptionSound'>
+  Pick<EditorField, 'polygons' | 'name' | 'description' | 'softness' | 'sounds' | 'descriptionSound'>
 >;
-export type ProjectValues = Partial<Pick<EditorProject, 'title' | 'shortDescription' | 'author' | 'background' | 'backgroundVolume'>>;
+export type ProjectValues = Partial<Pick<EditorProject, 'title' | 'shortDescription' | 'author' | 'backgrounds'>>;
 
 export type Change =
   | { kind: 'field'; fieldId: string; before: FieldValues; after: FieldValues; at: number }
@@ -23,7 +23,13 @@ export const EMPTY_HISTORY: History = { done: [], undone: [] };
 
 /** Gépelés és csúszka: az ennyi időn belüli változás ugyanazon az értéken egy lépés marad. */
 const MERGE_MS = 1500;
-const MERGEABLE = new Set(['name', 'description', 'volume', 'softness', 'title', 'shortDescription', 'author', 'backgroundVolume']);
+const MERGEABLE = new Set(['name', 'description', 'softness', 'title', 'shortDescription', 'author']);
+/** A rétegek listája: csak a hangerő-csúszka húzása olvad össze (azonos hangok), hozzáadás és törlés külön lépés. */
+const LAYER_KEYS = new Set(['sounds', 'backgrounds']);
+
+type Layered = { sound: { id: string } }[];
+const sameSounds = (a: unknown, b: unknown) =>
+  Array.isArray(a) && Array.isArray(b) && a.length === b.length && (a as Layered).every((l, i) => l.sound.id === (b as Layered)[i].sound.id);
 
 type ValueChange = Extract<Change, { after: unknown }>;
 
@@ -32,7 +38,11 @@ function mergeable(a: ValueChange, b: ValueChange): boolean {
   if (a.kind === 'field' && b.kind === 'field' && a.fieldId !== b.fieldId) return false;
   const ka = Object.keys(a.after);
   const kb = Object.keys(b.after);
-  return ka.length === kb.length && ka.every((k) => kb.includes(k) && MERGEABLE.has(k));
+  const after = (c: ValueChange, k: string) => (c.after as Record<string, unknown>)[k];
+  return (
+    ka.length === kb.length &&
+    ka.every((k) => kb.includes(k) && (MERGEABLE.has(k) || (LAYER_KEYS.has(k) && sameSounds(after(a, k), after(b, k)))))
+  );
 }
 
 export function record(h: History, change: Change): History {
@@ -56,9 +66,8 @@ export function fieldPatch(v: FieldValues): FieldPatch {
   if ('polygons' in v) out.shape = shapeOf(v.polygons!);
   if ('name' in v) out.name = v.name;
   if ('description' in v) out.description = v.description;
-  if ('volume' in v) out.volume = v.volume;
   if ('softness' in v) out.edge_softness = v.softness;
-  if ('sound' in v) out.sound_id = v.sound?.id ?? null;
+  if ('sounds' in v) out.sound_layers = layerRows(v.sounds!);
   if ('descriptionSound' in v) out.description_sound_id = v.descriptionSound?.id ?? null;
   return out;
 }
@@ -68,7 +77,6 @@ export function projectPatch(v: ProjectValues): ProjectPatch {
   if ('title' in v) out.title = v.title;
   if ('shortDescription' in v) out.short_description = v.shortDescription;
   if ('author' in v) out.author = v.author;
-  if ('background' in v) out.background_sound_id = v.background?.id ?? null;
-  if ('backgroundVolume' in v) out.background_volume = v.backgroundVolume;
+  if ('backgrounds' in v) out.background_layers = layerRows(v.backgrounds!);
   return out;
 }

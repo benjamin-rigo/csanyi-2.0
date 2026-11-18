@@ -15,6 +15,7 @@ import {
   deleteField,
   deleteProject,
   insertField,
+  layerRows,
   loadCategories,
   loadProject,
   setProjectCategories,
@@ -25,6 +26,7 @@ import {
   useAutosave,
   type CategoryOption,
   type EditorField,
+  type EditorLayer,
   type EditorProject,
   type EditorSound,
   type Missing,
@@ -48,6 +50,9 @@ import { t } from '../../lib/i18n';
 import { useSession } from '../../lib/supabase';
 
 /** Szerkesztő (11). projectId nélkül a címből jön; a minta (/minta) csak megtekinthető, mellette az Első lépések. */
+/** A hangrétegek gazdája: a háttér vagy egy hangmező azonosítója. */
+type LayerTarget = 'background' | string;
+
 export function Editor({ config, projectId }: { config: Config; projectId?: string }) {
   const params = useParams();
   const id = projectId ?? params.id;
@@ -63,7 +68,8 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
   const [tool, setTool] = useState<Tool>('brush');
   const [size, setSize] = useState(config.editor.brushDefault);
   const [view, setView] = useState<View>(FIT);
-  const [picker, setPicker] = useState<'background' | string | null>(null);
+  // A hangválasztó célja: a háttér vagy egy hangmező rétegei; index: a cserélt réteg, null: új réteg.
+  const [picker, setPicker] = useState<{ target: LayerTarget; index: number | null } | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<EditorField | null>(null);
   const [confirmProjectDelete, setConfirmProjectDelete] = useState(false);
   const [tab, setTab] = useState<'project' | 'sounds' | 'share'>('sounds');
@@ -108,7 +114,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
       schedule(`field:${fieldId}`, () => {
         const f = projectRef.current?.fields.find((x) => x.id === fieldId);
         return f
-          ? updateField(fieldId, { name: f.name, description: f.description, volume: f.volume, edge_softness: f.softness })
+          ? updateField(fieldId, { name: f.name, description: f.description, edge_softness: f.softness })
           : Promise.resolve();
       }),
     [schedule],
@@ -132,8 +138,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
       name: '',
       description: '',
       polygons,
-      sound: null,
-      volume: 1,
+      sounds: [],
       softness: config.editor.softnessDefault,
       descriptionSound: null,
     };
@@ -214,52 +219,90 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
     setHistory((h) => ({ done: [...h.done, change], undone: h.undone.slice(0, -1) }));
   }
 
+  /** Hangrétegek: a háttérhang vagy egy hangmező rétegei (egyszerre szólnak, mindegyik saját hangerővel). */
+  const layersOf = (target: LayerTarget): EditorLayer[] =>
+    target === 'background'
+      ? (projectRef.current?.backgrounds ?? [])
+      : (projectRef.current?.fields.find((f) => f.id === target)?.sounds ?? []);
+
+  function showLayers(target: LayerTarget, layers: EditorLayer[]) {
+    if (target === 'background') setProject((p) => p && { ...p, backgrounds: layers });
+    else patchField(target, { sounds: layers });
+  }
+
+  const saveLayers = (target: LayerTarget, layers: EditorLayer[]) =>
+    target === 'background'
+      ? updateProject(project!.id, { background_layers: layerRows(layers) })
+      : updateField(target, { sound_layers: layerRows(layers) });
+
+  function rememberLayers(target: LayerTarget, before: EditorLayer[], after: EditorLayer[]) {
+    const at = Date.now();
+    setHistory((h) =>
+      record(
+        h,
+        target === 'background'
+          ? { kind: 'project', before: { backgrounds: before }, after: { backgrounds: after }, at }
+          : { kind: 'field', fieldId: target, before: { sounds: before }, after: { sounds: after }, at },
+      ),
+    );
+  }
+
+  /** Visszavonható módosítás a rétegeken; a hangerő-csúszka késleltetve ment, a többi azonnal. */
+  function changeLayers(target: LayerTarget, next: EditorLayer[], later = false) {
+    rememberLayers(target, layersOf(target), next);
+    showLayers(target, next);
+    if (later) schedule(`layers:${target}`, () => saveLayers(target, layersOf(target)));
+    else void track(saveLayers(target, next)).catch(() => undefined);
+  }
+
+  const onLayerVolume = (target: LayerTarget, index: number, volume: number) =>
+    changeLayers(
+      target,
+      layersOf(target).map((l, i) => (i === index ? { ...l, volume } : l)),
+      true,
+    );
+
+  const onRemoveLayer = (target: LayerTarget, index: number) =>
+    changeLayers(
+      target,
+      layersOf(target).filter((_, i) => i !== index),
+    );
+
   /**
-   * Hang kiválasztása. A könyvtári hang azonnal megjelenik (a Freesound előhallgatásával), a saját tárhelyre
-   * másolat a háttérben készül; az adatbázisba csak a kész másolat kerül. Ha közben más hangot választanak,
-   * a késő másolat nem írja felül; ha a másolás nem sikerül, visszaáll az előző hang.
+   * Hang kiválasztása: új réteg (index: null) vagy egy réteg hangjának cseréje. A könyvtári hang azonnal megjelenik
+   * (a Freesound előhallgatásával), a saját tárhelyre másolat a háttérben készül; az adatbázisba csak a kész másolat
+   * kerül. Ha közben a réteget megváltoztatják, a késő másolat nem írja felül; ha a másolás nem sikerül, a réteg visszaáll.
    */
   function onPickSound(sound: EditorSound, copy?: Promise<EditorSound>) {
     if (!project || !picker) return;
-    const target = picker;
-    const projectId = project.id;
-    const current = (): EditorSound | null =>
-      target === 'background'
-        ? (projectRef.current?.background ?? null)
-        : (projectRef.current?.fields.find((f) => f.id === target)?.sound ?? null);
-    const previous = current();
-    const show = (s: EditorSound | null) =>
-      target === 'background' ? setProject((p) => p && { ...p, background: s }) : patchField(target, { sound: s });
-    const save = (s: EditorSound) =>
-      target === 'background' ? updateProject(projectId, { background_sound_id: s.id }) : updateField(target, { sound_id: s.id });
+    const { target, index } = picker;
+    const before = layersOf(target);
+    const pos = index ?? before.length;
+    const volume = index !== null ? before[index].volume : target === 'background' ? config.editor.backgroundVolumeDefault : 1;
+    const place = (list: EditorLayer[], s: EditorSound) =>
+      index === null && list.length === pos ? [...list, { sound: s, volume }] : list.map((l, i) => (i === pos ? { ...l, sound: s } : l));
 
-    // Visszavonható lépés a mentett (saját tárhelyen lévő) hanggal.
-    const remember = (s: EditorSound) =>
-      setHistory((h) =>
-        record(
-          h,
-          target === 'background'
-            ? { kind: 'project', before: { background: previous }, after: { background: s }, at: Date.now() }
-            : { kind: 'field', fieldId: target, before: { sound: previous }, after: { sound: s }, at: Date.now() },
-        ),
-      );
-
-    show(sound);
+    const shown = place(before, sound);
+    showLayers(target, shown);
     if (target === 'background') setSelection({ kind: 'background' });
     if (!copy) {
-      remember(sound);
-      void track(save(sound)).catch(() => undefined);
+      rememberLayers(target, before, shown);
+      void track(saveLayers(target, shown)).catch(() => undefined);
       return;
     }
+    const stillThere = () => layersOf(target)[pos]?.sound.id === sound.id;
     void track(
       copy.then(async (copied) => {
-        if (current()?.id !== sound.id) return;
-        show(copied);
-        remember(copied);
-        await save(copied);
+        if (!stillThere()) return;
+        const next = place(layersOf(target), copied);
+        showLayers(target, next);
+        rememberLayers(target, before, next);
+        await saveLayers(target, next);
       }),
     ).catch(() => {
-      if (current()?.id === sound.id) show(previous);
+      if (!stillThere()) return;
+      const now = layersOf(target);
+      showLayers(target, index === null ? now.filter((_, i) => i !== pos) : now.map((l, i) => (i === pos ? before[pos] : l)));
     });
   }
 
@@ -401,16 +444,16 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
 
   const selectedField = selection?.kind === 'field' ? (project.fields.find((f) => f.id === selection.id) ?? null) : null;
 
-  function changeField(fid: string, patch: Partial<Pick<EditorField, 'name' | 'description' | 'volume' | 'softness'>>) {
+  function changeField(fid: string, patch: Partial<Pick<EditorField, 'name' | 'description' | 'softness'>>) {
     recordField(fid, patch);
     patchField(fid, patch);
     saveFieldLater(fid);
   }
   const pickerTarget =
-    picker === 'background'
+    picker?.target === 'background'
       ? t('teacher.editor.background.pickerTarget')
       : t('teacher.editor.fields.pickerTarget', {
-          name: project.fields.find((f) => f.id === picker)?.name.trim() || t('teacher.editor.fields.untitled'),
+          name: project.fields.find((f) => f.id === picker?.target)?.name.trim() || t('teacher.editor.fields.untitled'),
         });
 
   const readOnly = project.readOnly;
@@ -682,20 +725,9 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
                 guide={guide}
                 userId={userId}
                 onAddField={() => void addField().catch(() => undefined)}
-                onPickSound={setPicker}
-                onBackgroundVolume={(v) => {
-                  recordProject({ backgroundVolume: v });
-                  setProject((p) => p && { ...p, backgroundVolume: v });
-                  schedule('background-volume', () =>
-                    updateProject(project.id, { background_volume: projectRef.current!.backgroundVolume }),
-                  );
-                }}
-                onRemoveBackground={() => {
-                  recordProject({ background: null });
-                  setProject((p) => p && { ...p, background: null });
-                  setSelection(null);
-                  void track(updateProject(project.id, { background_sound_id: null })).catch(() => undefined);
-                }}
+                onPickSound={(target, index) => setPicker({ target, index })}
+                onLayerVolume={onLayerVolume}
+                onRemoveLayer={onRemoveLayer}
                 onFieldChange={changeField}
                 onFieldVoice={(fid, sound) => {
                   recordField(fid, { descriptionSound: sound });
@@ -722,7 +754,7 @@ export function Editor({ config, projectId }: { config: Config; projectId?: stri
         isOpen={picker !== null}
         onOpenChange={(open) => !open && setPicker(null)}
         target={pickerTarget}
-        initialQuery={picker && picker !== 'background' ? (project.fields.find((f) => f.id === picker)?.name.trim() ?? '') : ''}
+        initialQuery={picker && picker.target !== 'background' ? (project.fields.find((f) => f.id === picker.target)?.name.trim() ?? '') : ''}
         userId={userId}
         maxMb={config.upload.soundMaxMb}
         onPick={onPickSound}
