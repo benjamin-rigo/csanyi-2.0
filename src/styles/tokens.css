@@ -81,6 +81,7 @@
 
   /* Méretek */
   --border-thin: 1px;
+  --border-strong: 2px;
   --kid-page-x: var(--space-16);
   --kid-page-x-narrow: var(--space-4);
   --content-max: 1180px;

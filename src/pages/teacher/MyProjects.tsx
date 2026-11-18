@@ -52,7 +52,8 @@ export function MyProjects({ config }: { config: Config }) {
           <p>{t('teacher.projects.subtitle')}</p>
         </div>
         <div className="new-project-action">
-          <Button variant="outline" size="lg" onPress={() => setCreating(true)}>
+          {/* Az oldal fő gombja (egy nézetben egy fő gomb, döntésnapló); az Első lépések mellette másodlagos. */}
+          <Button size="lg" onPress={() => setCreating(true)}>
             <Icon name="plus" />
             {t('teacher.projects.newProject')}
           </Button>
@@ -76,7 +77,7 @@ export function MyProjects({ config }: { config: Config }) {
               <Card.Title render={(props) => <h2 {...props} />}>{t('teacher.onboarding.cardTitle')}</Card.Title>
               <Card.Description>{t('teacher.onboarding.cardText')}</Card.Description>
             </div>
-            <ButtonLink href={practiceId ? `/szerkeszto/${practiceId}` : '/minta'} variant="primary" className="button--lg">
+            <ButtonLink href={practiceId ? `/szerkeszto/${practiceId}` : '/minta'} variant="outline" className="button--lg">
               {practiceId ? t('teacher.onboarding.cardContinue') : t('teacher.onboarding.cardStart')}
               <Icon name="forward" size={16} />
             </ButtonLink>

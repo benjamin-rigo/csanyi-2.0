@@ -100,10 +100,14 @@ body {
 
 /* Felületi rétegek (döntésnapló): a szürke elem csak fehér felületen látszik. A szürke oldalháttéren álló
    másodlagos gomb ezért fehér alapot kap, a HeroUI saját gombváltozójával. */
-/* Másodlagos gomb: a HeroUI keretes (outline) gombja (döntésnapló, 2026-11-18); a kerete a mért mezőkeret-szín,
-   mert az alap --border fehéren alig látszik. */
+/* Másodlagos gomb: a HeroUI keretes (outline) gombja (döntésnapló, 2026-11-18). A hajszálvékony szürke keret helyett
+   vastagabb, fő színű keret és felirat (fehéren 5,74:1), rámutatáskor halvány fő színű kitöltés. */
 .button--outline {
-  border-color: var(--field-border);
+  border-width: var(--border-strong);
+  border-color: var(--accent);
+  --button-fg: var(--accent);
+  --button-bg-hover: var(--accent-soft);
+  --button-bg-pressed: var(--accent-soft-hover);
 }
 
 .teacher-sidebar .button--secondary,
