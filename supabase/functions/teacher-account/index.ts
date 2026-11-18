@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
     if ((count ?? 0) >= DAILY_LIMIT) return reply({ error: 'limit', limit: DAILY_LIMIT }, 429);
 
     const { data: profile } = await admin.from('profiles').select('name').eq('id', user.id).single();
-    const { error } = await admin.auth.admin.inviteUserByEmail(address, {
+    const { data: invited, error } = await admin.auth.admin.inviteUserByEmail(address, {
       data: { invited_by_name: profile?.name || user.email },
       redirectTo: typeof redirectTo === 'string' ? redirectTo : undefined,
     });
@@ -51,7 +51,8 @@ Deno.serve(async (req) => {
       const exists = error.code === 'email_exists' || /already been registered/i.test(error.message);
       return reply({ error: exists ? 'email_exists' : 'send_failed', reason: error.message }, exists ? 409 : 502);
     }
-    await admin.from('invitations').insert({ inviter_id: user.id, email: address });
+    // Létező címre a meghívás hibát ad, így ez a fiók biztosan ezzel a meghívóval jött létre: csak ezt vonhatja vissza.
+    await admin.from('invitations').insert({ inviter_id: user.id, email: address, invited_user_id: invited.user.id });
     return reply({ ok: true });
   }
 
