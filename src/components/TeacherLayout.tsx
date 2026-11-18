@@ -3,6 +3,7 @@ import { useLocation } from 'react-router';
 import { Avatar, Button } from '@heroui/react';
 import { t } from '../lib/i18n';
 import { useIsAdmin } from '../lib/admin';
+import { useConfig } from '../lib/data';
 import { useProfile } from '../lib/teacher';
 import { Icon } from './Icon';
 import { ButtonLink, Logo } from './SiteHeader';
@@ -21,6 +22,9 @@ export function TeacherLayout({ documentTitle, children }: { documentTitle: stri
   const profile = useProfile();
   const isAdmin = useIsAdmin();
   const { pathname } = useLocation();
+  // A Súgó a config.json-ból: belső útnál az alkalmazás címe elé kerül az alapcím (új lapon nyílik, mint a Galéria).
+  const help = useConfig()?.links.help ?? '/sugo';
+  const helpHref = help.startsWith('/') ? import.meta.env.BASE_URL + help.slice(1) : help;
   // Telefonon a menü lenyitható (a gomb csak ott látszik); oldalváltáskor becsukódik.
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPath, setMenuPath] = useState(pathname);
@@ -73,6 +77,19 @@ export function TeacherLayout({ documentTitle, children }: { documentTitle: stri
               <Icon name="globe" />
               <span className="nav-text">
                 {t('teacher.nav.gallery')}
+                <span className="sr-only"> {t('teacher.nav.newTab')}</span>
+              </span>
+              <Icon name="external" />
+            </a>
+            <a
+              href={helpHref}
+              target="_blank"
+              rel="noreferrer"
+              className="button button--ghost button--full-width teacher-nav-link"
+            >
+              <Icon name="help" />
+              <span className="nav-text">
+                {t('teacher.nav.help')}
                 <span className="sr-only"> {t('teacher.nav.newTab')}</span>
               </span>
               <Icon name="external" />

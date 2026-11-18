@@ -9,7 +9,8 @@ Jelölés: **most** = jelenlegi állapot, **átadáskor** = teendő.
 A felületen még helykitöltők vannak; ezeket az alapítvány adja meg (`public/data/config.json`):
 
 - `contactEmail`: info@csanyialapitvany.hu (2026-11-18), a láblécben és a belépésnél látszik.
-- `links.help` (Súgó), `links.accessibility` (Akadálymentességi nyilatkozat), `links.privacy` (Adatvédelem), `links.terms` (ÁSZF): most `#`, nem visznek sehova. Az ÁSZF-et a fiók beállításakor el is kell fogadni.
+- Súgó: kész, saját oldal (`/sugo`); a szövegét az alapítvány átnézheti és átírhatja (`src/content/hu.json`, `help` rész). Ha inkább a saját honlapjukra mutatna, elég a `links.help` címét átírni.
+- `links.accessibility` (Akadálymentességi nyilatkozat), `links.privacy` (Adatvédelem), `links.terms` (ÁSZF): most `#`, nem visznek sehova. Az ÁSZF-et a fiók beállításakor el is kell fogadni.
 - A mintakép jogai (5. pont).
 
 ## 1. Kód és közzététel

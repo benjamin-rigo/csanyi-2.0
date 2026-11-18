@@ -42,6 +42,17 @@ test('belépés és elfelejtett jelszó: akadálymentes', async ({ page }) => {
   await expectNoAxeViolations(page);
 });
 
+test('súgó: a fejlécből nyílik, akadálymentes', async ({ page, isMobile }) => {
+  await page.goto('/');
+  // Telefonon a Súgó a láblécben van.
+  await page.getByRole('link', { name: 'Súgó' }).filter({ visible: true }).first().click();
+  await expect(page).toHaveURL(/sugo/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Súgó' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2 })).toHaveText(['Kép felfedezése', 'Kép készítése']);
+  if (!isMobile) await expect(page.getByRole('navigation', { name: 'Fő navigáció' }).getByRole('link', { name: 'Súgó' })).toHaveAttribute('aria-current', 'page');
+  await expectNoAxeViolations(page);
+});
+
 test('védett oldal belépés nélkül a belépésre visz', async ({ page }) => {
   await page.goto('/projektjeim');
   await expect(page).toHaveURL(/belepes/);

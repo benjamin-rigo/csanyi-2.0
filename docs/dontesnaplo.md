@@ -76,6 +76,7 @@ Csak a Benjámin által jóváhagyott döntések. Minden javaslat és minden meg
 - Érintőképernyőn két ujjal nagyít és mozgat, egy ujjal fest. Ha festés közben leér a második ujj, a félbehagyott vonás elvész.
 - Leíró hang a szerkesztőben: a hangmező panelén a Leírás alatt; Felvétel (mikrofonnal, a böngészőben) vagy Feltöltés, visszajátszás, törlés.
 - Új projekt: 2026-10-02 és 10-13 között az Első lépések befejezéséig le volt tiltva; 2026-10-13 óta mindig elérhető, az Első lépések kártyája ajánlásként marad a Projektjeim tetején. Az oldal fő (kitöltött) gombja az Új projekt, az Első lépések gombja keretes (2026-11-18).
+- Súgó (2026-11-18): saját oldal az alkalmazásban (`/sugo`, `src/pages/Help.tsx`), nyilvános, két kártyával: Kép felfedezése (gyerekeknek és segítőiknek) és Kép készítése (pedagógusoknak), témánként rövid felsorolással; alul a kapcsolat címe. A szöveg a `hu.json` `help` részében. Elérhető a nyilvános fejlécből és láblécből (`config.json` links.help), és a pedagógus menüből új lapon.
 
 ## Gyerek oldal
 - Gyerek flow: galéria → kép nézet. Nincs külön leírás oldal (látó gyerekeknek sem).

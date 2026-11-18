@@ -18,6 +18,9 @@ test('nyilvános oldalak', async ({ page }) => {
   await page.goto('/belepes');
   await page.getByRole('heading', { name: 'Belépés' }).waitFor();
   await eachWidth(page);
+  await page.goto('/sugo');
+  await page.getByRole('heading', { name: 'Kép készítése' }).waitFor();
+  await eachWidth(page);
 });
 
 test.describe('pedagógus oldal', () => {

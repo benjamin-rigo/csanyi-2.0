@@ -7,6 +7,7 @@ import { useConfig, useData } from './lib/data';
 import { t } from './lib/i18n';
 import { authLinkType, useSession } from './lib/supabase';
 import { Gallery } from './pages/Gallery';
+import { Help } from './pages/Help';
 import { Viewer } from './pages/Viewer';
 
 // A pedagógus oldal külön töltődik be, így a galéria és a képnézet gyorsabban nyílik.
@@ -74,6 +75,7 @@ function App() {
       <AuthLinkRedirect />
       <Suspense fallback={<StatusPage />}>
         <Routes>
+          <Route path="/sugo" element={<Help config={config} />} />
           <Route path="/belepes" element={<Login config={config} />} />
           <Route path="/elfelejtett-jelszo" element={<ForgotPassword />} />
           <Route path="/uj-jelszo" element={<NewPassword config={config} />} />

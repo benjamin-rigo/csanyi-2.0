@@ -28,6 +28,116 @@
     "privacy": "Adatvédelem",
     "terms": "ÁSZF"
   },
+  "help": {
+    "documentTitle": "Súgó · Színhang",
+    "title": "Súgó",
+    "intro": "Itt megtalálod, hogyan fedezhetsz fel egy képet, és hogyan készíthetsz újat.",
+    "contact": "Nem találod, amit keresel? Írj nekünk:",
+    "sections": [
+      {
+        "id": "felfedezes",
+        "title": "Kép felfedezése",
+        "lead": "Gyerekeknek, és azoknak, akik segítenek nekik.",
+        "topics": [
+          {
+            "title": "Kép választása",
+            "items": [
+              "Válassz egy képet a galériában, és nyisd meg.",
+              "A kategóriákkal leszűkítheted a listát."
+            ]
+          },
+          {
+            "title": "Táblagépen",
+            "items": [
+              "Tartsd az ujjad a képen, és húzd lassan. Ahol hang van, ott megszólal.",
+              "Az első érintésre rövid hangjel szól, utána indul a kép háttérhangja.",
+              "Egy hang a terület szélétől befelé erősödik. Ha jó helyen jársz, elhangzik, mi van ott.",
+              "A legjobb élményhez kapcsold ki a felolvasót, amíg felfedezed a képet."
+            ]
+          },
+          {
+            "title": "Számítógépen",
+            "items": [
+              "Vidd az egeret a képen. Ahol hang van, ott megszólal.",
+              "Billentyűzettel a Tab gombbal lépsz egyik hangról a másikra. A felolvasó elmondja, mi van ott.",
+              "A háttérhang az első kattintásra vagy billentyűre indul."
+            ]
+          },
+          {
+            "title": "Kilépés",
+            "items": [
+              "Nyomd meg a Vissza gombot.",
+              "Számítógépen nyomd meg az Esc billentyűt.",
+              "iPaden bekapcsolt felolvasóval rajzolj két ujjal egy Z betűt.",
+              "Androidon használd a vissza mozdulatot."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "keszites",
+        "title": "Kép készítése",
+        "lead": "Pedagógusoknak. Így lesz egy képből hangos kép.",
+        "topics": [
+          {
+            "title": "Hozzáférés",
+            "items": [
+              "A Színhang meghívásos. Egy kolléga meghívhat a Profil oldaláról, vagy írj nekünk: {email}"
+            ]
+          },
+          {
+            "title": "Első lépések",
+            "items": [
+              "Belépés után nézd meg a kész mintát, aztán próbáld ki egy gyakorló projekten.",
+              "Hat rövid lépés. Bármikor folytathatod a Projektjeim oldalon."
+            ]
+          },
+          {
+            "title": "Új projekt",
+            "items": [
+              "A Projektjeim oldalon nyomd meg az Új projekt gombot, és tölts fel egy képet.",
+              "A munkád magától mentődik."
+            ]
+          },
+          {
+            "title": "Hangmezők rajzolása",
+            "items": [
+              "A hangmező a kép hangos területe. Fesd ki az Ecsettel, és javíts rajta a Radírral.",
+              "A Pontok eszközzel sarkonként rakod le az alakot. Ez billentyűzettel is megy.",
+              "Az Ecset gomb alatt állítod a méretét és az él lágyságát. Lágy szélnél a hang fokozatosan erősödik, ahogy az ujj befelé halad.",
+              "Apró részlethez nagyíts. Táblagépen két ujjal nagyítasz és mozgatod a képet.",
+              "Visszavonni a Visszavonás gombbal vagy a Cmd+Z (Windowson Ctrl+Z) billentyűkkel tudsz."
+            ]
+          },
+          {
+            "title": "Hangok",
+            "items": [
+              "Adj háttérhangot a képhez. Végig szól, így a gyerek mindig hall valamit.",
+              "Minden hangmezőnek adj nevet, leírást és hangot. Hangot a hangkönyvtárból választhatsz, vagy feltölthetsz sajátot.",
+              "Ha több hang szóljon egyszerre, add hozzá mindet. Mindegyiknek saját hangereje van.",
+              "Vedd fel a leírást a saját hangodon is. Felolvasó nélkül ezt hallja a gyerek."
+            ]
+          },
+          {
+            "title": "Jó leírás",
+            "items": [
+              "Kezdd a legfontosabb szóval.",
+              "Írd bele, hol van a képen. Például: Fent, a tetőn egy macska ül.",
+              "Egy-két rövid mondat elég."
+            ]
+          },
+          {
+            "title": "Megosztás",
+            "items": [
+              "Privát: csak te látod.",
+              "Linkkel elérhető: aki megkapja a linket, megnyithatja.",
+              "Galériában is: mindenki látja. Ehhez kell cím, rövid leírás, háttérhang, és minden hangmezőnek név, leírás, hang és leíró hang. A Megosztás fül megmutatja, mi hiányzik még."
+            ]
+          }
+        ]
+      }
+    ]
+  },
   "viewer": {
     "documentTitle": "{title} · Színhang",
     "back": "Vissza",
@@ -111,7 +221,8 @@
       "projects": "Projektjeim",
       "gallery": "Galéria",
       "admin": "Admin",
-      "newTab": "(új lapon nyílik)"
+      "newTab": "(új lapon nyílik)",
+      "help": "Súgó"
     },
     "profileLink": "Profil",
     "menu": "Menü",

@@ -7,6 +7,7 @@ import {
   Check,
   ChevronDown,
   ChevronRight,
+  CircleHelp,
   CloudCheck,
   Eraser,
   ExternalLink,
@@ -77,6 +78,7 @@ const ICONS: Record<string, LucideIcon> = {
   season: Sun,
   music: Music,
   trash: Trash2,
+  help: CircleHelp,
 };
 
 /** Ikonméret tokenből (--icon-sm / -md / -lg), szám nem adható meg (döntésnapló, 2026-11-18). */

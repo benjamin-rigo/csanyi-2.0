@@ -2,6 +2,7 @@ import { useId, type ReactNode } from 'react';
 import { Link } from '@heroui/react';
 import { buttonVariants } from '@heroui/styles';
 import { Link as AriaLink } from 'react-aria-components';
+import { useLocation } from 'react-router';
 import type { Config } from '../lib/data';
 import { t } from '../lib/i18n';
 
@@ -61,11 +62,12 @@ export function Logo() {
 }
 
 export function SiteHeader({ config }: { config: Config }) {
+  const { pathname } = useLocation();
   return (
     <header className="site-header">
       <Logo />
       <nav aria-label={t('nav.label')} className="site-nav">
-        <ButtonLink href={config.links.help} className="nav-help">
+        <ButtonLink href={config.links.help} className="nav-help" aria-current={pathname === config.links.help ? 'page' : undefined}>
           {t('nav.help')}
         </ButtonLink>
         <ButtonLink href={config.links.teachers} variant="outline">
